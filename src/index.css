@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-size: 16px;
+
+    /* Brand Colors - Authoritative System */
+    --primary-blue: #1F3C88;
+    --primary-blue-hover: #1A3273;
+    --primary-blue-soft: #EEF2FF;
+
+    --ai-purple: #7C6CF6;
+    --ai-purple-hover: #6959E6;
+    --ai-purple-soft: #F3F1FF;
+
+    --success-green: #22C55E;
+    --success-green-soft: #EAFBF1;
+    --success-green-border: #86EFAC;
+
+    --match-cyan: #22D3EE;
+    --match-cyan-soft: #ECFEFF;
+    --match-cyan-border: #67E8F9;
+
+    --guidance-yellow: #FACC15;
+    --guidance-yellow-soft: #FFFBEB;
+    --guidance-yellow-border: #FDE68A;
+
+    /* Text Colors - Authoritative */
+    --text-heading: #0F172A;
+    --text-body: #334155;
+    --text-muted: #64748B;
+    --text-disabled: #94A3B8;
+
+    /* Backgrounds & Borders */
+    --bg-main: #F8FAFC;
+    --bg-card: #FFFFFF;
+    --border-soft: #E2E8F0;
+    --border-divider: #CBD5E1;
+
+    /* Legacy Tailwind vars (for compatibility) */
+    --background: 0 0% 98%;
+    /* #F8FAFC converted to HSL roughly */
+    --foreground: 222 47% 11%;
+    /* #0F172A */
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 224 63% 33%;
+    /* #1F3C88 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 226 71% 97%;
+    /* #EEF2FF */
+    --secondary-foreground: 224 63% 33%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 250 100% 98%;
+    /* #F3F1FF */
+    --accent-foreground: 247 88% 69%;
+    /* #7C6CF6 */
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 210 40% 96%;
+    --input: 210 40% 96%;
+    --ring: 224 63% 33%;
+
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    /* ... add other dark mode vars if needed */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-size: var(--font-size);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #0F172A;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #0F172A;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #0F172A;
+  }
+
+  h4,
+  label,
+  button {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  p,
+  input {
+    color: #334155;
+    line-height: 1.5;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
