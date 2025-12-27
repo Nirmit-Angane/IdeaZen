@@ -34,9 +34,9 @@ export default function App() {
             const project = await generateProjectIdea(inputs);
             setGeneratedProject(project);
             setCurrentScreen('output');
-        } catch (error) {
+        } catch (error: any) {
             console.error("Generation failed:", error);
-            alert("Failed to generate project. Please try again.");
+            alert(`Failed to generate project: ${error.message || "Unknown error"}`);
             setCurrentScreen('landing');
         }
     };

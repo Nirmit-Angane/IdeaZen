@@ -12,7 +12,13 @@ export async function generateProjectIdea(inputs: Partial<UserInputs>): Promise<
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch (e) {
+        errorData = { error: `API Error ${response.status}: ${errorText || response.statusText}` };
+      }
       throw new Error(errorData.error || `API Error: ${response.status}`);
     }
 
