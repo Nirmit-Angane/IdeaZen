@@ -1,8 +1,8 @@
 export function TextLoader() {
-  return (
-    <div className="inline-flex items-center gap-2">
-      <style>
-        {`
+    return (
+        <div className="inline-flex items-center gap-2">
+            <style>
+                {`
           .text-loader-card {
             background-color: rgba(31, 60, 136, 0.05);
             padding: 0.5rem 1.5rem;
@@ -81,20 +81,20 @@ export function TextLoader() {
             }
           }
         `}
-      </style>
-      <div className="text-loader-card">
-        <div className="text-loader">
-          <p>Generating</p>
-          <div className="text-loader-words">
-            <span className="text-loader-word">projects</span>
-            <span className="text-loader-word">ideas</span>
-            <span className="text-loader-word">blueprints</span>
-            <span className="text-loader-word">concepts</span>
-            <span className="text-loader-word">roadmaps</span>
-            <span className="text-loader-word">projects</span>
-          </div>
+            </style>
+            <div className="text-loader-card">
+                <div className="text-loader">
+                    <p>Generating</p>
+                    <div className="text-loader-words">
+                        <span className="text-loader-word">projects</span>
+                        <span className="text-loader-word">ideas</span>
+                        <span className="text-loader-word">blueprints</span>
+                        <span className="text-loader-word">concepts</span>
+                        <span className="text-loader-word">roadmaps</span>
+                        <span className="text-loader-word">projects</span>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

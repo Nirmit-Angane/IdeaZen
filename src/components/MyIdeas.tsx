@@ -1,5 +1,5 @@
 import { Bookmark, Trash2, Eye, Calendar, GitCompare, Check, Clock, Zap, Award, X, Target } from 'lucide-react';
-import { GeneratedProject } from '../App';
+import { GeneratedProject } from '../types';
 import { useState, useEffect } from 'react';
 
 interface SavedProject extends GeneratedProject {
@@ -49,7 +49,7 @@ export function MyIdeas({ onViewProject }: MyIdeasProps) {
   };
 
   const getDifficultyColor = (difficulty: string) => {
-    switch(difficulty.toLowerCase()) {
+    switch (difficulty.toLowerCase()) {
       case 'beginner': return { bg: 'bg-[#3EC1D3]', text: 'text-[#3EC1D3]', light: 'bg-[#3EC1D3]/10', border: 'border-[#3EC1D3]' };
       case 'intermediate': return { bg: 'bg-[#1F3C88]', text: 'text-[#1F3C88]', light: 'bg-[#1F3C88]/10', border: 'border-[#1F3C88]' };
       case 'advanced': return { bg: 'bg-[#9B8CFF]', text: 'text-[#9B8CFF]', light: 'bg-[#9B8CFF]/10', border: 'border-[#9B8CFF]' };
@@ -65,7 +65,7 @@ export function MyIdeas({ onViewProject }: MyIdeasProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white py-12 px-4">
       <div className="container mx-auto max-w-5xl">
-        
+
         {/* Header */}
         <div className="mb-12 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
@@ -94,11 +94,10 @@ export function MyIdeas({ onViewProject }: MyIdeasProps) {
             <button
               onClick={handleCompare}
               disabled={selectedForCompare.length !== 2}
-              className={`px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 font-medium ${
-                selectedForCompare.length === 2
+              className={`px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 font-medium ${selectedForCompare.length === 2
                   ? 'bg-gradient-to-r from-[#7C6CF6] to-[#9B8CFF] text-white shadow-lg hover:shadow-xl'
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              }`}
+                }`}
             >
               <GitCompare className="w-4 h-4" />
               Compare Ideas
@@ -125,13 +124,12 @@ export function MyIdeas({ onViewProject }: MyIdeasProps) {
             {savedProjects.map((project, index) => {
               const colors = getDifficultyColor(project.difficulty);
               const isSelected = selectedForCompare.includes(index);
-              
+
               return (
-                <div 
+                <div
                   key={index}
-                  className={`bg-white rounded-2xl shadow-lg border-2 overflow-hidden hover:shadow-xl transition-all duration-300 ${
-                    isSelected ? 'border-[#7C6CF6] ring-2 ring-[#7C6CF6]/20' : 'border-gray-100'
-                  }`}
+                  className={`bg-white rounded-2xl shadow-lg border-2 overflow-hidden hover:shadow-xl transition-all duration-300 ${isSelected ? 'border-[#7C6CF6] ring-2 ring-[#7C6CF6]/20' : 'border-gray-100'
+                    }`}
                 >
                   <div className="p-8">
                     <div className="flex items-start justify-between mb-4">
@@ -141,13 +139,12 @@ export function MyIdeas({ onViewProject }: MyIdeasProps) {
                             <button
                               onClick={() => handleToggleCompare(index)}
                               disabled={!isSelected && selectedForCompare.length >= 2}
-                              className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
-                                isSelected
+                              className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${isSelected
                                   ? 'bg-[#7C6CF6] border-[#7C6CF6]'
                                   : selectedForCompare.length >= 2
-                                  ? 'bg-gray-100 border-gray-300 cursor-not-allowed'
-                                  : 'bg-white border-gray-300 hover:border-[#7C6CF6]'
-                              }`}
+                                    ? 'bg-gray-100 border-gray-300 cursor-not-allowed'
+                                    : 'bg-white border-gray-300 hover:border-[#7C6CF6]'
+                                }`}
                             >
                               {isSelected && <Check className="w-4 h-4 text-white" />}
                             </button>
@@ -155,7 +152,7 @@ export function MyIdeas({ onViewProject }: MyIdeasProps) {
                           <h3 className="text-[#1F3C88] text-2xl">{project.title}</h3>
                         </div>
                         <p className="text-[#64748B] mb-4">{project.description}</p>
-                        
+
                         <div className="flex flex-wrap gap-3">
                           <span className={`px-4 py-2 ${colors.light} ${colors.text} rounded-xl text-sm font-medium border ${colors.border}`}>
                             {project.difficulty}
@@ -179,7 +176,7 @@ export function MyIdeas({ onViewProject }: MyIdeasProps) {
                         <Eye className="w-4 h-4" />
                         View Project
                       </button>
-                      
+
                       <button
                         onClick={() => handleDelete(index)}
                         className="px-6 py-3 bg-white text-red-600 border-2 border-gray-200 hover:border-red-200 hover:bg-red-50 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 font-medium"
@@ -221,14 +218,14 @@ export function MyIdeas({ onViewProject }: MyIdeasProps) {
               {selectedForCompare.map((projectIndex) => {
                 const project = savedProjects[projectIndex];
                 const colors = getDifficultyColor(project.difficulty);
-                
+
                 // Extract metrics from project
                 const timeEstimate = "2-4 weeks"; // Mock data
                 const learningImpact = project.difficulty === 'Beginner' ? 'Medium' : project.difficulty === 'Intermediate' ? 'High' : 'Very High';
                 const confidenceScore = parseInt(project.confidence.split('%')[0]);
-                
+
                 return (
-                  <div 
+                  <div
                     key={projectIndex}
                     className="bg-white rounded-2xl shadow-xl border-2 border-[#7C6CF6]/30 overflow-hidden"
                   >
@@ -279,7 +276,7 @@ export function MyIdeas({ onViewProject }: MyIdeasProps) {
                         <div className="flex items-center gap-3">
                           <span className="text-2xl text-[#22C55E] font-bold">{confidenceScore}%</span>
                           <div className="flex-1 h-2 bg-white rounded-full overflow-hidden">
-                            <div 
+                            <div
                               className="h-full bg-[#22C55E] rounded-full transition-all duration-1000"
                               style={{ width: `${confidenceScore}%` }}
                             ></div>

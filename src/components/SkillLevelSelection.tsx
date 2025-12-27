@@ -1,5 +1,5 @@
 import { Rocket, Code2, Cpu, ArrowRight, Sparkles, Star } from 'lucide-react';
-import { SkillLevel } from '../App';
+import { SkillLevel } from '../types';
 
 interface SkillLevelSelectionProps {
   onSelectLevel: (level: SkillLevel) => void;
@@ -8,7 +8,7 @@ interface SkillLevelSelectionProps {
 export function SkillLevelSelection({ onSelectLevel }: SkillLevelSelectionProps) {
   const levels = [
     {
-      id: 'beginner' as SkillLevel,
+      id: 'Beginner' as SkillLevel,
       icon: Rocket,
       title: 'Beginner',
       description: 'Learning to code',
@@ -16,7 +16,7 @@ export function SkillLevelSelection({ onSelectLevel }: SkillLevelSelectionProps)
       color: 'from-[#3EC1D3] to-[#2a9ca9]'
     },
     {
-      id: 'intermediate' as SkillLevel,
+      id: 'Intermediate' as SkillLevel,
       icon: Code2,
       title: 'Intermediate',
       description: 'Built a few projects',
@@ -24,7 +24,7 @@ export function SkillLevelSelection({ onSelectLevel }: SkillLevelSelectionProps)
       color: 'from-[#1F3C88] to-[#2d5ac9]'
     },
     {
-      id: 'advanced' as SkillLevel,
+      id: 'Advanced' as SkillLevel,
       icon: Cpu,
       title: 'Advanced',
       description: 'Professional experience',
@@ -35,23 +35,23 @@ export function SkillLevelSelection({ onSelectLevel }: SkillLevelSelectionProps)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white py-16 px-4 relative overflow-hidden">
-      
+
       {/* Animated Grid Pattern Background */}
       <div className="absolute inset-0 grid-pattern opacity-40"></div>
 
       <div className="container mx-auto max-w-5xl relative z-10">
-        
+
         {/* AI Recommendation Badge */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#9B8CFF]/10 to-[#3EC1D3]/10 rounded-full border border-[#9B8CFF]/30 mb-6">
             <Sparkles className="w-4 h-4 text-[#9B8CFF]" />
             <span className="text-[#666]">Based on most students, we recommend <span className="text-[#9B8CFF]">Beginner</span></span>
           </div>
-          
+
           <h1 className="text-[#1F3C88] text-4xl lg:text-5xl mb-4">
             What's Your Skill Level?
           </h1>
-          
+
           <p className="text-lg text-[#666] max-w-xl mx-auto">
             This helps the AI adapt every question to your experience
           </p>
@@ -61,16 +61,15 @@ export function SkillLevelSelection({ onSelectLevel }: SkillLevelSelectionProps)
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           {levels.map((level) => {
             const Icon = level.icon;
-            
+
             return (
               <button
                 key={level.id}
                 onClick={() => onSelectLevel(level.id)}
-                className={`group relative bg-white rounded-2xl p-6 border-2 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 text-left ${
-                  level.isRecommended 
-                    ? 'border-[#9B8CFF] scale-105 shadow-lg' 
-                    : 'border-gray-200 hover:border-[#3EC1D3]'
-                }`}
+                className={`group relative bg-white rounded-2xl p-6 border-2 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 text-left ${level.isRecommended
+                  ? 'border-[#9B8CFF] scale-105 shadow-lg'
+                  : 'border-gray-200 hover:border-[#3EC1D3]'
+                  }`}
               >
                 {/* Recommended Badge */}
                 {level.isRecommended && (
@@ -92,9 +91,8 @@ export function SkillLevelSelection({ onSelectLevel }: SkillLevelSelectionProps)
                 <p className="text-[#666] mb-6">{level.description}</p>
 
                 {/* CTA */}
-                <div className={`flex items-center gap-2 text-[#1F3C88] group-hover:gap-3 transition-all duration-300 ${
-                  level.isRecommended ? 'text-[#9B8CFF]' : ''
-                }`}>
+                <div className={`flex items-center gap-2 text-[#1F3C88] group-hover:gap-3 transition-all duration-300 ${level.isRecommended ? 'text-[#9B8CFF]' : ''
+                  }`}>
                   <span>Start with {level.title}</span>
                   <ArrowRight className="w-5 h-5" />
                 </div>

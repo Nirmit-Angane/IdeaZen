@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Sparkles, 
-  Target, 
-  Code, 
-  Zap, 
-  Clock, 
-  Layers, 
-  TrendingUp, 
-  Shield, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Target,
+  Code,
+  Zap,
+  Clock,
+  Layers,
+  TrendingUp,
+  Shield,
   Check,
   Globe,
   Smartphone,
@@ -41,7 +41,7 @@ import {
   CircleDot,
   Lightbulb
 } from 'lucide-react';
-import { SkillLevel, UserInputs } from '../App';
+import { UserInputs, SkillLevel } from '../types';
 import { getOptionIcon } from './QuestionFlowIcons';
 
 interface QuestionFlowProps {
@@ -83,6 +83,7 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       id: 'learningGoal',
       question: 'What do you want to learn?',
       description: 'Pick your main focus',
+      isMultiSelect: true,
       options: [
         { value: 'frontend', label: 'Frontend Skills', emoji: '🎨' },
         { value: 'backend', label: 'Backend Skills', emoji: '⚙️' },
@@ -257,17 +258,17 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
     }
   ];
 
-  const questions = skillLevel === 'beginner' 
-    ? beginnerQuestions 
-    : skillLevel === 'intermediate' 
-    ? intermediateQuestions 
-    : advancedQuestions;
+  const questions = skillLevel === 'Beginner'
+    ? beginnerQuestions
+    : skillLevel === 'Intermediate'
+      ? intermediateQuestions
+      : advancedQuestions;
 
   const currentQuestion = questions[currentStep];
   const progress = ((currentStep + 1) / questions.length) * 100;
 
   const handleOptionSelect = (questionId: string, value: string) => {
-    if (currentQuestion.isMultiSelect) {
+    if ((currentQuestion as any).isMultiSelect) {
       const currentValues = (inputs[questionId as keyof UserInputs] as string[]) || [];
       const newValues = currentValues.includes(value)
         ? currentValues.filter(v => v !== value)
@@ -305,7 +306,7 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white py-12 px-4 relative overflow-hidden">
-      
+
       <style>
         {`
           @keyframes fadeIn {
@@ -361,12 +362,12 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       <div className="absolute inset-0 grid-pattern opacity-40"></div>
 
       <div className="container mx-auto max-w-3xl relative z-10">
-        
+
         {/* Progress Bar - Enhanced */}
         <div className="mb-10">
           <div className="relative mb-3">
             <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-[#1F3C88] via-[#7C6CF6] to-[#22D3EE] transition-all duration-700 ease-out rounded-full progress-bar"
                 style={{ width: `${progress}%` }}
               />
@@ -398,7 +399,7 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
 
         {/* Question Card - Enhanced */}
         <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden mb-8 animate-fadeIn">
-          
+
           {/* Question Header - More Padding & Stronger Typography */}
           <div className="px-10 pt-10 pb-8">
             <h2 className="text-[#1F3C88] text-3xl mb-3 leading-tight">{currentQuestion.question}</h2>
@@ -422,18 +423,16 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
                   <button
                     key={option.value}
                     onClick={() => handleOptionSelect(currentQuestion.id, option.value)}
-                    className={`w-full p-5 rounded-2xl border-2 transition-all duration-300 text-left flex items-center gap-4 group ${
-                      isSelected
-                        ? 'border-[#22D3EE] bg-gradient-to-r from-[#22D3EE]/8 to-[#7C6CF6]/8 shadow-lg shadow-[#22D3EE]/10 scale-[1.01]'
-                        : 'border-gray-200 hover:border-[#7C6CF6]/40 hover:bg-gradient-to-r hover:from-[#7C6CF6]/5 hover:to-[#22D3EE]/5 hover:shadow-md hover:scale-[1.005]'
-                    }`}
+                    className={`w-full p-5 rounded-2xl border-2 transition-all duration-300 text-left flex items-center gap-4 group ${isSelected
+                      ? 'border-[#22D3EE] bg-gradient-to-r from-[#22D3EE]/8 to-[#7C6CF6]/8 shadow-lg shadow-[#22D3EE]/10 scale-[1.01]'
+                      : 'border-gray-200 hover:border-[#7C6CF6]/40 hover:bg-gradient-to-r hover:from-[#7C6CF6]/5 hover:to-[#22D3EE]/5 hover:shadow-md hover:scale-[1.005]'
+                      }`}
                   >
                     {/* Icon - White on gradient background */}
-                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-                      isSelected 
-                        ? 'bg-gradient-to-br from-[#22D3EE] to-[#7C6CF6] shadow-md' 
-                        : 'bg-gradient-to-br from-[#7C6CF6]/80 to-[#22D3EE]/80 group-hover:from-[#7C6CF6] group-hover:to-[#22D3EE]'
-                    }`}>
+                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${isSelected
+                      ? 'bg-gradient-to-br from-[#22D3EE] to-[#7C6CF6] shadow-md'
+                      : 'bg-gradient-to-br from-[#7C6CF6]/80 to-[#22D3EE]/80 group-hover:from-[#7C6CF6] group-hover:to-[#22D3EE]'
+                      }`}>
                       <OptionIcon className="w-7 h-7 text-white" />
                     </div>
 
@@ -482,11 +481,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
           <button
             onClick={handleNext}
             disabled={!isCurrentQuestionAnswered()}
-            className={`px-8 py-3.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg ${
-              isCurrentQuestionAnswered()
-                ? 'bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white hover:shadow-xl hover:scale-[1.02] hover:from-[#1A3273] hover:to-[#1F9BB3]'
-                : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
-            }`}
+            className={`px-8 py-3.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg ${isCurrentQuestionAnswered()
+              ? 'bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white hover:shadow-xl hover:scale-[1.02] hover:from-[#1A3273] hover:to-[#1F9BB3]'
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
+              }`}
           >
             <span className="text-sm font-medium">{currentStep < questions.length - 1 ? 'Continue' : 'Generate Idea'}</span>
             <ChevronRight className="w-5 h-5" />

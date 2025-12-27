@@ -1,9 +1,9 @@
-import { 
-  CheckCircle2, 
-  Lightbulb, 
-  Layers, 
-  Code2, 
-  Target, 
+import {
+  CheckCircle2,
+  Lightbulb,
+  Layers,
+  Code2,
+  Target,
   TrendingUp,
   RefreshCw,
   ArrowUp,
@@ -27,7 +27,7 @@ import {
   AlertCircle,
   Brain
 } from 'lucide-react';
-import { GeneratedProject, UserInputs } from '../App';
+import { GeneratedProject, UserInputs } from '../types';
 import { useState } from 'react';
 
 interface ProjectOutputProps {
@@ -40,14 +40,14 @@ interface ProjectOutputProps {
   onStartOver: () => void;
 }
 
-export function ProjectOutput({ 
-  project, 
-  userInputs, 
-  onRefine, 
-  onIncreaseDifficulty, 
-  onSimplify, 
+export function ProjectOutput({
+  project,
+  userInputs,
+  onRefine,
+  onIncreaseDifficulty,
+  onSimplify,
   onGenerateAnother,
-  onStartOver 
+  onStartOver
 }: ProjectOutputProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -64,7 +64,7 @@ export function ProjectOutput({
 
   const handleShare = () => {
     const shareUrl = `${window.location.origin}/project/${project.title.toLowerCase().replace(/\s+/g, '-')}`;
-    
+
     // Fallback method for copying text without Clipboard API
     const fallbackCopyTextToClipboard = (text: string) => {
       const textArea = document.createElement('textarea');
@@ -82,7 +82,7 @@ export function ProjectOutput({
       document.body.appendChild(textArea);
       textArea.focus();
       textArea.select();
-      
+
       try {
         document.execCommand('copy');
         setIsCopied(true);
@@ -90,10 +90,10 @@ export function ProjectOutput({
       } catch (err) {
         console.error('Fallback: Unable to copy', err);
       }
-      
+
       document.body.removeChild(textArea);
     };
-    
+
     // Try modern Clipboard API first, fallback if it fails
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(shareUrl)
@@ -116,7 +116,7 @@ export function ProjectOutput({
   };
 
   const getDifficultyColor = (difficulty: string) => {
-    switch(difficulty.toLowerCase()) {
+    switch (difficulty.toLowerCase()) {
       case 'beginner': return { bg: 'bg-[#3EC1D3]', text: 'text-[#3EC1D3]', light: 'bg-[#3EC1D3]/10', border: 'border-[#3EC1D3]' };
       case 'intermediate': return { bg: 'bg-[#1F3C88]', text: 'text-[#1F3C88]', light: 'bg-[#1F3C88]/10', border: 'border-[#1F3C88]' };
       case 'advanced': return { bg: 'bg-[#9B8CFF]', text: 'text-[#9B8CFF]', light: 'bg-[#9B8CFF]/10', border: 'border-[#9B8CFF]' };
@@ -132,17 +132,17 @@ export function ProjectOutput({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white relative overflow-hidden">
-      
+
       {/* Animated Grid Pattern Background */}
       <div className="absolute inset-0 grid-pattern opacity-40"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
-        
+
         {/* LAYER 1: RESULT HEADER - Emotion + Confidence */}
         <div className="mb-6 sm:mb-8">
           <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border-2 border-[#3EC1D3]/30 overflow-hidden">
             <div className="p-4 sm:p-6 lg:p-10">
-              
+
               {/* Top Row - Title + Quick Actions */}
               <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4 sm:gap-6 mb-4 sm:mb-6">
                 <div className="flex-1">
@@ -192,8 +192,8 @@ export function ProjectOutput({
                   <div className="text-3xl text-[#22C55E] mb-1">{project.confidence.split('%')[0]}%</div>
                   <div className="text-sm text-[#22C55E] mb-3">AI Confidence</div>
                   <div className="w-full h-2 bg-white rounded-full overflow-hidden mb-3">
-                    <div 
-                      className="h-full bg-[#22C55E] rounded-full transition-all duration-1000" 
+                    <div
+                      className="h-full bg-[#22C55E] rounded-full transition-all duration-1000"
                       style={{ width: project.confidence.split('%')[0] + '%' }}
                     ></div>
                   </div>
@@ -233,11 +233,10 @@ export function ProjectOutput({
               <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200">
                 <button
                   onClick={handleSave}
-                  className={`px-6 py-2.5 rounded-xl transition-all duration-300 flex items-center gap-2 ${
-                    isSaved
+                  className={`px-6 py-2.5 rounded-xl transition-all duration-300 flex items-center gap-2 ${isSaved
                       ? 'bg-[#9B8CFF] text-white shadow-md'
                       : 'bg-white border-2 border-gray-200 text-[#666] hover:border-[#9B8CFF] hover:text-[#9B8CFF]'
-                  }`}
+                    }`}
                 >
                   <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-white' : ''}`} />
                   {isSaved ? 'Saved locally ' : 'Save (no account)'}
@@ -264,13 +263,13 @@ export function ProjectOutput({
 
         {/* Main Layout */}
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 lg:gap-8">
-          
+
           {/* Left Column - Content */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* LAYER 3: CORE IDEA DETAILS - Tabs for Progressive Disclosure */}
             <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
-              
+
               {/* Tab Navigation - 2x2 Grid */}
               <div className="border-b border-gray-200 bg-gray-50 p-4">
                 <div className="grid grid-cols-2 gap-3">
@@ -285,11 +284,10 @@ export function ProjectOutput({
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
-                        className={`px-4 py-4 sm:px-6 sm:py-5 flex items-center justify-center gap-2 sm:gap-3 transition-all duration-200 rounded-xl border-2 ${
-                          activeTab === tab.id
+                        className={`px-4 py-4 sm:px-6 sm:py-5 flex items-center justify-center gap-2 sm:gap-3 transition-all duration-200 rounded-xl border-2 ${activeTab === tab.id
                             ? 'bg-white text-[#1F3C88] border-[#1F3C88] shadow-md'
                             : 'bg-white/50 text-[#666] border-gray-200 hover:text-[#1F3C88] hover:border-[#3EC1D3]/50 hover:bg-white'
-                        }`}
+                          }`}
                       >
                         <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                         <span className="text-sm sm:text-base font-medium">{tab.label}</span>
@@ -301,7 +299,7 @@ export function ProjectOutput({
 
               {/* Tab Content */}
               <div className="p-4 sm:p-6 lg:p-8">
-                
+
                 {/* Features Tab */}
                 {activeTab === 'features' && (
                   <div>
@@ -323,7 +321,7 @@ export function ProjectOutput({
                 {activeTab === 'techstack' && (
                   <div>
                     <h3 className="text-[#1F3C88] text-lg sm:text-xl mb-4 sm:mb-5">Recommended Tech Stack</h3>
-                    
+
                     <div className="space-y-6">
                       <div>
                         <div className="flex items-center gap-2 mb-3">
@@ -413,7 +411,7 @@ export function ProjectOutput({
                 <div className="flex-1">
                   <h2 className="text-amber-900 text-lg sm:text-xl lg:text-2xl mb-2 sm:mb-3">What NOT to Build</h2>
                   <p className="text-sm sm:text-base text-amber-700 mb-3 sm:mb-4">The AI recommends avoiding these to keep your project on track:</p>
-                  
+
                   <div className="space-y-2.5">
                     <div className="flex items-start gap-3">
                       <X className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
@@ -479,7 +477,7 @@ export function ProjectOutput({
           {/* Right Sidebar - LAYER 4: AI ACTION ZONE (STICKY) */}
           <div className="lg:col-span-1">
             <div className="sticky top-6 space-y-6">
-              
+
               {/* AI MENTOR ACTIONS - POWERFUL & COLORFUL */}
               <div className="bg-gradient-to-br from-[#1F3C88] via-[#2d5ac9] to-[#3EC1D3] rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-[#3EC1D3]">
                 <div className="flex items-center gap-3 mb-3">
@@ -489,7 +487,7 @@ export function ProjectOutput({
                   <h3 className="text-white text-lg sm:text-xl">AI Mentor Actions</h3>
                 </div>
                 <p className="text-white/90 text-xs sm:text-sm mb-5 sm:mb-6">Adjust this idea without starting over</p>
-                
+
                 <div className="space-y-2.5 sm:space-y-3">
                   <button
                     onClick={onRefine}
@@ -545,7 +543,7 @@ export function ProjectOutput({
                     <p className="text-xs sm:text-sm text-[#666] italic leading-relaxed">{project.reasoning}</p>
                   </div>
                 </div>
-                
+
                 {/* AI Reasoning Bullets */}
                 <div className="space-y-2 bg-white/80 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-[#3EC1D3]/20">
                   <div className="flex items-start gap-2">
