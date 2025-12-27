@@ -16,10 +16,6 @@ interface LandingPageProps {
 }
 
 export function LandingPage({ onGetStarted }: LandingPageProps) {
-    const scrollToHowItWorks = () => {
-        document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-    };
-
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#F8FAFC] to-white">
 
@@ -402,18 +398,15 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                                 color: 'from-[#1F3C88] to-[#22D3EE]',
                                 emoji: '🎯'
                             }
-                        ].map((feature) => {
-                            const Icon = feature.icon;
-                            return (
-                                <div key={feature.title} className="bg-white rounded-2xl p-8 border border-[#E2E8F0] hover:border-[#22D3EE] hover:shadow-xl hover:scale-105 transition-all duration-300">
-                                    <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-6 shadow-lg text-2xl animate-float`} style={{ animationDelay: feature.title === 'Skill-Adaptive' ? '0s' : feature.title === 'AI Reasoning' ? '0.3s' : '0.6s' }}>
-                                        {feature.emoji}
-                                    </div>
-                                    <h3 className="text-[#1F3C88] text-xl mb-3">{feature.title}</h3>
-                                    <p className="text-[#334155] leading-relaxed">{feature.description}</p>
+                        ].map((feature) => (
+                            <div key={feature.title} className="bg-white rounded-2xl p-8 border border-[#E2E8F0] hover:border-[#22D3EE] hover:shadow-xl hover:scale-105 transition-all duration-300">
+                                <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-6 shadow-lg text-2xl animate-float`} style={{ animationDelay: feature.title === 'Skill-Adaptive' ? '0s' : feature.title === 'AI Reasoning' ? '0.3s' : '0.6s' }}>
+                                    {feature.emoji}
                                 </div>
-                            );
-                        })}
+                                <h3 className="text-[#1F3C88] text-xl mb-3">{feature.title}</h3>
+                                <p className="text-[#334155] leading-relaxed">{feature.description}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

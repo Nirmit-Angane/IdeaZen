@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Check, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Check, ChevronRight } from 'lucide-react';
 import { SkillLevel } from '../types';
 import { cn } from '../lib/utils';
 
@@ -38,7 +38,7 @@ const QUESTIONS = [
     }
 ];
 
-export function QuestionFlow({ skillLevel, onComplete }: QuestionFlowProps) {
+export function QuestionFlow({ skillLevel: _skillLevel, onComplete }: QuestionFlowProps) {
     const [step, setStep] = useState(0);
     const [answers, setAnswers] = useState<Record<string, any>>({});
 

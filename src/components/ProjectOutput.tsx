@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     RefreshCw, CheckCircle, AlertTriangle, Layers, Database,
     ExternalLink, Clock, Gauge, Target, Sparkles
 } from 'lucide-react';
 import { ProjectIdea } from '../types';
 import { cn } from '../lib/utils';
-import { motion } from 'framer-motion';
 
 interface ProjectOutputProps {
     project: ProjectIdea;
