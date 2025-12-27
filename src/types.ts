@@ -1,36 +1,41 @@
-export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced';
+export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced' | null;
 
 export interface UserInputs {
     skillLevel: SkillLevel;
-    interests: string[];
-    timeCommitment: string;
-    preferredTech?: string[];
+    domain?: string;
+    learningGoal?: string;
+    timeAvailability?: string;
+    deployment?: string;
+    difficultyStretch?: string;
+    technologies?: string[];
+    architecture?: string;
+    scalability?: string;
+    constraints?: string;
+    teamSize?: string;
+    // Legacy support for AI prompt
+    interests?: string[];
+    timeCommitment?: string;
 }
 
-export interface ProjectIdea {
+export interface GeneratedProject {
     title: string;
+    difficulty: "Beginner" | "Intermediate" | "Advanced";
     description: string;
-    quickStats: {
-        difficulty: string;
-        feasibility: string;
-        features: string;
-        timeline: string;
-    };
-    scores: {
-        aiConfidence: number;
-        matchScore: number;
-        effort: 'Low' | 'Medium' | 'High' | 'Very High';
-    };
-    reasoning: string[];
-    whatNotToBuild: string[];
+    reasoning: string;
+    features: string[];
     techStack: {
         primary: string[];
-        alternatives: string[];
+        alternative: string[];
     };
-    coreFeatures: string[];
-    roadmap: Array<{
+    roadmap: {
         phase: string;
         title: string;
+        description: string;
         duration: string;
-    }>;
+    }[];
+    skillOutcomes: string[];
+    feasibility: 'High' | 'Medium' | 'Low';
+    confidence: string;
 }
+
+export type ProjectIdea = GeneratedProject;

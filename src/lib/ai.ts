@@ -8,11 +8,7 @@ export async function generateProjectIdea(inputs: Partial<UserInputs>): Promise<
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        skillLevel: inputs.skillLevel,
-        interests: inputs.interests,
-        timeCommitment: inputs.timeCommitment
-      })
+      body: JSON.stringify(inputs)
     });
 
     if (!response.ok) {

@@ -1,144 +1,507 @@
 import { useState } from 'react';
-import { Check, ChevronRight } from 'lucide-react';
-import { SkillLevel } from '../types';
-import { cn } from '../lib/utils';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Sparkles, 
+  Target, 
+  Code, 
+  Zap, 
+  Clock, 
+  Layers, 
+  TrendingUp, 
+  Shield, 
+  Check,
+  Globe,
+  Smartphone,
+  Gamepad2,
+  Bot,
+  Palette,
+  Settings,
+  Flame,
+  Calendar,
+  CalendarDays,
+  CalendarRange,
+  CheckCircle,
+  Rocket,
+  HelpCircle,
+  Plug,
+  Wrench,
+  Building2,
+  Cloud,
+  Box,
+  Laptop,
+  Building,
+  Square,
+  RefreshCw,
+  Hexagon,
+  Mail,
+  BarChart3,
+  DollarSign,
+  Lock,
+  CircleDot,
+  Lightbulb
+} from 'lucide-react';
+import { SkillLevel, UserInputs } from '../App';
+import { getOptionIcon } from './QuestionFlowIcons';
 
 interface QuestionFlowProps {
-    skillLevel: SkillLevel;
-    onComplete: (inputs: any) => void;
+  skillLevel: SkillLevel;
+  initialInputs: UserInputs;
+  onComplete: (inputs: UserInputs) => void;
+  onBack: () => void;
 }
 
-const QUESTIONS = [
+export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: QuestionFlowProps) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [inputs, setInputs] = useState<UserInputs>(initialInputs);
+
+  // Question icons mapping
+  const questionIcons: { [key: string]: any } = {
+    'domain': Target,
+    'learningGoal': Code,
+    'timeAvailability': Clock,
+    'deployment': Zap,
+    'technologies': Code,
+    'architecture': Layers,
+    'scalability': TrendingUp,
+    'constraints': Shield
+  };
+
+  const beginnerQuestions = [
     {
-        id: 'interests',
-        title: 'What interests you the most?',
-        subtitle: 'Pick up to 3 topics',
-        multi: true,
-        options: [
-            { id: 'finance', label: 'Finance & Crypto', emoji: '💰' },
-            { id: 'productivity', label: 'Productivity', emoji: '⚡' },
-            { id: 'health', label: 'Health & Fitness', emoji: '🏃' },
-            { id: 'social', label: 'Social Media', emoji: '📱' },
-            { id: 'ecommerce', label: 'E-commerce', emoji: '🛍️' },
-            { id: 'education', label: 'Education', emoji: '📚' },
-            { id: 'gaming', label: 'Gaming', emoji: '🎮' },
-            { id: 'ai', label: 'AI & Automation', emoji: '🤖' },
-        ]
+      id: 'domain',
+      question: 'What type of project interests you?',
+      description: 'Choose what excites you most',
+      options: [
+        { value: 'web', label: 'Web Development', emoji: '🌐' },
+        { value: 'mobile', label: 'Mobile Apps', emoji: '📱' },
+        { value: 'game', label: 'Game Development', emoji: '🎮' },
+        { value: 'automation', label: 'Automation', emoji: '🤖' }
+      ]
     },
     {
-        id: 'timeCommitment',
-        title: 'How much time can you commit?',
-        subtitle: 'Be realistic about your schedule',
-        multi: false,
-        options: [
-            { id: 'weekend', label: 'Just a Weekend', emoji: '📅' },
-            { id: 'month', label: '1 - 2 weeks', emoji: '🗓️' },
-            { id: 'quarter', label: '1 Month+', emoji: '📆' },
-        ]
+      id: 'learningGoal',
+      question: 'What do you want to learn?',
+      description: 'Pick your main focus',
+      options: [
+        { value: 'frontend', label: 'Frontend Skills', emoji: '🎨' },
+        { value: 'backend', label: 'Backend Skills', emoji: '⚙️' },
+        { value: 'fullstack', label: 'Full Stack', emoji: '🔥' },
+        { value: 'specific', label: 'Specific Technology', emoji: '🎯' }
+      ]
+    },
+    {
+      id: 'timeAvailability',
+      question: 'How much time can you dedicate?',
+      description: 'Be realistic',
+      options: [
+        { value: '2-weeks', label: '2 Weeks', emoji: '⚡' },
+        { value: '1-month', label: '1 Month', emoji: '📅' },
+        { value: '2-months', label: '2 Months', emoji: '📆' },
+        { value: '3-months', label: '3+ Months', emoji: '🗓️' }
+      ]
+    },
+    {
+      id: 'deployment',
+      question: 'Want to deploy your project?',
+      description: 'Make it live on the internet',
+      options: [
+        { value: 'yes-simple', label: 'Yes, Easy Setup', emoji: '✅' },
+        { value: 'yes-custom', label: 'Yes, Learn Deployment', emoji: '🚀' },
+        { value: 'no', label: 'Not Required', emoji: '' },
+        { value: 'maybe', label: 'Maybe Later', emoji: '🤔' }
+      ]
     }
-];
+  ];
 
-export function QuestionFlow({ skillLevel: _skillLevel, onComplete }: QuestionFlowProps) {
-    const [step, setStep] = useState(0);
-    const [answers, setAnswers] = useState<Record<string, any>>({});
+  const intermediateQuestions = [
+    {
+      id: 'domain',
+      question: 'What type of project do you want to build?',
+      description: 'Select your focus area',
+      options: [
+        { value: 'fullstack-app', label: 'Full-Stack Web App', emoji: '🌐' },
+        { value: 'api', label: 'REST/GraphQL API', emoji: '🔌' },
+        { value: 'realtime', label: 'Real-time App', emoji: '⚡' },
+        { value: 'mobile', label: 'Mobile App', emoji: '📱' },
+        { value: 'devtools', label: 'Developer Tools', emoji: '🛠️' }
+      ]
+    },
+    {
+      id: 'learningGoal',
+      question: 'What\'s your primary learning goal?',
+      description: 'What do you want to master?',
+      options: [
+        { value: 'architecture', label: 'Software Architecture', emoji: '🏗️' },
+        { value: 'performance', label: 'Performance', emoji: '⚡' },
+        { value: 'testing', label: 'Testing & Quality', emoji: '✅' },
+        { value: 'deployment', label: 'DevOps', emoji: '🚀' },
+        { value: 'new-tech', label: 'New Technologies', emoji: '🔥' }
+      ]
+    },
+    {
+      id: 'timeAvailability',
+      question: 'Project timeline?',
+      description: 'Total time commitment',
+      options: [
+        { value: '1-month', label: '1 Month', emoji: '📅' },
+        { value: '2-months', label: '2 Months', emoji: '📆' },
+        { value: '3-months', label: '3 Months', emoji: '🗓️' },
+        { value: 'flexible', label: 'Flexible', emoji: '🔄' }
+      ]
+    },
+    {
+      id: 'technologies',
+      question: 'Preferred tech stack?',
+      description: 'Select all that interest you',
+      isMultiSelect: true,
+      options: [
+        { value: 'react', label: 'React', emoji: '⚛️' },
+        { value: 'vue', label: 'Vue.js', emoji: '💚' },
+        { value: 'node', label: 'Node.js', emoji: '🟢' },
+        { value: 'python', label: 'Python', emoji: '🐍' },
+        { value: 'typescript', label: 'TypeScript', emoji: '🔷' },
+        { value: 'go', label: 'Go', emoji: '🔵' },
+        { value: 'database', label: 'Databases', emoji: '🗄️' },
+        { value: 'cloud', label: 'Cloud', emoji: '☁️' }
+      ]
+    },
+    {
+      id: 'deployment',
+      question: 'Deployment requirements?',
+      description: 'Where will this be hosted?',
+      options: [
+        { value: 'cloud', label: 'Cloud Platform', emoji: '☁️' },
+        { value: 'paas', label: 'Platform as a Service', emoji: '🚀' },
+        { value: 'containerized', label: 'Containerized', emoji: '🐳' },
+        { value: 'local', label: 'Local Only', emoji: '💻' }
+      ]
+    }
+  ];
 
-    const currentQuestion = QUESTIONS[step];
+  const advancedQuestions = [
+    {
+      id: 'domain',
+      question: 'Project domain and scope?',
+      description: 'Type of system to architect',
+      options: [
+        { value: 'distributed', label: 'Distributed Systems', emoji: '🌐' },
+        { value: 'ai-ml', label: 'AI/ML Integration', emoji: '🤖' },
+        { value: 'platform', label: 'Platform/SaaS', emoji: '🏢' },
+        { value: 'infrastructure', label: 'Infrastructure', emoji: '⚙️' },
+        { value: 'performance', label: 'High-Performance', emoji: '⚡' }
+      ]
+    },
+    {
+      id: 'architecture',
+      question: 'Architectural patterns?',
+      description: 'Select all that interest you',
+      isMultiSelect: true,
+      options: [
+        { value: 'microservices', label: 'Microservices', emoji: '🔷' },
+        { value: 'event-driven', label: 'Event-Driven', emoji: '⚡' },
+        { value: 'serverless', label: 'Serverless', emoji: '☁️' },
+        { value: 'cqrs', label: 'CQRS', emoji: '🔄' },
+        { value: 'distributed', label: 'Distributed', emoji: '🌐' },
+        { value: 'reactive', label: 'Reactive', emoji: '🔥' }
+      ]
+    },
+    {
+      id: 'scalability',
+      question: 'Scalability requirements?',
+      description: 'Expected scale',
+      options: [
+        { value: 'horizontal', label: 'Horizontal Scaling', emoji: '↔️' },
+        { value: 'vertical', label: 'Vertical Scaling', emoji: '↕️' },
+        { value: 'auto-scaling', label: 'Auto-scaling', emoji: '🔄' },
+        { value: 'not-critical', label: 'Not Critical', emoji: '➖' }
+      ]
+    },
+    {
+      id: 'technologies',
+      question: 'Technology preferences?',
+      description: 'Select all that apply',
+      isMultiSelect: true,
+      options: [
+        { value: 'go', label: 'Go', emoji: '🔵' },
+        { value: 'rust', label: 'Rust', emoji: '🦀' },
+        { value: 'python', label: 'Python', emoji: '🐍' },
+        { value: 'kubernetes', label: 'Kubernetes', emoji: '☸️' },
+        { value: 'kafka', label: 'Kafka', emoji: '📨' },
+        { value: 'grpc', label: 'gRPC', emoji: '🔌' },
+        { value: 'graphql', label: 'GraphQL', emoji: '📊' },
+        { value: 'ai-apis', label: 'AI/ML APIs', emoji: '🤖' }
+      ]
+    },
+    {
+      id: 'constraints',
+      question: 'Project constraints?',
+      description: 'Any specific requirements',
+      options: [
+        { value: 'budget', label: 'Budget Conscious', emoji: '💰' },
+        { value: 'security', label: 'Security Critical', emoji: '🔒' },
+        { value: 'performance', label: 'Performance Critical', emoji: '⚡' },
+        { value: 'none', label: 'No Constraints', emoji: '🆓' }
+      ]
+    },
+    {
+      id: 'timeAvailability',
+      question: 'Project timeline?',
+      description: 'Development duration',
+      options: [
+        { value: '2-months', label: '2 Months', emoji: '📆' },
+        { value: '3-months', label: '3 Months', emoji: '🗓️' },
+        { value: '6-months', label: '6 Months', emoji: '📅' },
+        { value: 'ongoing', label: 'Ongoing', emoji: '♾️' }
+      ]
+    }
+  ];
 
-    const handleOptionToggle = (optionId: string) => {
-        const current = answers[currentQuestion.id] || [];
+  const questions = skillLevel === 'beginner' 
+    ? beginnerQuestions 
+    : skillLevel === 'intermediate' 
+    ? intermediateQuestions 
+    : advancedQuestions;
 
-        if (currentQuestion.multi) {
-            if (current.includes(optionId)) {
-                setAnswers({ ...answers, [currentQuestion.id]: current.filter((id: string) => id !== optionId) });
-            } else {
-                if (current.length >= 3) return; // Max 3
-                setAnswers({ ...answers, [currentQuestion.id]: [...current, optionId] });
+  const currentQuestion = questions[currentStep];
+  const progress = ((currentStep + 1) / questions.length) * 100;
+
+  const handleOptionSelect = (questionId: string, value: string) => {
+    if (currentQuestion.isMultiSelect) {
+      const currentValues = (inputs[questionId as keyof UserInputs] as string[]) || [];
+      const newValues = currentValues.includes(value)
+        ? currentValues.filter(v => v !== value)
+        : [...currentValues, value];
+      setInputs({ ...inputs, [questionId]: newValues });
+    } else {
+      setInputs({ ...inputs, [questionId]: value });
+    }
+  };
+
+  const handleNext = () => {
+    if (currentStep < questions.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      onComplete(inputs);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    } else {
+      onBack();
+    }
+  };
+
+  const isCurrentQuestionAnswered = () => {
+    const questionId = currentQuestion.id;
+    const answer = inputs[questionId as keyof UserInputs];
+    if (currentQuestion.isMultiSelect) {
+      return Array.isArray(answer) && answer.length > 0;
+    }
+    return Boolean(answer);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white py-12 px-4 relative overflow-hidden">
+      
+      <style>
+        {`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(10px);
             }
-        } else {
-            setAnswers({ ...answers, [currentQuestion.id]: [optionId] });
-        }
-    };
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
 
-    const currentAnswer = answers[currentQuestion.id] || [];
-    const canContinue = currentAnswer.length > 0;
+          @keyframes progressGlow {
+            0%, 100% {
+              filter: drop-shadow(0 0 4px rgba(124, 108, 246, 0.3));
+            }
+            50% {
+              filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.5));
+            }
+          }
 
-    const handleNext = () => {
-        if (step < QUESTIONS.length - 1) {
-            setStep(step + 1);
-        } else {
-            onComplete(answers);
-        }
-    };
+          @keyframes gridMove {
+            0% {
+              transform: translate(0, 0);
+            }
+            100% {
+              transform: translate(55px, 55px);
+            }
+          }
 
-    return (
-        <div className="max-w-2xl mx-auto py-12 animate-fade-in-up">
-            {/* Progress Bar */}
-            <div className="mb-8 relative h-2 bg-slate-200 rounded-full overflow-hidden">
-                <div
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary-blue to-accent-purple transition-all duration-500 ease-out"
-                    style={{ width: `${((step + 1) / QUESTIONS.length) * 100}%` }}
-                />
+          .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out forwards;
+          }
+
+          .progress-bar {
+            animation: progressGlow 2s ease-in-out infinite;
+          }
+
+          .grid-pattern {
+            background-color: transparent;
+            background-image: 
+              linear-gradient(0deg, transparent 24%, rgba(31, 60, 136, 0.08) 25%, rgba(31, 60, 136, 0.08) 26%, transparent 27%, transparent 74%, rgba(31, 60, 136, 0.08) 75%, rgba(31, 60, 136, 0.08) 76%, transparent 77%, transparent),
+              linear-gradient(90deg, transparent 24%, rgba(124, 108, 246, 0.08) 25%, rgba(124, 108, 246, 0.08) 26%, transparent 27%, transparent 74%, rgba(124, 108, 246, 0.08) 75%, rgba(124, 108, 246, 0.08) 76%, transparent 77%, transparent);
+            background-size: 55px 55px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+          }
+        `}
+      </style>
+
+      {/* Animated Grid Pattern Background */}
+      <div className="absolute inset-0 grid-pattern opacity-40"></div>
+
+      <div className="container mx-auto max-w-3xl relative z-10">
+        
+        {/* Progress Bar - Enhanced */}
+        <div className="mb-10">
+          <div className="relative mb-3">
+            <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+              <div 
+                className="h-full bg-gradient-to-r from-[#1F3C88] via-[#7C6CF6] to-[#22D3EE] transition-all duration-700 ease-out rounded-full progress-bar"
+                style={{ width: `${progress}%` }}
+              />
             </div>
+          </div>
 
-            <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 md:p-12 relative overflow-hidden">
-                {/* Decorative background */}
-                <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary-blue/5 rounded-full blur-3xl -z-10" />
-
-                {/* Header */}
-                <div className="mb-8">
-                    <div className="inline-block px-4 py-1.5 rounded-full bg-slate-100 text-slate-600 font-medium text-sm mb-4">
-                        Step {step + 1} of {QUESTIONS.length}
-                    </div>
-                    <h2 className="text-3xl font-bold text-slate-900 mb-2">{currentQuestion.title}</h2>
-                    <p className="text-slate-500">{currentQuestion.subtitle}</p>
-                </div>
-
-                {/* Options */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    {currentQuestion.options.map((option) => {
-                        const isSelected = currentAnswer.includes(option.id);
-                        return (
-                            <button
-                                key={option.id}
-                                onClick={() => handleOptionToggle(option.id)}
-                                className={cn(
-                                    "flex items-center p-4 rounded-xl border-2 transition-all duration-200 text-left group hover:scale-[1.02]",
-                                    isSelected
-                                        ? "border-primary-blue bg-blue-50/50"
-                                        : "border-slate-100 hover:border-slate-200 bg-white"
-                                )}
-                            >
-                                <span className="text-2xl mr-4 group-hover:scale-110 transition-transform">{option.emoji}</span>
-                                <span className={cn("font-medium", isSelected ? "text-primary-blue" : "text-slate-700")}>
-                                    {option.label}
-                                </span>
-                                {isSelected && (
-                                    <div className="ml-auto bg-primary-blue text-white rounded-full p-0.5">
-                                        <Check className="w-3 h-3" />
-                                    </div>
-                                )}
-                            </button>
-                        );
-                    })}
-                </div>
-
-                {/* Actions */}
-                <div className="flex justify-end pt-4 border-t border-slate-100">
-                    <button
-                        onClick={handleNext}
-                        disabled={!canContinue}
-                        className={cn(
-                            "flex items-center px-8 py-3 rounded-full font-semibold transition-all duration-200",
-                            canContinue
-                                ? "bg-primary-blue text-white shadow-lg hover:shadow-xl hover:scale-105"
-                                : "bg-slate-100 text-slate-400 cursor-not-allowed"
-                        )}
-                    >
-                        Continue
-                        <ChevronRight className="ml-2 w-4 h-4" />
-                    </button>
-                </div>
-            </div>
+          {/* Question Counter */}
+          <div className="text-center">
+            <p className="text-xs text-[#94A3B8]">
+              Question {currentStep + 1} of {questions.length}
+            </p>
+          </div>
         </div>
-    );
+
+        {/* AI Feedback Message - Conversational Bubble */}
+        <div className="mb-8 flex justify-center animate-fadeIn">
+          <div className="inline-flex items-start gap-3 px-5 py-3.5 bg-gradient-to-r from-[#7C6CF6]/10 to-[#22D3EE]/10 rounded-2xl border border-[#7C6CF6]/20 shadow-sm">
+            <div className="w-7 h-7 bg-gradient-to-br from-[#7C6CF6] to-[#22D3EE] rounded-full flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-3.5 h-3.5 text-white" />
+            </div>
+            <p className="text-sm text-[#475569] leading-relaxed">
+              {currentStep === 0 && `Great! I'm adapting to your ${skillLevel} level...`}
+              {currentStep === 1 && "Perfect! Let me narrow down ideas for you..."}
+              {currentStep === 2 && "This helps me match your schedule..."}
+              {currentStep > 2 && "Almost there! Building your perfect project..."}
+            </p>
+          </div>
+        </div>
+
+        {/* Question Card - Enhanced */}
+        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden mb-8 animate-fadeIn">
+          
+          {/* Question Header - More Padding & Stronger Typography */}
+          <div className="px-10 pt-10 pb-8">
+            <h2 className="text-[#1F3C88] text-3xl mb-3 leading-tight">{currentQuestion.question}</h2>
+            <p className="text-[#64748B] text-base mb-4">{currentQuestion.description}</p>
+            <p className="text-sm text-[#94A3B8] flex items-center gap-1.5">
+              <span className="text-[#22D3EE]">→</span> This helps personalize your project idea
+            </p>
+          </div>
+
+          {/* Options - Improved Spacing & Hover States */}
+          <div className="px-10 pb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {currentQuestion.options.map((option) => {
+                const isSelected = currentQuestion.isMultiSelect
+                  ? ((inputs[currentQuestion.id as keyof UserInputs] as string[]) || []).includes(option.value)
+                  : inputs[currentQuestion.id as keyof UserInputs] === option.value;
+
+                const OptionIcon = getOptionIcon(option.value);
+
+                return (
+                  <button
+                    key={option.value}
+                    onClick={() => handleOptionSelect(currentQuestion.id, option.value)}
+                    className={`w-full p-5 rounded-2xl border-2 transition-all duration-300 text-left flex items-center gap-4 group ${
+                      isSelected
+                        ? 'border-[#22D3EE] bg-gradient-to-r from-[#22D3EE]/8 to-[#7C6CF6]/8 shadow-lg shadow-[#22D3EE]/10 scale-[1.01]'
+                        : 'border-gray-200 hover:border-[#7C6CF6]/40 hover:bg-gradient-to-r hover:from-[#7C6CF6]/5 hover:to-[#22D3EE]/5 hover:shadow-md hover:scale-[1.005]'
+                    }`}
+                  >
+                    {/* Icon - White on gradient background */}
+                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                      isSelected 
+                        ? 'bg-gradient-to-br from-[#22D3EE] to-[#7C6CF6] shadow-md' 
+                        : 'bg-gradient-to-br from-[#7C6CF6]/80 to-[#22D3EE]/80 group-hover:from-[#7C6CF6] group-hover:to-[#22D3EE]'
+                    }`}>
+                      <OptionIcon className="w-7 h-7 text-white" />
+                    </div>
+
+                    {/* Label */}
+                    <div className="flex-1">
+                      <span className={`text-lg transition-colors duration-200 ${isSelected ? 'text-[#1F3C88] font-medium' : 'text-[#475569] group-hover:text-[#1F3C88]'}`}>
+                        {option.label}
+                      </span>
+                    </div>
+
+                    {/* Check indicator - Improved */}
+                    {isSelected && (
+                      <div className="w-7 h-7 bg-gradient-to-br from-[#22D3EE] to-[#7C6CF6] rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Multi-select hint */}
+          {currentQuestion.isMultiSelect && (
+            <div className="px-10 pb-8">
+              <div className="p-3 bg-[#FFFBEB] border border-[#FEF3C7] rounded-xl">
+                <p className="text-xs text-[#92400E] text-center flex items-center justify-center gap-1.5">
+                  <Lightbulb className="w-3.5 h-3.5 text-[#92400E]" />
+                  <span>You can select multiple options</span>
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Navigation - Improved Styling */}
+        <div className="flex justify-between items-center gap-4 mb-6">
+          <button
+            onClick={handlePrevious}
+            className="px-6 py-3.5 bg-white text-[#64748B] border border-gray-200 hover:border-[#1F3C88] hover:text-[#1F3C88] hover:bg-gray-50 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-sm"
+          >
+            <ChevronLeft className="w-5 h-5" />
+            <span className="text-sm font-medium">Back</span>
+          </button>
+
+          <button
+            onClick={handleNext}
+            disabled={!isCurrentQuestionAnswered()}
+            className={`px-8 py-3.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg ${
+              isCurrentQuestionAnswered()
+                ? 'bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white hover:shadow-xl hover:scale-[1.02] hover:from-[#1A3273] hover:to-[#1F9BB3]'
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
+            }`}
+          >
+            <span className="text-sm font-medium">{currentStep < questions.length - 1 ? 'Continue' : 'Generate Idea'}</span>
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Reassurance - Softer Style */}
+        <div className="text-center">
+          <p className="text-xs text-[#94A3B8] flex items-center justify-center gap-1.5">
+            <Lightbulb className="w-3.5 h-3.5 text-[#FACC15]" />
+            <span>You can refine your idea anytime with AI</span>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  );
 }
