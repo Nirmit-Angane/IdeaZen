@@ -62,7 +62,7 @@
             "vite": "6.3.5"
       },
       "scripts": {
-            "dev": "concurrently \"vite\" \"tsx local-api.js\"",
+            "dev": "concurrently \"vite\" \"tsx watch local-api.js\"",
             "build": "vite build"
       }
 }

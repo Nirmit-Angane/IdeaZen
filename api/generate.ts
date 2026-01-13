@@ -104,15 +104,33 @@ export default async function handler(req: any, res: any) {
     }
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
-    const result = JSON.parse(content);
+    let content = data.choices[0].message.content;
 
-    // If suggestions mode, ensure it's an array. Sometimes models wrap arrays in objects like { "projects": [...] }
-    if (mode === 'suggestions' && !Array.isArray(result)) {
-      // Try to find an array property if the root isn't an array
-      const arrayProp = Object.values(result).find(val => Array.isArray(val));
-      if (arrayProp) {
-        return res.status(200).json(arrayProp);
+    console.log("[API] Raw Groq Response:", content);
+
+    // Clean markdown code blocks if present (e.g. ```json ... ```)
+    content = content.replace(/^```json\s*/, '').replace(/^```\s*/, '').replace(/```$/, '').trim();
+
+    let result;
+    try {
+      result = JSON.parse(content);
+    } catch (parseError) {
+      console.error("[API] JSON Parse Error:", parseError);
+      console.error("[API] Faulty Content:", content);
+      return res.status(500).json({ error: 'Failed to parse AI response' });
+    }
+
+    // If suggestions mode, ensure it's an array.
+    if (mode === 'suggestions') {
+      if (!Array.isArray(result)) {
+        // Try to find an array property
+        const arrayProp = Object.values(result).find(val => Array.isArray(val));
+        if (arrayProp) {
+          result = arrayProp;
+        } else {
+          // Fallback: wrap in array if it's a single object
+          result = [result];
+        }
       }
     }
 
