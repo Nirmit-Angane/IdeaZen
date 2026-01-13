@@ -1,0 +1,249 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  
+  /* Brand Colors - Authoritative System */
+  --primary-blue: #1F3C88;
+  --primary-blue-hover: #1A3273;
+  --primary-blue-soft: #EEF2FF;
+  
+  --ai-purple: #7C6CF6;
+  --ai-purple-hover: #6959E6;
+  --ai-purple-soft: #F3F1FF;
+  
+  --success-green: #22C55E;
+  --success-green-soft: #EAFBF1;
+  --success-green-border: #86EFAC;
+  
+  --match-cyan: #22D3EE;
+  --match-cyan-soft: #ECFEFF;
+  --match-cyan-border: #67E8F9;
+  
+  --guidance-yellow: #FACC15;
+  --guidance-yellow-soft: #FFFBEB;
+  --guidance-yellow-border: #FDE68A;
+  
+  /* Text Colors - Authoritative */
+  --text-heading: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --text-disabled: #94A3B8;
+  
+  /* Backgrounds & Borders */
+  --bg-main: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --border-soft: #E2E8F0;
+  --border-divider: #CBD5E1;
+  
+  /* Legacy Tailwind vars (for compatibility) */
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+  --card: #ffffff;
+  --card-foreground: #0F172A;
+  --popover: #ffffff;
+  --popover-foreground: #0F172A;
+  --primary: #1F3C88;
+  --primary-foreground: #ffffff;
+  --secondary: #EEF2FF;
+  --secondary-foreground: #1F3C88;
+  --muted: #E2E8F0;
+  --muted-foreground: #64748B;
+  --accent: #F3F1FF;
+  --accent-foreground: #7C6CF6;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: #E2E8F0;
+  --input: transparent;
+  --input-background: #F8FAFC;
+  --switch-background: #CBD5E1;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #64748B;
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: #0F172A;
+  --foreground: #F8FAFC;
+  --card: #1e293b;
+  --card-foreground: #F8FAFC;
+  --popover: #1e293b;
+  --popover-foreground: #F8FAFC;
+  --primary: #F8FAFC;
+  --primary-foreground: #1F3C88;
+  --secondary: #1e293b;
+  --secondary-foreground: #F8FAFC;
+  --muted: #334155;
+  --muted-foreground: #94A3B8;
+  --accent: #334155;
+  --accent-foreground: #F8FAFC;
+  --destructive: #ef4444;
+  --destructive-foreground: #F8FAFC;
+  --border: #334155;
+  --input: #334155;
+  --ring: #64748B;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      color: #0F172A;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      color: #0F172A;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      color: #0F172A;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      color: #0F172A;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      color: #334155;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+      color: #334155;
+    }
+    
+    p {
+      color: #334155;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Shared Grid Pattern Animation */
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(55px, 55px);
+  }
+}
+
+.grid-pattern {
+  background-color: transparent;
+  background-image: 
+    linear-gradient(0deg, transparent 24%, rgba(31, 60, 136, 0.08) 25%, rgba(31, 60, 136, 0.08) 26%, transparent 27%, transparent 74%, rgba(31, 60, 136, 0.08) 75%, rgba(31, 60, 136, 0.08) 76%, transparent 77%, transparent),
+    linear-gradient(90deg, transparent 24%, rgba(124, 108, 246, 0.08) 25%, rgba(124, 108, 246, 0.08) 26%, transparent 27%, transparent 74%, rgba(124, 108, 246, 0.08) 75%, rgba(124, 108, 246, 0.08) 76%, transparent 77%, transparent);
+  background-size: 55px 55px;
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Animation delay utilities */
+.delay-150 {
+  animation-delay: 150ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-700 {
+  animation-delay: 700ms;
+}

@@ -1,47 +1,19 @@
 import { useState } from 'react';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Sparkles,
-  Target,
-  Code,
-  Zap,
-  Clock,
-  Layers,
-  TrendingUp,
-  Shield,
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Sparkles, 
+  Target, 
+  Code, 
+  Zap, 
+  Clock, 
+  Layers, 
+  TrendingUp, 
+  Shield, 
   Check,
-  Globe,
-  Smartphone,
-  Gamepad2,
-  Bot,
-  Palette,
-  Settings,
-  Flame,
-  Calendar,
-  CalendarDays,
-  CalendarRange,
-  CheckCircle,
-  Rocket,
-  HelpCircle,
-  Plug,
-  Wrench,
-  Building2,
-  Cloud,
-  Box,
-  Laptop,
-  Building,
-  Square,
-  RefreshCw,
-  Hexagon,
-  Mail,
-  BarChart3,
-  DollarSign,
-  Lock,
-  CircleDot,
   Lightbulb
 } from 'lucide-react';
-import { UserInputs, SkillLevel } from '../types';
+import { SkillLevel, UserInputs } from '../App';
 import { getOptionIcon } from './QuestionFlowIcons';
 
 interface QuestionFlowProps {
@@ -83,7 +55,6 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       id: 'learningGoal',
       question: 'What do you want to learn?',
       description: 'Pick your main focus',
-      isMultiSelect: true,
       options: [
         { value: 'frontend', label: 'Frontend Skills', emoji: '🎨' },
         { value: 'backend', label: 'Backend Skills', emoji: '⚙️' },
@@ -258,17 +229,17 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
     }
   ];
 
-  const questions = skillLevel === 'Beginner'
-    ? beginnerQuestions
-    : skillLevel === 'Intermediate'
-      ? intermediateQuestions
-      : advancedQuestions;
+  const questions = skillLevel === 'beginner' 
+    ? beginnerQuestions 
+    : skillLevel === 'intermediate' 
+    ? intermediateQuestions 
+    : advancedQuestions;
 
   const currentQuestion = questions[currentStep];
   const progress = ((currentStep + 1) / questions.length) * 100;
 
   const handleOptionSelect = (questionId: string, value: string) => {
-    if ((currentQuestion as any).isMultiSelect) {
+    if (currentQuestion.isMultiSelect) {
       const currentValues = (inputs[questionId as keyof UserInputs] as string[]) || [];
       const newValues = currentValues.includes(value)
         ? currentValues.filter(v => v !== value)
@@ -306,7 +277,7 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white py-12 px-4 relative overflow-hidden">
-
+      
       <style>
         {`
           @keyframes fadeIn {
@@ -362,12 +333,12 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       <div className="absolute inset-0 grid-pattern opacity-40"></div>
 
       <div className="container mx-auto max-w-3xl relative z-10">
-
+        
         {/* Progress Bar - Enhanced */}
         <div className="mb-10">
           <div className="relative mb-3">
             <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
-              <div
+              <div 
                 className="h-full bg-gradient-to-r from-[#1F3C88] via-[#7C6CF6] to-[#22D3EE] transition-all duration-700 ease-out rounded-full progress-bar"
                 style={{ width: `${progress}%` }}
               />
@@ -383,12 +354,12 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
         </div>
 
         {/* AI Feedback Message - Conversational Bubble */}
-        <div className="mb-8 flex justify-center animate-fadeIn">
-          <div className="inline-flex items-start gap-3 px-5 py-3.5 bg-gradient-to-r from-[#7C6CF6]/10 to-[#22D3EE]/10 rounded-2xl border border-[#7C6CF6]/20 shadow-sm">
-            <div className="w-7 h-7 bg-gradient-to-br from-[#7C6CF6] to-[#22D3EE] rounded-full flex items-center justify-center flex-shrink-0">
+        <div className="mb-6 flex justify-center animate-fadeIn">
+          <div className="inline-flex items-center gap-2.5 px-4 py-2.5 bg-white rounded-xl border border-[#E2E8F0] shadow-sm">
+            <div className="w-6 h-6 bg-gradient-to-br from-[#7C6CF6] to-[#22D3EE] rounded-lg flex items-center justify-center flex-shrink-0">
               <Sparkles className="w-3.5 h-3.5 text-white" />
             </div>
-            <p className="text-sm text-[#475569] leading-relaxed">
+            <p className="text-sm text-[#64748B]">
               {currentStep === 0 && `Great! I'm adapting to your ${skillLevel} level...`}
               {currentStep === 1 && "Perfect! Let me narrow down ideas for you..."}
               {currentStep === 2 && "This helps me match your schedule..."}
@@ -399,7 +370,7 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
 
         {/* Question Card - Enhanced */}
         <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden mb-8 animate-fadeIn">
-
+          
           {/* Question Header - More Padding & Stronger Typography */}
           <div className="px-10 pt-10 pb-8">
             <h2 className="text-[#1F3C88] text-3xl mb-3 leading-tight">{currentQuestion.question}</h2>
@@ -423,30 +394,32 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
                   <button
                     key={option.value}
                     onClick={() => handleOptionSelect(currentQuestion.id, option.value)}
-                    className={`w-full p-5 rounded-2xl border-2 transition-all duration-300 text-left flex items-center gap-4 group ${isSelected
-                      ? 'border-[#22D3EE] bg-gradient-to-r from-[#22D3EE]/8 to-[#7C6CF6]/8 shadow-lg shadow-[#22D3EE]/10 scale-[1.01]'
-                      : 'border-gray-200 hover:border-[#7C6CF6]/40 hover:bg-gradient-to-r hover:from-[#7C6CF6]/5 hover:to-[#22D3EE]/5 hover:shadow-md hover:scale-[1.005]'
-                      }`}
+                    className={`w-full px-4 py-3.5 rounded-xl border transition-all duration-200 text-left flex items-center gap-3 group ${
+                      isSelected
+                        ? 'border-[#1F3C88] bg-[#1F3C88]/5 shadow-sm'
+                        : 'border-gray-200 hover:border-[#1F3C88]/40 hover:bg-gray-50'
+                    }`}
                   >
-                    {/* Icon - White on gradient background */}
-                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${isSelected
-                      ? 'bg-gradient-to-br from-[#22D3EE] to-[#7C6CF6] shadow-md'
-                      : 'bg-gradient-to-br from-[#7C6CF6]/80 to-[#22D3EE]/80 group-hover:from-[#7C6CF6] group-hover:to-[#22D3EE]'
-                      }`}>
-                      <OptionIcon className="w-7 h-7 text-white" />
+                    {/* Icon - Minimal outlined style */}
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+                      isSelected 
+                        ? 'bg-[#1F3C88] text-white' 
+                        : 'bg-gray-100 text-[#64748B] group-hover:bg-[#1F3C88]/10 group-hover:text-[#1F3C88]'
+                    }`}>
+                      <OptionIcon className="w-5 h-5" />
                     </div>
 
                     {/* Label */}
                     <div className="flex-1">
-                      <span className={`text-lg transition-colors duration-200 ${isSelected ? 'text-[#1F3C88] font-medium' : 'text-[#475569] group-hover:text-[#1F3C88]'}`}>
+                      <span className={`text-base transition-colors duration-200 ${isSelected ? 'text-[#1F3C88] font-medium' : 'text-[#334155] group-hover:text-[#1F3C88]'}`}>
                         {option.label}
                       </span>
                     </div>
 
-                    {/* Check indicator - Improved */}
+                    {/* Check indicator - Minimal */}
                     {isSelected && (
-                      <div className="w-7 h-7 bg-gradient-to-br from-[#22D3EE] to-[#7C6CF6] rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                        <Check className="w-4 h-4 text-white stroke-[3]" />
+                      <div className="w-5 h-5 bg-[#1F3C88] rounded-full flex items-center justify-center flex-shrink-0">
+                        <Check className="w-3 h-3 text-white stroke-[2.5]" />
                       </div>
                     )}
                   </button>
@@ -481,10 +454,11 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
           <button
             onClick={handleNext}
             disabled={!isCurrentQuestionAnswered()}
-            className={`px-8 py-3.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg ${isCurrentQuestionAnswered()
-              ? 'bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white hover:shadow-xl hover:scale-[1.02] hover:from-[#1A3273] hover:to-[#1F9BB3]'
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
-              }`}
+            className={`px-8 py-3.5 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg ${
+              isCurrentQuestionAnswered()
+                ? 'bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white hover:shadow-xl hover:scale-[1.02] hover:from-[#1A3273] hover:to-[#1F9BB3]'
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
+            }`}
           >
             <span className="text-sm font-medium">{currentStep < questions.length - 1 ? 'Continue' : 'Generate Idea'}</span>
             <ChevronRight className="w-5 h-5" />

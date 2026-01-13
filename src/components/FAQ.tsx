@@ -67,7 +67,7 @@ export function FAQ() {
   };
 
   return (
-    <section id="faq" className="py-20 px-4 bg-gradient-to-b from-white via-[#F7F9FC] to-white">
+    <section id="faq" className="py-20 px-4">
       <div className="container mx-auto max-w-4xl">
         
         {/* Section Header */}
@@ -94,7 +94,7 @@ export function FAQ() {
             return (
               <div
                 key={index}
-                className={`bg-white rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
+                className={`bg-white/80 backdrop-blur-sm rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
                   isOpen 
                     ? 'border-[#7C6CF6]/40 shadow-xl shadow-[#7C6CF6]/5' 
                     : 'border-gray-100 shadow-md hover:border-gray-200 hover:shadow-lg'

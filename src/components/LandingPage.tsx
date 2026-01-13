@@ -12,6 +12,9 @@ import {
 import { TextLoader } from './TextLoader';
 import { ServerNodeLoader } from './ServerNodeLoader';
 import { FAQ } from './FAQ';
+import { AIParticles } from './AIParticles';
+import { FloatingOrbs } from './FloatingOrbs';
+import { NeuralNetwork } from './NeuralNetwork';
 import { useState, useEffect } from 'react';
 
 interface LandingPageProps {
@@ -188,9 +191,13 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       </style>
       
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        {/* Animated Background */}
+      <div className="relative overflow-hidden min-h-[600px]">
+        {/* Animated Background Layers */}
         <div className="absolute inset-0 overflow-hidden">
+          {/* AI Particles Canvas */}
+          <AIParticles />
+          
+          {/* Gradient Blobs */}
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[#7C6CF6]/20 to-[#22D3EE]/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-br from-[#22D3EE]/20 to-[#1F3C88]/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
@@ -205,7 +212,6 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 <br />
                 <span className="bg-gradient-to-r from-[#1F3C88] via-[#22D3EE] to-[#7C6CF6] bg-clip-text text-transparent relative">
                   Start Building.
-                  <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-[#22D3EE] to-[#7C6CF6] rounded-full opacity-50 blur-sm"></span>
                 </span>
               </h1>
               
@@ -256,63 +262,80 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
         </div>
       </div>
 
-      {/* Grid Pattern Background Wrapper - Starts from How It Works */}
+      {/* All Content Below Hero - With Grid Pattern Background */}
       <div className="relative overflow-hidden">
-        {/* Animated Grid Pattern Background */}
+        {/* Animated Grid Pattern Background - Applied to All Sections */}
         <div className="absolute inset-0 grid-pattern opacity-40"></div>
 
         {/* Content with relative positioning to appear above grid */}
         <div className="relative z-10">
 
-      {/* How It Works */}
-      <div id="how-it-works" className="container mx-auto px-4 py-20">
+      {/* How It Works & Why It's Smart - Merged Section */}
+      <div id="how-it-works" className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
           
-          <div className="text-center mb-16">
-            <h2 className="text-[#1F3C88] text-3xl sm:text-4xl lg:text-5xl mb-4">How It Works</h2>
-            <p className="text-lg sm:text-xl text-[#334155] max-w-2xl mx-auto">Three simple steps to your perfect project</p>
+          <div className="text-center mb-12">
+            <h2 className="text-[#1F3C88] text-3xl sm:text-4xl lg:text-5xl mb-3">How It Works</h2>
+            <p className="text-lg text-[#334155] max-w-2xl mx-auto">Three simple steps powered by smart AI features</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
               {
                 step: '1',
                 icon: Target,
                 title: 'Tell Us Your Level',
                 description: 'Beginner, intermediate, or advanced? AI adapts to you.',
-                color: 'from-[#22D3EE] to-[#1F3C88]'
+                color: 'from-[#22D3EE] to-[#1F3C88]',
+                feature: 'Skill-Adaptive',
+                featureDesc: 'Questions change based on your experience'
               },
               {
                 step: '2',
                 icon: Sparkles,
                 title: 'Answer Smart Questions',
                 description: 'AI asks personalized questions based on your skill level.',
-                color: 'from-[#1F3C88] to-[#22D3EE]'
+                color: 'from-[#1F3C88] to-[#22D3EE]',
+                feature: 'AI Reasoning',
+                featureDesc: 'See why each project fits your goals'
               },
               {
                 step: '3',
                 icon: Lightbulb,
                 title: 'Get Your Idea',
                 description: 'AI-matched project with roadmap, tech stack, and resources.',
-                color: 'from-[#7C6CF6] to-[#1F3C88]'
+                color: 'from-[#7C6CF6] to-[#1F3C88]',
+                feature: 'Feasibility Check',
+                featureDesc: 'Only projects you can complete'
               }
             ].map((item) => {
               const Icon = item.icon;
               return (
                 <div key={item.step} className="relative">
-                  <div className="bg-white rounded-2xl p-8 border-2 border-[#E2E8F0] hover:border-[#22D3EE] hover:shadow-xl hover:scale-105 transition-all duration-300">
+                  <div className="bg-white rounded-2xl p-6 border-2 border-[#E2E8F0] hover:border-[#22D3EE] hover:shadow-xl hover:scale-105 transition-all duration-300 h-full">
                     {/* Step Number */}
-                    <div className={`absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center text-white text-xl shadow-lg animate-float`} style={{ animationDelay: `${parseInt(item.step) * 0.3}s` }}>
+                    <div className={`absolute -top-3 -left-3 w-10 h-10 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center text-white shadow-lg animate-float`} style={{ animationDelay: `${parseInt(item.step) * 0.3}s` }}>
                       {item.step}
                     </div>
 
                     {/* Icon */}
-                    <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center mb-6 shadow-lg animate-float`} style={{ animationDelay: `${parseInt(item.step) * 0.2}s` }}>
-                      <Icon className="w-8 h-8 text-white" />
+                    <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center mb-4 shadow-lg animate-float`} style={{ animationDelay: `${parseInt(item.step) * 0.2}s` }}>
+                      <Icon className="w-7 h-7 text-white" />
                     </div>
 
-                    <h3 className="text-[#1F3C88] text-2xl mb-3">{item.title}</h3>
-                    <p className="text-[#334155] leading-relaxed">{item.description}</p>
+                    <h3 className="text-[#1F3C88] text-xl mb-2">{item.title}</h3>
+                    <p className="text-[#334155] text-sm leading-relaxed mb-4">{item.description}</p>
+                    
+                    {/* Feature Badge */}
+                    <div className={`mt-auto pt-4 border-t border-gray-100`}>
+                      <div className="flex items-start gap-2">
+                        <Zap className="w-4 h-4 text-[#7C6CF6] flex-shrink-0 mt-0.5" />
+                        <div>
+                          <div className="text-xs text-[#7C6CF6] font-medium">{item.feature}</div>
+                          <div className="text-xs text-[#64748B] mt-0.5">{item.featureDesc}</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
@@ -322,7 +345,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
       </div>
 
       {/* Example AI Output - CRITICAL SECTION */}
-      <div id="examples" className="bg-gradient-to-b from-white to-[#F8FAFC] py-20 relative">
+      <div id="examples" className="py-20 relative">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             
@@ -340,7 +363,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </div>
 
             {/* Mock Project Card */}
-            <div className="bg-white rounded-3xl shadow-2xl border-2 border-[#22D3EE]/30 overflow-hidden">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-[#22D3EE]/30 overflow-hidden">
               
               {/* Header */}
               <div className="bg-gradient-to-br from-[#1F3C88] via-[#2d5ac9] to-[#22D3EE] p-6 sm:p-8 text-white">
@@ -370,7 +393,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
               </div>
 
               {/* Content */}
-              <div className="p-8">
+              <div className="p-8 bg-white/60 backdrop-blur-sm">
                 <div className="grid md:grid-cols-2 gap-8">
                   
                   {/* Key Features */}
@@ -417,7 +440,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                 </div>
 
                 {/* AI Reasoning */}
-                <div className="mt-8 p-6 bg-gradient-to-br from-[#F3F1FF] to-[#ECFEFF] rounded-2xl border border-[#7C6CF6]/30">
+                <div className="mt-8 p-6 bg-gradient-to-br from-[#F3F1FF]/80 to-[#ECFEFF]/80 backdrop-blur-sm rounded-2xl border border-[#7C6CF6]/30">
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 bg-gradient-to-br from-[#7C6CF6] to-[#22D3EE] rounded-xl flex items-center justify-center flex-shrink-0">
                       <Brain className="w-5 h-5 text-white" />
@@ -437,94 +460,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
           </div>
         </div>
       </div>
-
-      {/* Why This Is Smart */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="max-w-6xl mx-auto">
-          
-          <div className="text-center mb-16">
-            <h2 className="text-[#1F3C88] text-3xl sm:text-4xl lg:text-5xl mb-4">Why This Is Smart</h2>
-            <p className="text-lg sm:text-xl text-[#334155]">AI-powered features that adapt to you</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Brain,
-                title: 'Skill-Adaptive',
-                description: 'Questions and ideas change based on your experience level',
-                color: 'from-[#7C6CF6] to-[#1F3C88]',
-                emoji: '🧠'
-              },
-              {
-                icon: Zap,
-                title: 'AI Reasoning',
-                description: 'See exactly why each project fits your goals and timeline',
-                color: 'from-[#22D3EE] to-[#1F3C88]',
-                emoji: '⚡'
-              },
-              {
-                icon: Target,
-                title: 'Feasibility Check',
-                description: 'Only get projects you can realistically complete',
-                color: 'from-[#1F3C88] to-[#22D3EE]',
-                emoji: '🎯'
-              }
-            ].map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div key={feature.title} className="bg-white rounded-2xl p-8 border border-[#E2E8F0] hover:border-[#22D3EE] hover:shadow-xl hover:scale-105 transition-all duration-300">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-6 shadow-lg animate-float`} style={{ animationDelay: feature.title === 'Skill-Adaptive' ? '0s' : feature.title === 'AI Reasoning' ? '0.3s' : '0.6s' }}>
-                    <Icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-[#1F3C88] text-xl mb-3">{feature.title}</h3>
-                  <p className="text-[#334155] leading-relaxed">{feature.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Trust Section */}
-      <div className="bg-gradient-to-b from-[#F8FAFC] to-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-12 shadow-xl border border-[#E2E8F0]">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#22D3EE] to-[#1F3C88] rounded-xl flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-[#1F3C88] text-xl sm:text-2xl">Designed for Students & Developers</h3>
-              </div>
-              <p className="text-[#334155] text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-8">
-                Whether you're building for college, learning on your own, or creating portfolio projects—this tool helps you stop overthinking and start coding.
-              </p>
-              
-              <div className="flex flex-wrap justify-center gap-4 text-sm text-[#64748B]">
-                <span className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-[#22D3EE]" />
-                  Free forever
-                </span>
-                <span className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-[#22D3EE]" />
-                  No signup required
-                </span>
-                <span className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-[#22D3EE]" />
-                  AI-powered matching
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      
       {/* FAQ Section */}
       <FAQ />
-
-        </div>
-      </div>
 
       {/* Final CTA */}
       <div className="container mx-auto px-4 py-20">
@@ -550,6 +488,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
           <p className="text-sm text-[#64748B] mt-6">
             💡 You can refine your idea anytime with AI
           </p>
+        </div>
+      </div>
+
         </div>
       </div>
 
