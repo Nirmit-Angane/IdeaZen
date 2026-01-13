@@ -53,11 +53,16 @@
             "@types/react-dom": "^19.2.3",
             "@vercel/node": "^5.5.16",
             "@vitejs/plugin-react-swc": "^3.10.2",
+            "concurrently": "^9.2.1",
+            "cors": "^2.8.5",
+            "dotenv": "^17.2.3",
+            "express": "^5.2.1",
+            "tsx": "^4.21.0",
             "typescript": "^5.9.3",
             "vite": "6.3.5"
       },
       "scripts": {
-            "dev": "vite",
+            "dev": "concurrently \"vite\" \"tsx local-api.js\"",
             "build": "vite build"
       }
 }
