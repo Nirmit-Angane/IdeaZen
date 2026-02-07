@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { LandingPage } from './components/LandingPage';
+import { ModeSelection } from './components/ModeSelection';
+import { ProblemStatementUpload } from './components/ProblemStatementUpload';
+import { HackathonQuestions } from './components/HackathonQuestions';
 import { SkillLevelSelection } from './components/SkillLevelSelection';
 import { QuestionFlow } from './components/QuestionFlow';
 import { ProjectOutput } from './components/ProjectOutput';
@@ -9,54 +12,66 @@ import { IdeaPreview } from './components/IdeaPreview';
 import { Footer } from './components/Footer';
 import { Navbar } from './components/Navbar';
 import { generateProjectIdea } from './lib/ai';
+import type { UserInputs, GeneratedProject, HackathonContext, HackathonStrategy } from './types';
 
 export type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | null;
+export type AppMode = 'regular' | 'hackathon';
 
-export interface UserInputs {
-  skillLevel: SkillLevel;
-  domain?: string;
-  learningGoal?: string;
-  timeAvailability?: string;
-  deployment?: string;
-  difficultyStretch?: string;
-  technologies?: string[];
-  architecture?: string;
-  scalability?: string;
-  constraints?: string;
-  teamSize?: string;
-}
-
-export interface GeneratedProject {
-  title: string;
-  difficulty: string;
-  description: string;
-  reasoning: string;
-  features: string[];
-  techStack: {
-    primary: string[];
-    alternative: string[];
-  };
-  roadmap: {
-    phase: string;
-    title: string;
-    description: string;
-    duration: string;
-  }[];
-  skillOutcomes: string[];
-  feasibility: 'High' | 'Medium' | 'Low';
-  confidence: string;
-}
-
-type Screen = 'landing' | 'skill-selection' | 'questions' | 'generating' | 'idea-preview' | 'output' | 'my-ideas' | 'generating-blueprint';
+type Screen = 
+  | 'landing' 
+  | 'mode-selection'
+  | 'skill-selection' 
+  | 'questions' 
+  | 'generating' 
+  | 'idea-preview' 
+  | 'output' 
+  | 'my-ideas' 
+  | 'generating-blueprint'
+  | 'problem-upload'
+  | 'hackathon-questions'
+  | 'generating-strategy'
+  | 'strategy-display'
+  | 'live-dashboard'
+  | 'submission-package';
 
 export default function App() {
+  const [appMode, setAppMode] = useState<AppMode>('regular');
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [userInputs, setUserInputs] = useState<UserInputs>({ skillLevel: null });
+  const [hackathonContext, setHackathonContext] = useState<HackathonContext | null>(null);
   const [generatedProject, setGeneratedProject] = useState<GeneratedProject | null>(null);
+  const [hackathonStrategy, setHackathonStrategy] = useState<HackathonStrategy | null>(null);
   const [generatedIdeas, setGeneratedIdeas] = useState<GeneratedProject[]>([]);
 
   const handleStartGeneration = () => {
-    setCurrentScreen('skill-selection');
+    setCurrentScreen('mode-selection');
+  };
+
+  const handleModeSelect = (mode: AppMode) => {
+    setAppMode(mode);
+    if (mode === 'regular') {
+      setCurrentScreen('skill-selection');
+    } else {
+      setCurrentScreen('problem-upload');
+    }
+  };
+
+  const handleProblemStatementComplete = (context: Partial<HackathonContext>) => {
+    setHackathonContext(context as HackathonContext);
+    setCurrentScreen('hackathon-questions');
+  };
+
+  const handleHackathonQuestionsComplete = (context: HackathonContext) => {
+    setHackathonContext(context);
+    setCurrentScreen('generating-strategy');
+    
+    // TODO: Generate hackathon strategy with AI
+    setTimeout(() => {
+      // Placeholder - will be implemented in future tasks
+      console.log('Hackathon strategy generation:', context);
+      alert('Hackathon strategy generation coming soon!');
+      setCurrentScreen('hackathon-questions');
+    }, 2000);
   };
 
   const handleSkillLevelSelect = (level: SkillLevel) => {
@@ -139,8 +154,11 @@ export default function App() {
 
   const handleStartOver = () => {
     setCurrentScreen('landing');
+    setAppMode('regular');
     setUserInputs({ skillLevel: null });
+    setHackathonContext(null);
     setGeneratedProject(null);
+    setHackathonStrategy(null);
     setGeneratedIdeas([]);
   };
 
@@ -164,6 +182,10 @@ export default function App() {
 
       {currentScreen === 'landing' && (
         <LandingPage onGetStarted={handleStartGeneration} />
+      )}
+
+      {currentScreen === 'mode-selection' && (
+        <ModeSelection onSelectMode={handleModeSelect} />
       )}
 
       {currentScreen === 'skill-selection' && (
@@ -208,6 +230,21 @@ export default function App() {
 
       {currentScreen === 'my-ideas' && (
         <MyIdeas onViewProject={handleViewProject} />
+      )}
+
+      {currentScreen === 'problem-upload' && (
+        <ProblemStatementUpload
+          onComplete={handleProblemStatementComplete}
+          onBack={() => setCurrentScreen('mode-selection')}
+        />
+      )}
+
+      {currentScreen === 'hackathon-questions' && hackathonContext && (
+        <HackathonQuestions
+          initialContext={hackathonContext}
+          onComplete={handleHackathonQuestionsComplete}
+          onBack={() => setCurrentScreen('problem-upload')}
+        />
       )}
 
       {currentScreen !== 'landing' && <Footer />}
