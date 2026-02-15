@@ -8,7 +8,11 @@ import { GeneratingScreen } from './components/GeneratingScreen';
 import { IdeaPreview } from './components/IdeaPreview';
 import { Footer } from './components/Footer';
 import { Navbar } from './components/Navbar';
+import { HackathonModeEntry } from './components/HackathonModeEntry';
+import { HackathonQuestionFlow } from './components/HackathonQuestionFlow';
+import { HackathonRoadmapOutput } from './components/HackathonRoadmapOutput';
 import { generateProjectIdea } from './lib/ai';
+import { generateHackathonRoadmap } from './lib/hackathonAI';
 
 export type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | null;
 
@@ -24,6 +28,19 @@ export interface UserInputs {
   scalability?: string;
   constraints?: string;
   teamSize?: string;
+}
+
+export interface HackathonInputs {
+  projectTitle: string;
+  teamSize: 'solo' | '2-person' | '3-4' | '5+';
+  teamMembers: {
+    skill: 'frontend' | 'backend' | 'ai-ml' | 'design' | 'devops' | 'other';
+    proficiency: 'beginner' | 'intermediate' | 'advanced';
+  }[];
+  timeline: '24h' | '36h' | '48h' | '72h' | string;
+  submissionRequirements: string[];
+  resources: string[];
+  priority: 'win' | 'learn' | 'mvp' | 'networking';
 }
 
 export interface GeneratedProject {
@@ -47,7 +64,40 @@ export interface GeneratedProject {
   confidence: string;
 }
 
-type Screen = 'landing' | 'skill-selection' | 'questions' | 'generating' | 'idea-preview' | 'output' | 'my-ideas' | 'generating-blueprint';
+export interface HackathonRoadmap {
+  title: string;
+  feasibility: 'High' | 'Medium';
+  timeline: string;
+  strategicAnalysis: {
+    achievability: string;
+    skillGaps: string[];
+    mitigations: string[];
+  };
+  roadmap: {
+    phase: string;
+    tasks: {
+      task: string;
+      assignedTo: string;
+      duration: string;
+    }[];
+  }[];
+  mvpScope: {
+    mustHave: string[];
+    niceToHave: string[];
+    cutIfNeeded: string[];
+  };
+  risks: {
+    risk: string;
+    mitigation: string;
+  }[];
+  submissionChecklist: {
+    item: string;
+    timeAllocation: string;
+    completed: boolean;
+  }[];
+}
+
+type Screen = 'landing' | 'skill-selection' | 'questions' | 'generating' | 'idea-preview' | 'output' | 'my-ideas' | 'generating-blueprint' | 'hackathon-entry' | 'hackathon-questions' | 'hackathon-generating' | 'hackathon-output';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
@@ -55,8 +105,80 @@ export default function App() {
   const [generatedProject, setGeneratedProject] = useState<GeneratedProject | null>(null);
   const [generatedIdeas, setGeneratedIdeas] = useState<GeneratedProject[]>([]);
 
+  // Hackathon Mode state
+  const [hackathonInputs, setHackathonInputs] = useState<Partial<HackathonInputs>>({});
+  const [hackathonRoadmap, setHackathonRoadmap] = useState<HackathonRoadmap | null>(null);
+
   const handleStartGeneration = () => {
     setCurrentScreen('skill-selection');
+  };
+
+  // Hackathon Mode handlers
+  const handleStartHackathonMode = () => {
+    setCurrentScreen('hackathon-entry');
+  };
+
+  const handleHackathonTitleSubmit = (projectTitle: string) => {
+    setHackathonInputs({ projectTitle });
+    setCurrentScreen('hackathon-questions');
+  };
+
+  const handleHackathonQuestionsComplete = async (inputs: HackathonInputs) => {
+    setHackathonInputs(inputs);
+    setCurrentScreen('hackathon-generating');
+
+    try {
+      const roadmap = await generateHackathonRoadmap(inputs);
+      setHackathonRoadmap(roadmap);
+      setCurrentScreen('hackathon-output');
+    } catch (error) {
+      console.error("Failed to generate hackathon roadmap:", error);
+      alert("Failed to generate roadmap. Please try again.");
+      setCurrentScreen('hackathon-questions');
+    }
+  };
+
+  const handleHackathonAdjustTimeline = async () => {
+    if (hackathonRoadmap && hackathonInputs) {
+      setCurrentScreen('hackathon-generating');
+      try {
+        const newTimeline = hackathonInputs.timeline === '24h' ? '48h' : '24h';
+        const updatedInputs = { ...hackathonInputs as HackathonInputs, timeline: newTimeline };
+        const roadmap = await generateHackathonRoadmap(updatedInputs);
+        setHackathonRoadmap(roadmap);
+        setCurrentScreen('hackathon-output');
+      } catch (error) {
+        setCurrentScreen('hackathon-output');
+      }
+    }
+  };
+
+  const handleHackathonSimplifyScope = async () => {
+    if (hackathonRoadmap && hackathonInputs) {
+      setCurrentScreen('hackathon-generating');
+      try {
+        const roadmap = await generateHackathonRoadmap(hackathonInputs as HackathonInputs);
+        setHackathonRoadmap(roadmap);
+        setCurrentScreen('hackathon-output');
+      } catch (error) {
+        setCurrentScreen('hackathon-output');
+      }
+    }
+  };
+
+  const handleHackathonAddTeamMember = () => {
+    setCurrentScreen('hackathon-questions');
+  };
+
+  const handleHackathonGenerateNew = async () => {
+    setCurrentScreen('hackathon-generating');
+    try {
+      const roadmap = await generateHackathonRoadmap(hackathonInputs as HackathonInputs);
+      setHackathonRoadmap(roadmap);
+      setCurrentScreen('hackathon-output');
+    } catch (error) {
+      setCurrentScreen('hackathon-output');
+    }
   };
 
   const handleSkillLevelSelect = (level: SkillLevel) => {
@@ -142,6 +264,8 @@ export default function App() {
     setUserInputs({ skillLevel: null });
     setGeneratedProject(null);
     setGeneratedIdeas([]);
+    setHackathonInputs({});
+    setHackathonRoadmap(null);
   };
 
   const handleViewMyIdeas = () => {
@@ -163,7 +287,10 @@ export default function App() {
       />
 
       {currentScreen === 'landing' && (
-        <LandingPage onGetStarted={handleStartGeneration} />
+        <LandingPage
+          onGetStarted={handleStartGeneration}
+          onStartHackathonMode={handleStartHackathonMode}
+        />
       )}
 
       {currentScreen === 'skill-selection' && (
@@ -208,6 +335,37 @@ export default function App() {
 
       {currentScreen === 'my-ideas' && (
         <MyIdeas onViewProject={handleViewProject} />
+      )}
+
+      {/* Hackathon Mode Screens */}
+      {currentScreen === 'hackathon-entry' && (
+        <HackathonModeEntry
+          onContinue={handleHackathonTitleSubmit}
+          onBack={() => setCurrentScreen('landing')}
+        />
+      )}
+
+      {currentScreen === 'hackathon-questions' && hackathonInputs.projectTitle && (
+        <HackathonQuestionFlow
+          projectTitle={hackathonInputs.projectTitle}
+          onComplete={handleHackathonQuestionsComplete}
+          onBack={() => setCurrentScreen('hackathon-entry')}
+        />
+      )}
+
+      {currentScreen === 'hackathon-generating' && (
+        <GeneratingScreen mode="blueprint" />
+      )}
+
+      {currentScreen === 'hackathon-output' && hackathonRoadmap && (
+        <HackathonRoadmapOutput
+          roadmap={hackathonRoadmap}
+          onAdjustTimeline={handleHackathonAdjustTimeline}
+          onSimplifyScope={handleHackathonSimplifyScope}
+          onAddTeamMember={handleHackathonAddTeamMember}
+          onGenerateNew={handleHackathonGenerateNew}
+          onStartOver={handleStartOver}
+        />
       )}
 
       {currentScreen !== 'landing' && <Footer />}
