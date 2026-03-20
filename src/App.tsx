@@ -12,6 +12,7 @@ import { Navbar } from './components/Layout/Navbar';
 import { HackathonModeEntry } from './screens/Hackathon/HackathonModeEntry/HackathonModeEntry';
 import { HackathonQuestionFlow } from './screens/Hackathon/HackathonQuestionFlow/HackathonQuestionFlow';
 import { HackathonRoadmapOutput } from './screens/Hackathon/HackathonRoadmapOutput/HackathonRoadmapOutput';
+import ScrollToTop from './components/Common/ScrollToTop';
 import { fetchSuggestions, fetchBlueprint } from './services/generate.service';
 import { fetchHackathonRoadmap } from './services/hackathon.service';
 import type { 
@@ -306,6 +307,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A]">
+      <ScrollToTop />
       <Navbar />
 
       <Routes>

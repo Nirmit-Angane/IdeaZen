@@ -136,7 +136,7 @@ export function GeneratingScreen({ mode = 'ideas', error, onRetry, onTryDifferen
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white flex items-center justify-center px-4 py-12">
+      <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white flex items-center justify-center px-4 pt-20 pb-12">
         <div className="max-w-xl w-full">
           <div className="bg-white rounded-3xl shadow-xl border border-red-100 overflow-hidden text-center p-8 space-y-6">
             <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto">
@@ -175,7 +175,7 @@ export function GeneratingScreen({ mode = 'ideas', error, onRetry, onTryDifferen
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-b from-[#F7F9FC] to-white flex items-center justify-center px-4 pt-20 pb-12">
       <div className="max-w-6xl w-full">
         
         {/* Main Card */}

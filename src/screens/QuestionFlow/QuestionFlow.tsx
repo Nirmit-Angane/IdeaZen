@@ -46,10 +46,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Choose what excites you most',
       isMultiSelect: false,
       options: [
-        { value: 'web', label: 'Web Development', emoji: '🌐' },
-        { value: 'mobile', label: 'Mobile Apps', emoji: '📱' },
-        { value: 'game', label: 'Game Development', emoji: '🎮' },
-        { value: 'automation', label: 'Automation', emoji: '🤖' }
+        { value: 'web', label: 'Web Development' },
+        { value: 'mobile', label: 'Mobile Apps' },
+        { value: 'game', label: 'Game Development' },
+        { value: 'automation', label: 'Automation' }
       ]
     },
     {
@@ -58,10 +58,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Pick your main focus',
       isMultiSelect: false,
       options: [
-        { value: 'frontend', label: 'Frontend Skills', emoji: '🎨' },
-        { value: 'backend', label: 'Backend Skills', emoji: '⚙️' },
-        { value: 'fullstack', label: 'Full Stack', emoji: '🔥' },
-        { value: 'specific', label: 'Specific Technology', emoji: '🎯' }
+        { value: 'frontend', label: 'Frontend Skills' },
+        { value: 'backend', label: 'Backend Skills' },
+        { value: 'fullstack', label: 'Full Stack' },
+        { value: 'specific', label: 'Specific Technology' }
       ]
     },
     {
@@ -70,10 +70,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Be realistic',
       isMultiSelect: false,
       options: [
-        { value: '2-weeks', label: '2 Weeks', emoji: '⚡' },
-        { value: '1-month', label: '1 Month', emoji: '📅' },
-        { value: '2-months', label: '2 Months', emoji: '📆' },
-        { value: '3-months', label: '3+ Months', emoji: '🗓️' }
+        { value: '2-weeks', label: '2 Weeks' },
+        { value: '1-month', label: '1 Month' },
+        { value: '2-months', label: '2 Months' },
+        { value: '3-months', label: '3+ Months' }
       ]
     },
     {
@@ -82,10 +82,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Make it live on the internet',
       isMultiSelect: false,
       options: [
-        { value: 'yes-simple', label: 'Yes, Easy Setup', emoji: '✅' },
-        { value: 'yes-custom', label: 'Yes, Learn Deployment', emoji: '🚀' },
-        { value: 'no', label: 'Not Required', emoji: '' },
-        { value: 'maybe', label: 'Maybe Later', emoji: '🤔' }
+        { value: 'yes-simple', label: 'Yes, Easy Setup' },
+        { value: 'yes-custom', label: 'Yes, Learn Deployment' },
+        { value: 'no', label: 'Not Required' },
+        { value: 'maybe', label: 'Maybe Later' }
       ]
     }
   ];
@@ -97,11 +97,11 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Select your focus area',
       isMultiSelect: false,
       options: [
-        { value: 'fullstack-app', label: 'Full-Stack Web App', emoji: '🌐' },
-        { value: 'api', label: 'REST/GraphQL API', emoji: '🔌' },
-        { value: 'realtime', label: 'Real-time App', emoji: '⚡' },
-        { value: 'mobile', label: 'Mobile App', emoji: '📱' },
-        { value: 'devtools', label: 'Developer Tools', emoji: '🛠️' }
+        { value: 'fullstack-app', label: 'Full-Stack Web App' },
+        { value: 'api', label: 'REST/GraphQL API' },
+        { value: 'realtime', label: 'Real-time App' },
+        { value: 'mobile', label: 'Mobile App' },
+        { value: 'devtools', label: 'Developer Tools' }
       ]
     },
     {
@@ -110,11 +110,11 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'What do you want to master?',
       isMultiSelect: false,
       options: [
-        { value: 'architecture', label: 'Software Architecture', emoji: '🏗️' },
-        { value: 'performance', label: 'Performance', emoji: '⚡' },
-        { value: 'testing', label: 'Testing & Quality', emoji: '✅' },
-        { value: 'deployment', label: 'DevOps', emoji: '🚀' },
-        { value: 'new-tech', label: 'New Technologies', emoji: '🔥' }
+        { value: 'architecture', label: 'Software Architecture' },
+        { value: 'performance', label: 'Performance' },
+        { value: 'testing', label: 'Testing & Quality' },
+        { value: 'deployment', label: 'DevOps' },
+        { value: 'new-tech', label: 'New Technologies' }
       ]
     },
     {
@@ -123,10 +123,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Total time commitment',
       isMultiSelect: false,
       options: [
-        { value: '1-month', label: '1 Month', emoji: '📅' },
-        { value: '2-months', label: '2 Months', emoji: '📆' },
-        { value: '3-months', label: '3 Months', emoji: '🗓️' },
-        { value: 'flexible', label: 'Flexible', emoji: '🔄' }
+        { value: '1-month', label: '1 Month' },
+        { value: '2-months', label: '2 Months' },
+        { value: '3-months', label: '3 Months' },
+        { value: 'flexible', label: 'Flexible' }
       ]
     },
     {
@@ -135,14 +135,14 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Select all that interest you',
       isMultiSelect: true,
       options: [
-        { value: 'react', label: 'React', emoji: '⚛️' },
-        { value: 'vue', label: 'Vue.js', emoji: '💚' },
-        { value: 'node', label: 'Node.js', emoji: '🟢' },
-        { value: 'python', label: 'Python', emoji: '🐍' },
-        { value: 'typescript', label: 'TypeScript', emoji: '🔷' },
-        { value: 'go', label: 'Go', emoji: '🔵' },
-        { value: 'database', label: 'Databases', emoji: '🗄️' },
-        { value: 'cloud', label: 'Cloud', emoji: '☁️' }
+        { value: 'react', label: 'React' },
+        { value: 'vue', label: 'Vue.js' },
+        { value: 'node', label: 'Node.js' },
+        { value: 'python', label: 'Python' },
+        { value: 'typescript', label: 'TypeScript' },
+        { value: 'go', label: 'Go' },
+        { value: 'database', label: 'Databases' },
+        { value: 'cloud', label: 'Cloud' }
       ]
     },
     {
@@ -151,10 +151,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Where will this be hosted?',
       isMultiSelect: false,
       options: [
-        { value: 'cloud', label: 'Cloud Platform', emoji: '☁️' },
-        { value: 'paas', label: 'Platform as a Service', emoji: '🚀' },
-        { value: 'containerized', label: 'Containerized', emoji: '🐳' },
-        { value: 'local', label: 'Local Only', emoji: '💻' }
+        { value: 'cloud', label: 'Cloud Platform' },
+        { value: 'paas', label: 'Platform as a Service' },
+        { value: 'containerized', label: 'Containerized' },
+        { value: 'local', label: 'Local Only' }
       ]
     }
   ];
@@ -166,11 +166,11 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Type of system to architect',
       isMultiSelect: false,
       options: [
-        { value: 'distributed', label: 'Distributed Systems', emoji: '🌐' },
-        { value: 'ai-ml', label: 'AI/ML Integration', emoji: '🤖' },
-        { value: 'platform', label: 'Platform/SaaS', emoji: '🏢' },
-        { value: 'infrastructure', label: 'Infrastructure', emoji: '⚙️' },
-        { value: 'performance', label: 'High-Performance', emoji: '⚡' }
+        { value: 'distributed', label: 'Distributed Systems' },
+        { value: 'ai-ml', label: 'AI/ML Integration' },
+        { value: 'platform', label: 'Platform/SaaS' },
+        { value: 'infrastructure', label: 'Infrastructure' },
+        { value: 'performance', label: 'High-Performance' }
       ]
     },
     {
@@ -179,12 +179,12 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Select all that interest you',
       isMultiSelect: true,
       options: [
-        { value: 'microservices', label: 'Microservices', emoji: '🔷' },
-        { value: 'event-driven', label: 'Event-Driven', emoji: '⚡' },
-        { value: 'serverless', label: 'Serverless', emoji: '☁️' },
-        { value: 'cqrs', label: 'CQRS', emoji: '🔄' },
-        { value: 'distributed', label: 'Distributed', emoji: '🌐' },
-        { value: 'reactive', label: 'Reactive', emoji: '🔥' }
+        { value: 'microservices', label: 'Microservices' },
+        { value: 'event-driven', label: 'Event-Driven' },
+        { value: 'serverless', label: 'Serverless' },
+        { value: 'cqrs', label: 'CQRS' },
+        { value: 'distributed', label: 'Distributed' },
+        { value: 'reactive', label: 'Reactive' }
       ]
     },
     {
@@ -193,10 +193,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Expected scale',
       isMultiSelect: false,
       options: [
-        { value: 'horizontal', label: 'Horizontal Scaling', emoji: '↔️' },
-        { value: 'vertical', label: 'Vertical Scaling', emoji: '↕️' },
-        { value: 'auto-scaling', label: 'Auto-scaling', emoji: '🔄' },
-        { value: 'not-critical', label: 'Not Critical', emoji: '➖' }
+        { value: 'horizontal', label: 'Horizontal Scaling' },
+        { value: 'vertical', label: 'Vertical Scaling' },
+        { value: 'auto-scaling', label: 'Auto-scaling' },
+        { value: 'not-critical', label: 'Not Critical' }
       ]
     },
     {
@@ -205,14 +205,14 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Select all that apply',
       isMultiSelect: true,
       options: [
-        { value: 'go', label: 'Go', emoji: '🔵' },
-        { value: 'rust', label: 'Rust', emoji: '🦀' },
-        { value: 'python', label: 'Python', emoji: '🐍' },
-        { value: 'kubernetes', label: 'Kubernetes', emoji: '☸️' },
-        { value: 'kafka', label: 'Kafka', emoji: '📨' },
-        { value: 'grpc', label: 'gRPC', emoji: '🔌' },
-        { value: 'graphql', label: 'GraphQL', emoji: '📊' },
-        { value: 'ai-apis', label: 'AI/ML APIs', emoji: '🤖' }
+        { value: 'go', label: 'Go' },
+        { value: 'rust', label: 'Rust' },
+        { value: 'python', label: 'Python' },
+        { value: 'kubernetes', label: 'Kubernetes' },
+        { value: 'kafka', label: 'Kafka' },
+        { value: 'grpc', label: 'gRPC' },
+        { value: 'graphql', label: 'GraphQL' },
+        { value: 'ai-apis', label: 'AI/ML APIs' }
       ]
     },
     {
@@ -221,10 +221,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Any specific requirements',
       isMultiSelect: false,
       options: [
-        { value: 'budget', label: 'Budget Conscious', emoji: '💰' },
-        { value: 'security', label: 'Security Critical', emoji: '🔒' },
-        { value: 'performance', label: 'Performance Critical', emoji: '⚡' },
-        { value: 'none', label: 'No Constraints', emoji: '🆓' }
+        { value: 'budget', label: 'Budget Conscious' },
+        { value: 'security', label: 'Security Critical' },
+        { value: 'performance', label: 'Performance Critical' },
+        { value: 'none', label: 'No Constraints' }
       ]
     },
     {
@@ -233,10 +233,10 @@ export function QuestionFlow({ skillLevel, initialInputs, onComplete, onBack }: 
       description: 'Development duration',
       isMultiSelect: false,
       options: [
-        { value: '2-months', label: '2 Months', emoji: '📆' },
-        { value: '3-months', label: '3 Months', emoji: '🗓️' },
-        { value: '6-months', label: '6 Months', emoji: '📅' },
-        { value: 'ongoing', label: 'Ongoing', emoji: '♾️' }
+        { value: '2-months', label: '2 Months' },
+        { value: '3-months', label: '3 Months' },
+        { value: '6-months', label: '6 Months' },
+        { value: 'ongoing', label: 'Ongoing' }
       ]
     }
   ];

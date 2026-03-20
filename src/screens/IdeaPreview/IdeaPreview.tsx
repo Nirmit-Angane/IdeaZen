@@ -90,19 +90,17 @@ export function IdeaPreview({ ideas, onSelectIdea }: IdeaPreviewProps) {
               <div
                 key={index}
                 onClick={() => onSelectIdea(idea)}
-                className="group relative bg-white rounded-2xl border-t-[3px] border-t-[#22D3EE] border border-slate-200 hover:border-[#1F3C88] transition-all duration-200 cursor-pointer overflow-hidden shadow-sm"
+                className="group relative bg-white rounded-2xl border-t-[4px] border-t-[#22D3EE] border border-slate-200 hover:border-[#1F3C88] transition-all duration-200 cursor-pointer shadow-sm"
               >
-                {/* Best Match Badge - Only first one, flat */}
-                {index === 0 && (
-                  <div className="absolute top-4 right-4 z-10">
-                    <div className="flex items-center gap-1.5 px-3 py-1 bg-[#22C55E]/10 border border-[#22C55E]/20 text-[#22C55E] text-xs font-bold uppercase tracking-wider rounded-lg">
+                <div className="p-8 h-full flex flex-col pt-10">
+                  {/* Best Match Badge - Inline above title */}
+                  {index === 0 && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg mb-3 self-start border border-emerald-500/20">
                       <Award className="w-3.5 h-3.5" />
-                      Best Match
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Best Match</span>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <div className="p-8 h-full flex flex-col">
                   {/* Title */}
                   <h3 className="text-xl text-[#1F3C88] font-semibold mb-4 group-hover:text-[#1F3C88] transition-colors leading-snug">
                     {idea.title}

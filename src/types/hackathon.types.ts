@@ -88,7 +88,12 @@ export interface HackathonRoadmap {
         critical?: boolean;
         completed: boolean;
     }[];
-    demoScript?: string;
+    demoScript: {
+        hook: string;
+        problem: string;
+        theWOW: string;
+        closing: string;
+    };
 }
 
 export interface HackathonInputs {

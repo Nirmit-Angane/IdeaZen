@@ -135,7 +135,7 @@ export function LandingPage({ onGetStarted, onStartHackathonMode }: LandingPageP
 
             {/* Left: Main Content */}
             <div className="text-center lg:text-left">
-              <h1 className="text-[#1F3C88] mb-6 text-4xl sm:text-5xl lg:text-7xl animate-fadeInDown font-bold leading-tight tracking-tight">
+              <h1 className="text-[#1F3C88] mb-6 text-4xl sm:text-5xl lg:text-6xl animate-fadeInDown font-bold leading-tight tracking-tight">
                 Stop Wondering.
                 <br />
                 <span className="text-[#22D3EE]">
@@ -152,22 +152,22 @@ export function LandingPage({ onGetStarted, onStartHackathonMode }: LandingPageP
                 <TextLoader />
               </div>
 
-              {/* CTA Buttons */}
+              {/* CTA Buttons - Refined sizing to prevent wrapping */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <button
                   onClick={onGetStarted}
-                  className="group px-10 py-5 bg-[#1F3C88] text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-xl font-medium animate-scaleIn delay-300"
+                  className="group px-6 py-3.5 bg-[#1F3C88] text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-base font-semibold animate-scaleIn delay-300"
                 >
                   <span className="flex items-center justify-center gap-3">
-                    <Sparkles className="w-6 h-6" />
+                    <Sparkles className="w-5 h-5 text-cyan-400" />
                     Generate My Idea
-                    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </button>
 
                 <button
                   onClick={onStartHackathonMode}
-                  className="group px-8 py-5 bg-white border-2 border-slate-200 text-[#1F3C88] rounded-2xl shadow-sm hover:border-[#1F3C88]/20 transition-all duration-300 text-xl font-medium animate-scaleIn delay-400"
+                  className="group px-6 py-3.5 bg-white border-2 border-slate-200 text-[#1F3C88] rounded-2xl shadow-sm hover:border-[#1F3C88]/20 transition-all duration-300 text-base font-semibold animate-scaleIn delay-400"
                 >
                   <span className="flex items-center justify-center gap-3">
                     <Zap className="w-5 h-5 text-amber-500" />

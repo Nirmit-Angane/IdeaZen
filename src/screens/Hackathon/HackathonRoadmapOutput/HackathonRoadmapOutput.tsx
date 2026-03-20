@@ -18,11 +18,15 @@ import {
   ArrowRight,
   Info,
   Rocket,
-  CheckSquare
+  CheckSquare,
+  PlayCircle,
+  Timer,
+  Anchor,
+  Flag,
+  Lightbulb
 } from 'lucide-react';
 import type { HackathonRoadmap } from '../../../types/hackathon.types';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { generateProjectPDF } from '../../../services/pdf.service';
 
 interface HackathonRoadmapOutputProps {
   roadmap: HackathonRoadmap;
@@ -44,24 +48,8 @@ export function HackathonRoadmapOutput({
   const [activePhase, setActivePhase] = useState(0);
 
   const downloadPDF = async () => {
-    const element = document.getElementById('roadmap-content');
-    if (!element) return;
-
     try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff'
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${roadmap.title.replace(/\s+/g, '_')}_Roadmap.pdf`);
+      await generateProjectPDF('roadmap-content', `${roadmap.title}_Roadmap`);
     } catch (error) {
       console.error('Error generating PDF:', error);
     }
@@ -73,12 +61,12 @@ export function HackathonRoadmapOutput({
       <div className="h-1.5 bg-amber-400 w-full" />
       
       {/* Top Banner - Strategy Focused */}
-      <div className="bg-white text-slate-900 py-8 border-b border-slate-200 px-4">
+      <div className="bg-white text-slate-900 pt-16 pb-8 border-b border-slate-200 px-4">
         <div className="container mx-auto max-w-5xl">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-50 rounded-full text-[10px] font-black uppercase tracking-widest text-cyan-700 mb-4 border border-cyan-100">
-                <Trophy className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-50 rounded-full text-sm font-black uppercase tracking-widest text-cyan-700 mb-4 border border-cyan-100">
+                <Trophy className="w-3.5 h-3.5 text-cyan-600" />
                 <span>Winning Strategy Generated</span>
               </div>
               <h1 className="text-2xl md:text-3xl font-black mb-2 text-slate-900 tracking-tight">{roadmap.title}</h1>
@@ -111,7 +99,7 @@ export function HackathonRoadmapOutput({
         </div>
       </div>
 
-      <div className="container mx-auto max-w-5xl px-4 -mt-8" id="roadmap-content">
+      <div className="container mx-auto max-w-5xl px-4 mt-16 mb-20" id="roadmap-content">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Main Content - Left 2 Columns */}
@@ -137,15 +125,31 @@ export function HackathonRoadmapOutput({
                   <button
                     key={idx}
                     onClick={() => setActivePhase(idx)}
-                    className={`px-8 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-200 ${
+                    className={`px-6 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-200 min-w-[120px] ${
                       activePhase === idx 
-                        ? 'bg-[#1F3C88] text-white shadow-[0_8px_20px_-4px_rgba(31,60,136,0.3)] translate-y-[-4px]'
-                        : 'bg-white text-slate-400 border border-slate-200 hover:border-slate-300 hover:text-slate-600 hover:translate-y-[-2px] active:translate-y-0'
+                        ? 'bg-[#1F3C88] text-white shadow-[0_8px_20px_-4px_rgba(31,60,136,0.3)]'
+                        : 'bg-white text-slate-400 border border-slate-200 hover:border-slate-300 hover:text-slate-600'
                     }`}
                   >
-                    Phase {idx + 1}
+                    <div className="text-[10px] opacity-60 mb-1">PHASE {idx + 1}</div>
+                    <div>{phase.timeBlock || `Phase ${idx + 1}`}</div>
                   </button>
                 ))}
+              </div>
+
+              {/* Phase Goal & Context */}
+              <div className="bg-[#1F3C8810] p-6 border-b border-slate-100">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-[#1F3C88] text-white flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#1F3C8840]">
+                    <Target className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-[#1F3C88] uppercase tracking-widest mb-1">Current Objective</h3>
+                    <p className="text-lg font-bold text-slate-900 leading-tight">
+                      {roadmap.roadmap[activePhase].goal || `Execute primary tasks for ${roadmap.roadmap[activePhase].phase}`}
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Phase Tasks */}
@@ -153,24 +157,24 @@ export function HackathonRoadmapOutput({
                 <div className="space-y-4">
                   {roadmap.roadmap[activePhase].tasks.map((task, idx) => (
                     <div key={idx} className="flex gap-4 group">
-                      <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 font-bold text-xs">
+                      <div className="flex flex-col items-center flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 font-bold text-sm z-10">
                           {idx + 1}
                         </div>
                         {idx !== roadmap.roadmap[activePhase].tasks.length - 1 && (
-                          <div className="w-0.5 h-full bg-cyan-50 my-1"></div>
+                          <div className="w-0.5 h-full bg-cyan-100/50 -mt-1 mb-1"></div>
                         )}
                       </div>
                       <div className="flex-1 pb-4">
-                        <div className="flex items-start justify-between gap-2 mb-1">
-                          <h3 className="font-semibold text-gray-900 leading-tight">{task.task}</h3>
-                          <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[10px] font-bold uppercase shrink-0">
+                        <div className="flex items-start justify-between gap-4 mb-1">
+                          <h3 className="text-base font-bold text-slate-900 leading-tight group-hover:text-[#1F3C88] transition-colors">{task.task}</h3>
+                          <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-black uppercase tracking-wider shrink-0 border border-slate-200">
                             {task.duration}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-slate-500">
-                          <Users className="w-3 h-3" />
-                          <span>Assigned to: <span className="text-cyan-600 font-medium">{task.assignedTo}</span></span>
+                        <div className="flex items-center gap-2 text-sm text-slate-500">
+                          <Users className="w-3.5 h-3.5 text-cyan-600" />
+                          <span>Assignee: <span className="text-slate-900 font-bold">{task.assignedTo}</span></span>
                         </div>
                       </div>
                     </div>
@@ -181,50 +185,166 @@ export function HackathonRoadmapOutput({
 
             {/* Strategic Analysis */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-t-cyan-500 flex flex-col justify-between">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-cyan-600 flex flex-col justify-between group hover:shadow-md transition-all">
                 <div>
-                  <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2 uppercase tracking-wide text-xs">
-                    <Target className="w-4 h-4 text-cyan-500" />
+                  <h3 className="text-sm font-black text-cyan-600 mb-4 flex items-center gap-2 uppercase tracking-widest">
+                    <Target className="w-4 h-4" />
                     Win Probability
                   </h3>
                   <div className="flex items-end gap-3 mb-4">
-                    <span className="text-4xl font-black text-slate-900">
+                    <span className="text-5xl font-black text-slate-900 tracking-tighter leading-none">
                       {roadmap.feasibility === 'High' ? '92%' : roadmap.feasibility === 'Medium' ? '65%' : '35%'}
                     </span>
-                    <span className="text-xs font-bold text-cyan-600 mb-1.5 uppercase">Likelihood</span>
+                    <span className="text-xs font-black text-slate-400 mb-2 uppercase tracking-widest">Accuracy</span>
                   </div>
-                  <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden mb-4">
+                  <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden mb-6">
                     <div 
-                      className="h-full bg-cyan-500 rounded-full transition-all duration-1000"
+                      className="h-full bg-cyan-600 rounded-full transition-all duration-1000 shadow-[0_0_12px_rgba(8,145,178,0.4)]"
                       style={{ width: roadmap.feasibility === 'High' ? '92%' : roadmap.feasibility === 'Medium' ? '65%' : '35%' }}
                     />
                   </div>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed italic">
+                <p className="text-sm text-slate-700 leading-relaxed italic font-medium">
                   "{roadmap.strategicAnalysis.achievability}"
                 </p>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-t-amber-500">
-                <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2 uppercase tracking-wide text-xs">
-                  <Star className="w-4 h-4 text-amber-500" />
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-amber-500 group hover:shadow-md transition-all">
+                <h3 className="text-sm font-black text-amber-600 mb-4 flex items-center gap-2 uppercase tracking-widest">
+                  <Star className="w-4 h-4" />
                   Your Winning Move
                 </h3>
-                <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 mb-4">
-                  <p className="text-sm font-bold text-amber-900 leading-snug">
+                <div className="p-5 bg-amber-50 rounded-xl border border-amber-100 mb-4 shadow-inner">
+                  <p className="text-base font-bold text-amber-900 leading-tight">
                     {roadmap.strategicAnalysis.winningAngle || "Focus on extreme UI polish and a flawless 3-minute demo script."}
                   </p>
                 </div>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {roadmap.strategicAnalysis.mitigations.slice(0, 2).map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-[11px] text-slate-600 font-medium">
-                      <div className="mt-1 w-1 h-1 rounded-full bg-slate-300 shrink-0"></div>
+                    <li key={idx} className="flex items-start gap-3 text-sm text-slate-600 font-medium">
+                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></div>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
+
+            {/* Redesigned Demo Script Section */}
+            {roadmap.demoScript && (
+              <div className="bg-[#0F172A] rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl border border-white/5">
+                {/* Decorative background gradients */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div className="relative z-10">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-500/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-cyan-400 mb-3 border border-cyan-500/20">
+                        <Timer className="w-3 h-3" />
+                        <span>3-Minute Winning Pitch</span>
+                      </div>
+                      <h3 className="text-3xl font-black tracking-tight text-white">The Perfect Demo Script</h3>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                        <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Live Ready</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {/* The Hook */}
+                    <div className="group relative p-5 bg-white/[0.03] hover:bg-white/[0.05] border border-white/5 rounded-2xl transition-all duration-300">
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center shrink-0 border border-cyan-500/30">
+                          <Anchor className="w-5 h-5 text-cyan-400" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400/70">0:00 - 0:30 • The Hook</span>
+                          </div>
+                          <p className="text-lg text-white leading-relaxed font-medium italic">
+                            "{roadmap.demoScript.hook}"
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* The Problem */}
+                    <div className="group relative p-5 bg-white/[0.03] hover:bg-white/[0.05] border border-white/5 rounded-2xl transition-all duration-300">
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0 border border-amber-500/30">
+                          <AlertTriangle className="w-5 h-5 text-amber-400" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400/70">0:30 - 1:15 • The Pain Point</span>
+                          </div>
+                          <p className="text-base text-slate-300 leading-relaxed font-medium">
+                            "{roadmap.demoScript.problem}"
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* The WOW Moment */}
+                    <div className="group relative p-6 bg-gradient-to-r from-cyan-500/10 to-indigo-500/10 border border-cyan-500/30 rounded-2xl shadow-lg shadow-cyan-500/5 transition-all duration-300">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-cyan-500 flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/20">
+                          <Sparkles className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400">1:15 - 2:30 • The WOW Moment</span>
+                            <div className="px-2 py-0.5 bg-cyan-500 text-[8px] font-black uppercase tracking-widest rounded text-white shadow-sm">Crucial</div>
+                          </div>
+                          <p className="text-xl text-white leading-relaxed font-black">
+                            "{roadmap.demoScript.theWOW}"
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* The Closing */}
+                    <div className="group relative p-5 bg-white/[0.03] hover:bg-white/[0.05] border border-white/5 rounded-2xl transition-all duration-300">
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center shrink-0 border border-indigo-500/30">
+                          <Flag className="w-5 h-5 text-indigo-400" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400/70">2:30 - 3:00 • The Vision</span>
+                          </div>
+                          <p className="text-base text-slate-300 leading-relaxed font-medium">
+                            "{roadmap.demoScript.closing}"
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-4 mt-8">
+                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-cyan-500/30 transition-colors">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Lightbulb className="w-3.5 h-3.5 text-cyan-400" />
+                        <h4 className="text-[10px] font-black uppercase tracking-widest text-cyan-400">Pro Tip</h4>
+                      </div>
+                      <p className="text-sm text-slate-300 font-medium italic leading-snug">"Keep the energy high. Don't read from a script—tell a story."</p>
+                    </div>
+                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10 group hover:border-amber-500/30 transition-colors">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Target className="w-3.5 h-3.5 text-amber-400" />
+                        <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-400">Judge's Lens</h4>
+                      </div>
+                      <p className="text-sm text-slate-300 font-medium italic leading-snug">"They care about scalability and the 'unfair advantage' you've built."</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
 
           </div>
 
@@ -242,23 +362,23 @@ export function HackathonRoadmapOutput({
               </h3>
               <div className="space-y-6 relative z-10">
                 <div>
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Must Have</h4>
-                  <ul className="space-y-2">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Must Have</h4>
+                  <ul className="space-y-3">
                     {roadmap.mvpScope.mustHave.map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-xs text-slate-700 font-medium">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500 shrink-0 mt-0.5" />
+                      <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-800 font-bold">
+                        <CheckCircle2 className="w-4 h-4 text-cyan-600 shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Cut if Needed</h4>
-                  <ul className="space-y-2">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Cut if Needed</h4>
+                  <ul className="space-y-3">
                     {roadmap.mvpScope.cutIfNeeded.map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-xs text-slate-500 flex-1">
-                        <div className="w-3.5 h-[1px] bg-slate-300 mt-2 shrink-0"></div>
-                        <span className="line-through opacity-70">{item}</span>
+                      <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-500 flex-1">
+                        <div className="w-4 h-[1px] bg-slate-300 mt-2.5 shrink-0"></div>
+                        <span className="line-through opacity-70 italic">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -274,11 +394,14 @@ export function HackathonRoadmapOutput({
               </h3>
               <div className="space-y-3">
                 {roadmap.submissionChecklist.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg transition-colors group">
-                    <div className="w-5 h-5 rounded border border-slate-200 group-hover:border-emerald-300 transition-colors shrink-0"></div>
+                  <div key={idx} className="flex items-start gap-3 p-3 hover:bg-slate-50 rounded-xl transition-all group border border-transparent hover:border-slate-100">
+                    <div className="w-5 h-5 rounded border-2 border-slate-200 group-hover:border-emerald-500 transition-colors shrink-0 mt-0.5 shadow-sm bg-white"></div>
                     <div className="flex-1">
-                      <p className="text-xs font-medium text-gray-700">{item.item}</p>
-                      <p className="text-[10px] text-slate-400">Time: {item.timeAllocation}</p>
+                      <p className="text-sm font-bold text-slate-800 leading-tight mb-1">{item.item}</p>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-bold uppercase tracking-wider">
+                        <Clock className="w-3 h-3" />
+                        {item.timeAllocation}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -293,10 +416,13 @@ export function HackathonRoadmapOutput({
               </h3>
               <div className="space-y-4">
                 {roadmap.risks.map((risk, idx) => (
-                  <div key={idx}>
-                    <p className="text-xs font-bold text-red-800 mb-1">{risk.risk}</p>
-                    <p className="text-[10px] text-red-700 leading-relaxed">
-                      <span className="font-bold">FIX:</span> {risk.mitigation}
+                  <div key={idx} className="p-3 bg-white/50 rounded-xl border border-red-100">
+                    <p className="text-sm font-black text-red-900 mb-1.5 flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-red-600"></div>
+                      {risk.risk}
+                    </p>
+                    <p className="text-xs text-red-800 leading-relaxed italic font-medium">
+                      <span className="uppercase font-black text-[10px] tracking-widest mr-1 opacity-70">Mitigation:</span> {risk.mitigation}
                     </p>
                   </div>
                 ))}

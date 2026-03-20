@@ -15,7 +15,7 @@ export async function fetchHackathonRoadmap(
     const skillGaps: string[] = [];
     if (!skills.includes('frontend')) skillGaps.push('Frontend Development');
     if (!skills.includes('backend')) skillGaps.push('Backend Development');
-    if (!skills.includes('design')) skillGaps.push('UI/UX Design');
+    if (!skills.includes('frontend')) skillGaps.push('UI Implementation');
 
     // Calculate feasibility
     const feasibility: 'High' | 'Medium' =
@@ -58,11 +58,13 @@ export async function fetchHackathonRoadmap(
             achievability: feasibility === 'High'
                 ? `With ${teamCount} team member${teamCount > 1 ? 's' : ''} and ${timelineHours} hours, this project is highly achievable. Your team has strong coverage across key areas.`
                 : `This is achievable but requires focused execution. With ${timelineHours} hours and your current team composition, prioritize MVP features.`,
+            biggestRisk: 'Time management and scope creep during the final hours of the hackathon.',
+            winningAngle: 'Focus on a highly polished MVP with a clear value proposition and solid tech execution.',
             skillGaps,
             mitigations: skillGaps.map(gap =>
                 gap === 'Frontend Development' ? 'Use UI libraries like Bootstrap or Tailwind for rapid prototyping' :
                     gap === 'Backend Development' ? 'Consider Firebase or Supabase for instant backend' :
-                        'Use Figma templates or AI tools like v0.dev for quick designs'
+                        'Use component libraries like Shadcn/UI or v0.dev for rapid UI assembly'
             )
         },
         roadmap,
@@ -100,7 +102,13 @@ export async function fetchHackathonRoadmap(
                 mitigation: 'Reserve final 4 hours for testing and polish only'
             }
         ],
-        submissionChecklist
+        submissionChecklist,
+        demoScript: {
+            hook: 'Start by explaining the massive problem your project solves in one sentence.',
+            problem: 'Show the "before" state and the pain points users currently face.',
+            theWOW: 'Demonstrate the core innovative feature that makes your project unique.',
+            closing: 'End with a vision of how this project scales beyond the hackathon.'
+        }
     };
 }
 
@@ -113,7 +121,7 @@ function generateTasksForPhase(
     if (phaseIndex === 0) {
         return [
             { task: 'Project setup, repo creation, environment config', assignedTo: 'Backend', duration: '1h' },
-            { task: 'Design wireframes and color scheme', assignedTo: 'Design/Frontend', duration: '1.5h' },
+            { task: 'Define UI components and theme in Tailwind', assignedTo: 'Frontend', duration: '1.5h' },
             { task: 'Set up database schema', assignedTo: 'Backend', duration: '1h' }
         ];
     }

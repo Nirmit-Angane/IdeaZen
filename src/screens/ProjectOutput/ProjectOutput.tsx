@@ -29,12 +29,17 @@ import {
   ChevronDown,
   ChevronUp,
   Rocket,
-  ShieldAlert
+  ShieldAlert,
+  ShieldCheck,
+  PlayCircle,
+  Cpu,
+  Flag,
+  Map,
+  Star
 } from 'lucide-react';
 import { GeneratedProject, UserInputs } from '../../types/project.types';
-import { useState, useRef } from 'react';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { useState, useRef, useEffect } from 'react';
+import { generateProjectPDF } from '../../services/pdf.service';
 
 interface ProjectOutputProps {
   project: GeneratedProject;
@@ -67,15 +72,40 @@ export function ProjectOutput({
     resources: true
   });
 
+  useEffect(() => {
+    // Check if this project is already saved in System A (ideaZen_savedIdeas)
+    try {
+      const saved = localStorage.getItem('ideaZen_savedIdeas');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const exists = parsed.some((p: any) => p.title === project.title);
+        setIsSaved(exists);
+      }
+    } catch (e) {
+      console.error('Error checking saved status:', e);
+    }
+  }, [project.title]);
+
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
   const handleSave = () => {
-    const savedProjects = JSON.parse(localStorage.getItem('savedProjects') || '[]');
-    savedProjects.push({ ...project, savedAt: new Date().toISOString() });
-    localStorage.setItem('savedProjects', JSON.stringify(savedProjects));
-    setIsSaved(true);
+    try {
+      const savedProjects = JSON.parse(localStorage.getItem('ideaZen_savedIdeas') || '[]');
+      
+      // Prevent duplicates in System A
+      const exists = savedProjects.some((p: any) => p.title === project.title);
+      if (!exists) {
+        const id = `idea-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        savedProjects.push({ ...project, id, savedAt: new Date().toISOString() });
+        localStorage.setItem('ideaZen_savedIdeas', JSON.stringify(savedProjects));
+      }
+      
+      setIsSaved(true);
+    } catch (e) {
+      console.error('Failed to save project:', e);
+    }
   };
 
   const handleShare = () => {
@@ -128,38 +158,7 @@ export function ProjectOutput({
     setIsGeneratingPDF(true);
     
     try {
-      const canvas = await html2canvas(printableRef.current, {
-        scale: 2, 
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#F8FAFC' // Match background
-      });
-      
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      
-      const imgRatio = canvas.height / canvas.width;
-      let imgWidth = pdfWidth;
-      let imgHeight = pdfWidth * imgRatio;
-      
-      let heightLeft = imgHeight;
-      let position = 0;
-      
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pdfHeight;
-      
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pdfHeight;
-      }
-      
-      const safeTitle = project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      pdf.save(`ideazen-${safeTitle}.pdf`);
+      await generateProjectPDF('project-output-content', project.title);
     } catch (err) {
       console.error('PDF generation failed:', err);
       alert('Failed to generate PDF. Please try again.');
@@ -226,57 +225,76 @@ export function ProjectOutput({
         </div>
       </div>
 
-      <div ref={printableRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 bg-[#F8FAFC]">
+      <div ref={printableRef} id="project-output-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 bg-[#F8FAFC]">
         
         {/* Hero Header - Flat Authoritative Design */}
         <div className="mb-10">
           <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative overflow-hidden border-l-4 border-l-cyan-400">
             <div className="relative z-10">
               {/* AI Badge - Cyan high-contrast */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-50 rounded-full text-[11px] font-black uppercase tracking-widest mb-6 border border-cyan-100">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-50 rounded-full text-sm font-black uppercase tracking-widest mb-6 border border-cyan-100">
                 <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
                 <span className="text-cyan-800">AI Engine Blueprint</span>
               </div>
 
               {/* Project Title */}
-              <h1 className="text-3xl font-semibold text-slate-900 mb-4 tracking-tight leading-tight">
+              <h1 className="text-4xl font-bold text-slate-900 mb-6 tracking-tight leading-tight">
                 {project.title}
               </h1>
 
               {/* Description */}
-              <p className="text-slate-600 text-sm leading-relaxed mb-6 max-w-3xl">
+              <p className="text-slate-700 text-lg leading-relaxed mb-8 max-w-3xl">
                 {project.description}
               </p>
 
               {/* Tagline Box - Premium Flat Highlight */}
               {(project.tagline || project.realWorldComparison) && (
-                <div className="inline-flex items-center gap-4 px-6 py-4 bg-cyan-50 rounded-2xl border border-cyan-100 text-slate-800 mb-8 max-w-2xl">
-                  <div className="flex-shrink-0 w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                    <Lightbulb className="w-5 h-5 text-cyan-600" />
+                <div className="inline-flex items-center gap-4 px-6 py-5 bg-cyan-50 rounded-2xl border border-cyan-100 text-slate-800 mb-10 max-w-2xl">
+                  <div className="flex-shrink-0 w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                    <Lightbulb className="w-6 h-6 text-cyan-600" />
                   </div>
-                  <p className="text-[14px] font-medium leading-relaxed">
+                  <p className="text-base font-medium leading-relaxed">
                     {project.tagline || `Analogy: ${project.realWorldComparison}`}
                   </p>
                 </div>
               )}
 
-              {/* Stats - Visual Match Bars */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-slate-100">
+              {/* Stats - 3 Large Stat Boxes */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8 border-t border-slate-100">
                 {[
-                  { label: 'Time Fit', value: project.timeFit === 'Comfortable' ? 100 : project.timeFit === 'Tight' ? 85 : 60, color: 'bg-cyan-500' },
-                  { label: 'Skill Match', value: project.difficulty === 'Beginner' ? 95 : project.difficulty === 'Intermediate' ? 75 : 50, color: 'bg-emerald-500' },
-                  { label: 'Feasibility', value: project.feasibility === 'High' ? 90 : project.feasibility === 'Medium' ? 70 : 40, color: 'bg-blue-500' }
+                  { 
+                    label: 'Confidence', 
+                    value: project.feasibility === 'High' ? 'High' : project.feasibility === 'Medium' ? 'Medium' : 'Low',
+                    detail: 'Build Certainty',
+                    icon: CheckCircle2,
+                    color: 'text-emerald-600',
+                    bg: 'bg-emerald-50'
+                  },
+                  { 
+                    label: 'Difficulty', 
+                    value: project.difficulty,
+                    detail: 'Effort Level',
+                    icon: Award,
+                    color: 'text-indigo-600',
+                    bg: 'bg-indigo-50'
+                  },
+                  { 
+                    label: 'Time Fit', 
+                    value: project.timeFit,
+                    detail: 'Schedule Match',
+                    icon: Clock,
+                    color: 'text-amber-600',
+                    bg: 'bg-amber-50'
+                  }
                 ].map((stat, i) => (
-                  <div key={i} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{stat.label}</span>
-                      <span className="text-[10px] font-bold text-slate-900">{stat.value}%</span>
+                  <div key={i} className={`flex items-center gap-4 p-4 rounded-xl ${stat.bg} border border-white shadow-sm transition-transform hover:scale-[1.02]`}>
+                    <div className={`w-12 h-12 rounded-lg bg-white flex items-center justify-center shadow-sm flex-shrink-0`}>
+                      <stat.icon className={`w-6 h-6 ${stat.color}`} />
                     </div>
-                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full ${stat.color} rounded-full transition-all duration-1000`} 
-                        style={{ width: `${stat.value}%` }}
-                      ></div>
+                    <div>
+                      <div className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-0.5">{stat.label}</div>
+                      <div className="text-lg font-black text-slate-900 leading-none mb-1">{stat.value}</div>
+                      <div className="text-xs font-medium text-slate-400">{stat.detail}</div>
                     </div>
                   </div>
                 ))}
@@ -299,60 +317,78 @@ export function ProjectOutput({
                   <Brain className="w-8 h-8 text-[#0891B2]" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-[#1F3C88] mb-4">Why this is the right project for you</h3>
+                  <h3 className="text-xl font-bold text-[#1F3C88] mb-4 flex items-center gap-2">
+                    <Target className="w-5 h-5" />
+                    Why this is the right project for you
+                  </h3>
                   {typeof project.reasoning === 'string' ? (
-                    <p className="text-slate-600 leading-relaxed italic">
+                    <p className="text-slate-700 text-base leading-relaxed italic">
                        "{String(project.reasoning).replace(/\*\*(.*?)\*\*/g, '$1')}"
                     </p>
                   ) : (
                     <div className="grid gap-4">
                       {[
-                        { icon: '🎯', title: 'Skill Match', content: String(project.reasoning.skillFit).replace(/\*\*(.*?)\*\*/g, '$1') },
-                        { icon: '🛠️', title: 'Stack Alignment', content: String(project.reasoning.stackFit).replace(/\*\*(.*?)\*\*/g, '$1') },
-                        { icon: '📈', title: 'Growth Factor', content: String(project.reasoning.growthOpportunity).replace(/\*\*(.*?)\*\*/g, '$1') }
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-start gap-4">
-                           <span className="text-xl flex-shrink-0 mt-0.5">{item.icon}</span>
-                           <div className="text-sm text-slate-600 leading-relaxed">
-                             <strong className="text-slate-800 font-bold mr-1">{item.title}:</strong> {item.content}
+                        { icon: Target, title: 'Skill Match', content: String(project.reasoning.skillFit).replace(/\*\*(.*?)\*\*/g, '$1'), color: 'text-emerald-500' },
+                        { icon: Zap, title: 'Stack Alignment', content: String(project.reasoning.stackFit).replace(/\*\*(.*?)\*\*/g, '$1'), color: 'text-amber-500' },
+                        { icon: TrendingUp, title: 'Growth Factor', content: String(project.reasoning.growthOpportunity).replace(/\*\*(.*?)\*\*/g, '$1'), color: 'text-[#22D3EE]' }
+                      ].map((item, i) => {
+                        const Icon = item.icon;
+                        return (
+                          <div key={i} className="flex items-start gap-4">
+                             <div className="mt-1 w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0">
+                               <Icon className={`w-4 h-4 ${item.color}`} />
+                             </div>
+                             <div className="text-base text-slate-700 leading-relaxed">
+                               <strong className="text-slate-900 font-bold mr-1">{item.title}:</strong> {item.content}
+                             </div>
                            </div>
-                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* MVP Scope Section */}
+            {/* MVP Section - Refined Card */}
             {project.mvp && (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden border-t-4 border-t-amber-400">
-                <div className="px-6 py-6 border-b border-slate-100 flex items-center gap-3">
-                   <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-amber-500" />
-                  </div>
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-8">
+                <div className="bg-slate-50/50 px-8 py-6 border-b border-slate-100 flex items-center justify-between">
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900">MVP Scope</h2>
-                    <p className="text-xs text-slate-500 font-medium tracking-tight">Focus only on these to ship fast.</p>
+                    <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2">
+                      <Zap className="w-6 h-6 text-amber-500" />
+                      MVP Scope
+                    </h2>
+                    <p className="text-base text-slate-500 font-medium">Core essentials for your first version</p>
+                  </div>
+                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm text-cyan-600">
+                    <Zap className="w-6 h-6" />
                   </div>
                 </div>
-                <div className="p-6 space-y-6">
-                  <p className="text-sm text-slate-600 leading-relaxed font-medium bg-slate-50 p-4 rounded-xl border border-slate-100 italic">
-                    "{project.mvp.description}"
+                <div className="p-8">
+                  <p className="text-slate-700 text-lg leading-relaxed mb-8">
+                    {project.mvp.description}
                   </p>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Core Conditions</h4>
-                      {project.mvp.conditions.map((condition, idx) => (
-                        <div key={idx} className="flex items-center gap-3 text-sm text-slate-700 font-bold">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                          {condition}
-                        </div>
-                      ))}
+
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-black uppercase tracking-widest text-[#0891B2] flex items-center gap-2">
+                        <Target className="w-4 h-4" /> Core Conditions
+                      </h4>
+                      <div className="space-y-3">
+                        {project.mvp.conditions.map((condition, idx) => (
+                          <div key={idx} className="flex items-center gap-3 text-base text-slate-700 font-medium bg-slate-50 px-4 py-3 rounded-xl border border-slate-100/50">
+                            <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                            <span>{condition}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="p-4 bg-slate-900 rounded-xl shadow-inner border border-slate-800">
-                      <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Demo Script Angle</h4>
-                      <p className="text-xs text-slate-300 leading-relaxed italic">
+                    <div className="bg-slate-900 rounded-2xl p-6 text-white self-start">
+                      <h4 className="text-sm font-black uppercase tracking-widest text-cyan-400 mb-4 flex items-center gap-2">
+                         <PlayCircle className="w-4 h-4" /> Demo Script Angle
+                      </h4>
+                      <p className="text-base leading-relaxed text-slate-300 font-medium italic">
                         "{project.mvp.demoScript}"
                       </p>
                     </div>
@@ -360,83 +396,67 @@ export function ProjectOutput({
                 </div>
               </div>
             )}
-
-            {/* Tech Stack Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-              <button
-                onClick={() => toggleSection('techStack')}
-                className="w-full px-6 py-4 flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
-                    <Code2 className="w-4 h-4 text-slate-500" />
+            {/* Tech Stack - Clean Pills */}
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden mb-8">
+              <div className="bg-slate-950 px-8 py-6 flex items-center justify-between text-white">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-cyan-400 border border-white/10">
+                    <Cpu className="w-6 h-6" />
                   </div>
-                  <h2 className="text-lg font-medium text-[#1F3C88]">Tech Stack</h2>
+                  <div>
+                    <h2 className="text-2xl font-black tracking-tight">Tech Stack</h2>
+                    <p className="text-cyan-400/80 text-sm font-bold uppercase tracking-widest">Recommended Architecture</p>
+                  </div>
                 </div>
-                {expandedSections.techStack ? (
-                  <ChevronUp className="w-5 h-5 text-slate-400" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-400" />
-                )}
-              </button>
+                <button 
+                  onClick={() => toggleSection('techStack')}
+                  className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors"
+                >
+                  {expandedSections.techStack ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
+                </button>
+              </div>
               
               {expandedSections.techStack && (
-                <div className="px-6 py-4 border-t border-slate-100 space-y-5">
-                  <div>
-                    <div className="text-sm text-slate-700 font-medium mb-3 flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-[#22D3EE]" />
-                      Recommended Technologies
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                       {project.techStack.primary.map((tech, index) => {
-                         const techName = typeof tech === 'string' ? tech : tech.name;
-                         const techReason = typeof tech === 'string' ? 'Industry standard for this project type.' : tech.reason;
-                         
-                         return (
-                           <div key={index} className="flex flex-col p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-cyan-300 transition-all group shadow-sm">
-                             <div className="flex items-center justify-between mb-2">
-                               <span className="px-3 py-1 bg-white rounded-lg border border-slate-200 text-xs font-black text-slate-900 uppercase tracking-tight group-hover:border-cyan-200 transition-colors">
-                                 {techName}
-                               </span>
-                               <div className="w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
-                             </div>
-                             <p className="text-[12px] text-slate-500 leading-relaxed font-medium">
-                               {techReason}
-                             </p>
-                           </div>
-                         );
-                       })}
-                    </div>
+                <div className="p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {project.techStack.primary.map((tech, i) => {
+                      const techName = typeof tech === 'string' ? tech : tech.name;
+                      const techReason = typeof tech === 'string' ? 'Industry standard for this project type.' : tech.reason;
+                      return (
+                        <div key={i} className="p-5 rounded-2xl border border-slate-100 bg-white hover:border-cyan-200 transition-colors group">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center text-cyan-600 font-bold text-sm">
+                               {techName.charAt(0)}
+                            </div>
+                            <div>
+                              <h4 className="text-lg font-bold text-slate-900 leading-none">{techName}</h4>
+                            </div>
+                          </div>
+                          <div className="text-base text-slate-600 leading-relaxed font-medium">
+                            <span className="text-cyan-600 font-bold text-sm uppercase tracking-wide inline-block mb-1">Why this?</span><br/>
+                            {techReason}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
 
-                  <div>
-                    <div className="text-sm text-slate-500 font-medium mb-3">
-                      Alternatives (Choose if preferred)
+                  {project.techStack.alternative && project.techStack.alternative.length > 0 && (
+                    <div className="mt-8 pt-8 border-t border-slate-100">
+                      <h4 className="text-sm font-black uppercase tracking-widest text-slate-500 mb-4">Alternatives</h4>
+                      <div className="flex flex-wrap gap-3">
+                        {project.techStack.alternative.map((tech, i) => {
+                          const name = typeof tech === 'string' ? tech : tech.name;
+                          const role = typeof tech === 'string' ? 'Alternative' : tech.role;
+                          return (
+                            <div key={i} className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 text-base font-bold text-slate-700">
+                              {name} <span className="text-slate-400 font-medium ml-2 text-sm">({role})</span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-3">
-                       {project.techStack.alternative.map((tech, index) => {
-                         if (typeof tech === 'string') {
-                           return (
-                             <span key={index} className="px-4 py-2 bg-slate-50 text-slate-600 rounded-xl text-sm font-semibold border border-slate-200 hover:border-[#22D3EE] transition-colors">
-                               {tech}
-                             </span>
-                           );
-                         }
-                         return (
-                           <div key={index} className="px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl hover:bg-white hover:border-[#22D3EE] transition-all group relative cursor-help border border-slate-200">
-                             <div className="font-bold text-sm text-slate-700">{tech.name}</div>
-                             <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">{tech.role}</div>
-                             
-                             {/* Refined Tooltip */}
-                             <div className="absolute opacity-0 group-hover:opacity-100 transition-all duration-200 z-20 bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 bg-[#1F3C88] text-white text-xs p-3 rounded-xl shadow-2xl pointer-events-none">
-                               <p className="font-medium leading-relaxed">{tech.whenToUse}</p>
-                               <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-[#1F3C88]"></div>
-                             </div>
-                           </div>
-                         );
-                       })}
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
@@ -457,44 +477,47 @@ export function ProjectOutput({
                       Initialization-Guide
                     </div>
                   </div>
-                  <div className="text-[10px] text-slate-500 font-mono">zsh — 80x24</div>
+                  <div className="text-xs text-slate-500 font-mono">zsh — 80x24</div>
                 </div>
 
                 <div className="p-8 space-y-8">
                   <div className="space-y-3">
-                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <h3 className="text-2xl font-black text-white flex items-center gap-2">
                        First Commit Checklist
                     </h3>
-                    <p className="text-slate-400 text-sm leading-relaxed max-w-xl">
+                    <p className="text-slate-300 text-lg leading-relaxed max-w-xl font-medium">
                       {project.firstCommitGuide.intro}
                     </p>
                   </div>
 
-                  <div className="bg-slate-950/50 p-6 rounded-xl border border-slate-800/50 font-mono space-y-6">
-                    {project.firstCommitGuide.steps.map((step, index) => (
-                      <div key={index} className="space-y-2 relative">
-                        <div className="flex items-center gap-2 text-[#22D3EE]/50 text-[11px] font-bold uppercase tracking-wider">
-                          <span className="w-4 h-px bg-[#22D3EE]/20"></span>
+                  <div className="bg-slate-950/50 p-6 md:p-8 rounded-2xl border border-slate-800/50 font-mono space-y-6 md:space-y-8">
+                    {project.firstCommitGuide.steps?.map((step, index) => (
+                      <div key={index} className="space-y-3 relative group/step">
+                        <div className="flex items-center gap-2 text-[#22D3EE]/50 text-xs md:text-sm font-bold uppercase tracking-widest">
+                          <span className="w-6 h-px bg-[#22D3EE]/20 transition-all group-hover/step:w-10 group-hover/step:bg-[#22D3EE]/50"></span>
                           {step.note || `Step 0${index + 1}`}
                         </div>
-                        <div className="flex items-start gap-3 text-slate-300">
-                          <span className="text-[#22D3EE] mt-0.5">$</span>
-                          <code className="text-sm md:text-base selection:bg-[#22D3EE]/20 leading-relaxed">
+                        <div className="flex items-start gap-4 text-slate-300">
+                          <span className="text-[#22D3EE] mt-1 text-lg font-bold select-none">$</span>
+                          <code className="text-lg md:text-xl selection:bg-[#22D3EE]/30 leading-relaxed font-bold tracking-tight text-white">
                             {step.action}
                           </code>
                         </div>
                       </div>
                     ))}
+                    {(!project.firstCommitGuide.steps || project.firstCommitGuide.steps.length === 0) && (
+                      <div className="text-slate-500 italic text-sm">No steps generated for this guide.</div>
+                    )}
                   </div>
 
                   {/* Your First Goal - Highlighted box */}
-                  <div className="p-5 rounded-2xl bg-[#22D3EE]/10 border border-[#22D3EE]/20 flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#22D3EE]/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Target className="w-5 h-5 text-[#22D3EE]" />
+                  <div className="p-6 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-start gap-5 group/goal">
+                    <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover/goal:scale-110">
+                      <Target className="w-6 h-6 text-cyan-400" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white mb-1 uppercase tracking-wide">Milestone Alpha</h4>
-                      <p className="text-[#22D3EE] text-sm leading-relaxed font-medium">
+                      <h4 className="text-sm font-black text-white mb-1 uppercase tracking-widest opacity-60">Milestone Alpha</h4>
+                      <p className="text-cyan-300 text-xl leading-relaxed font-bold">
                         {project.firstCommitGuide.firstGoal}
                       </p>
                     </div>
@@ -513,7 +536,10 @@ export function ProjectOutput({
                   <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
                     <Layers className="w-4 h-4 text-slate-500" />
                   </div>
-                  <h2 className="text-lg font-medium text-[#1F3C88]">Key Features</h2>
+                  <h2 className="text-lg font-medium text-[#1F3C88] flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    Key Features
+                  </h2>
                   <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{project.features.length}</span>
                 </div>
                 {expandedSections.features ? (
@@ -524,31 +550,36 @@ export function ProjectOutput({
               </button>
               
               {expandedSections.features && (
-                <div className="px-6 py-4 border-t border-slate-100">
-                  <div className="grid sm:grid-cols-2 gap-3">
+                <div className="px-8 py-8 border-t border-slate-100">
+                  <div className="grid gap-6">
                     {project.features.map((feature, index) => {
                       if (typeof feature === 'string') {
                         return (
-                          <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
-                            <div className="mt-1">
-                              <Check className="w-4 h-4 text-[#22C55E]" />
+                          <div key={index} className="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-100 group">
+                            <div className="mt-1 w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                              <Check className="w-4 h-4 text-emerald-500" />
                             </div>
-                            <span className="text-slate-600 text-sm leading-relaxed">{feature}</span>
+                            <span className="text-slate-700 text-lg font-bold leading-relaxed">{feature}</span>
                           </div>
                         );
                       }
                       
                       return (
-                        <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
-                          <div className="mt-1">
-                            <Check className="w-4 h-4 text-[#22C55E]" />
+                        <div key={index} className="flex items-start gap-5 p-6 rounded-2xl bg-white border border-slate-100 hover:border-cyan-200 hover:shadow-md transition-all group">
+                          <div className="mt-1.5 w-8 h-8 rounded-xl bg-cyan-50 flex items-center justify-center flex-shrink-0 text-cyan-600">
+                            <Layers className="w-5 h-5" />
                           </div>
-                          <div>
-                            <span className="text-slate-800 text-sm font-semibold">{feature.name}</span>
-                            <span className="text-slate-500 text-xs ml-2 bg-slate-100 px-1.5 py-0.5 rounded">{feature.tier}</span>
-                            <p className="text-slate-600 text-sm mt-1 leading-relaxed">{feature.description}</p>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2 flex-wrap">
+                              <span className="text-cyan-600 text-sm font-black uppercase tracking-widest bg-cyan-50 px-2.5 py-1 rounded-lg border border-cyan-100">{feature.tier}</span>
+                              <h4 className="text-2xl font-black text-slate-900 leading-tight">{feature.name}</h4>
+                            </div>
+                            <p className="text-slate-600 text-lg font-medium mt-2 leading-relaxed">{feature.description}</p>
                             {feature.technicalNote && (
-                              <p className="text-slate-400 text-xs mt-1 italic leading-relaxed">Note: {feature.technicalNote}</p>
+                              <div className="mt-4 flex items-center gap-2 text-slate-400 text-base font-bold bg-slate-50 px-3 py-1.5 rounded-lg w-fit">
+                                <Code2 className="w-4 h-4" />
+                                <span>Note: {feature.technicalNote}</span>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -569,7 +600,10 @@ export function ProjectOutput({
                   <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
                     <Target className="w-4 h-4 text-slate-500" />
                   </div>
-                  <h2 className="text-lg font-medium text-[#1F3C88]">Development Roadmap</h2>
+                  <h2 className="text-lg font-medium text-[#1F3C88] flex items-center gap-2">
+                    <Flag className="w-4 h-4 text-emerald-500" />
+                    Development Roadmap
+                  </h2>
                   <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{project.roadmap.length}</span>
                 </div>
                 {expandedSections.roadmap ? (
@@ -584,9 +618,12 @@ export function ProjectOutput({
                   <div className="space-y-4">
                     {project.roadmap.map((phase, index) => (
                       <div key={index} className="relative">
-                        {/* Connecting Line */}
+                        {/* Connecting Line - Extended to bridge gaps between phases */}
                         {index < project.roadmap.length - 1 && (
-                          <div className="absolute left-5 top-12 bottom-0 w-px bg-slate-200"></div>
+                          <div 
+                            className="absolute left-5 top-12 w-0.5 bg-slate-200 z-0" 
+                            style={{ height: 'calc(100% + 1.5rem)' }}
+                          />
                         )}
                         
                         <div className="flex gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
@@ -598,12 +635,12 @@ export function ProjectOutput({
                           {/* Phase Content */}
                           <div className="flex-1 min-w-0 pt-1">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                              <h4 className="font-medium text-slate-900">{phase.title}</h4>
-                              <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap w-fit">
+                              <h4 className="text-lg font-bold text-slate-900">{phase.title}</h4>
+                              <span className="text-sm font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap w-fit">
                                 {phase.duration}
                               </span>
                             </div>
-                            <p className="text-slate-500 text-sm leading-relaxed">{phase.description}</p>
+                            <p className="text-slate-600 text-base leading-relaxed">{phase.description}</p>
                           </div>
                         </div>
                       </div>
@@ -623,7 +660,7 @@ export function ProjectOutput({
                   <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
                     <TrendingUp className="w-4 h-4 text-slate-500" />
                   </div>
-                  <h2 className="text-lg font-medium text-[#1F3C88] uppercase tracking-wide text-xs">WHAT YOU'LL LEARN</h2>
+                  <h2 className="text-sm font-black text-[#1F3C88] uppercase tracking-wider">WHAT YOU'LL LEARN</h2>
                   <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full font-bold">
                     {Array.isArray(project.skillOutcomes) ? project.skillOutcomes.length : ((project.skillOutcomes.solidify?.length || 0) + (project.skillOutcomes.gainNew?.length || 0))}
                   </span>
@@ -642,26 +679,26 @@ export function ProjectOutput({
                       project.skillOutcomes.map((skill, index) => (
                         <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors">
                           <CheckCircle2 className="w-4 h-4 text-[#22C55E] flex-shrink-0 mt-0.5" />
-                          <span className="text-slate-600 text-sm leading-relaxed">{skill}</span>
+                          <span className="text-slate-600 text-base leading-relaxed">{skill}</span>
                         </div>
                       ))
                     ) : (
                       <>
-                        <div className="space-y-2">
-                          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Capabilities to Solidify</h4>
+                        <div className="space-y-4">
+                          <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-3">Capabilities to Solidify</h4>
                           {project.skillOutcomes.solidify.map((skill, index) => (
                              <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100">
                                 <CheckCircle2 className="w-4 h-4 text-[#22C55E] flex-shrink-0 mt-0.5" />
-                                <span className="text-slate-700 text-sm font-medium leading-relaxed">{skill}</span>
+                                <span className="text-slate-700 text-base font-medium leading-relaxed">{skill}</span>
                              </div>
                           ))}
                         </div>
-                        <div className="space-y-3">
-                          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Capabilities to Gain</h4>
+                        <div className="space-y-4">
+                          <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-3">Capabilities to Gain</h4>
                           {project.skillOutcomes.gainNew.map((skill, index) => (
                              <div key={index} className="flex items-start gap-3 p-4 rounded-xl bg-white hover:bg-slate-50 transition-all border border-slate-100 shadow-sm group">
                                 <TrendingUp className="w-4 h-4 text-[#22D3EE] flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                                <span className="text-slate-700 font-bold text-sm leading-relaxed">{skill}</span>
+                                <span className="text-slate-700 font-bold text-base leading-relaxed">{skill}</span>
                              </div>
                           ))}
                         </div>
@@ -680,7 +717,7 @@ export function ProjectOutput({
                   <ShieldAlert className="w-8 h-8 text-amber-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-amber-900 mb-4 tracking-tight uppercase text-xs">Watch out for</h3>
+                  <h3 className="text-sm font-black text-amber-900 mb-4 tracking-wider uppercase">Watch out for</h3>
                   <div className="grid gap-4">
                     {project.pitfalls?.map((pitfallObj: any, i: number) => {
                       const pitfallText = typeof pitfallObj === 'string' ? pitfallObj : pitfallObj.pitfall;
@@ -692,8 +729,8 @@ export function ProjectOutput({
                           <ShieldAlert className="w-4 h-4 text-amber-500" />
                         </div>
                         <div>
-                          <span className="text-sm text-amber-900 leading-relaxed font-bold">{pitfallText}</span>
-                          {mitigationText && <p className="text-[11px] text-amber-800 mt-1 leading-relaxed opacity-80"><span className="font-black uppercase tracking-widest text-[9px] mr-1">Fix:</span> {mitigationText}</p>}
+                          <span className="text-base text-amber-900 leading-relaxed font-bold">{pitfallText}</span>
+                          {mitigationText && <p className="text-sm text-amber-800 mt-1 leading-relaxed opacity-80"><span className="font-black uppercase tracking-widest text-[11px] mr-1">Fix:</span> {mitigationText}</p>}
                         </div>
                       </div>
                     )})}
@@ -706,7 +743,7 @@ export function ProjectOutput({
                         <div className="mt-1 flex-shrink-0">
                           <ShieldAlert className="w-4 h-4 text-amber-500" />
                         </div>
-                        <span className="text-sm text-amber-900 leading-relaxed font-medium">{pitfall}</span>
+                        <span className="text-base text-amber-900 leading-relaxed font-black">{pitfall}</span>
                       </div>
                     ))}
                   </div>
@@ -724,7 +761,7 @@ export function ProjectOutput({
                   <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
                     <BookOpen className="w-4 h-4 text-slate-500" />
                   </div>
-                  <h2 className="text-lg font-medium text-[#1F3C88] uppercase tracking-wide text-xs">LEARNING RESOURCES</h2>
+                  <h2 className="text-sm font-black text-[#1F3C88] uppercase tracking-wider">LEARNING RESOURCES</h2>
                 </div>
                 {expandedSections.resources ? (
                   <ChevronUp className="w-5 h-5 text-slate-400" />
@@ -748,12 +785,12 @@ export function ProjectOutput({
                             <Icon className="w-5 h-5 text-slate-400 group-hover:text-cyan-600" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <span className="font-bold text-sm text-slate-900 flex items-center justify-between">
+                            <span className="font-bold text-base text-slate-900 flex items-center justify-between">
                               {r.title}
-                              <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5">{r.format}</span>
+                              <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5">{r.format}</span>
                             </span>
-                            <span className="text-[11px] text-slate-500 block mt-0.5 font-medium">{r.source} · {r.timeEstimate}</span>
-                            <span className="text-xs text-slate-600 mt-2 block leading-relaxed font-medium opacity-80">{r.why}</span>
+                            <span className="text-sm text-slate-500 block mt-0.5 font-medium">{r.source} · {r.timeEstimate}</span>
+                            <span className="text-sm text-slate-600 mt-2 block leading-relaxed font-medium opacity-80">{r.why}</span>
                           </div>
                         </a>
                       );
@@ -766,7 +803,7 @@ export function ProjectOutput({
             {/* Portfolio Blurb - impact highlight */}
             {project.portfolioBlurb && (
               <div className="border-l-4 border-cyan-400 bg-slate-50 rounded-r-xl p-6 mt-4 group">
-                 <p className="text-[10px] font-black text-cyan-700 mb-3 uppercase tracking-widest">READY TO PASTE INTO YOUR RESUME</p>
+                 <p className="text-xs font-black text-cyan-700 mb-3 uppercase tracking-widest">READY TO PASTE INTO YOUR RESUME</p>
                  <p className="text-sm text-slate-800 leading-relaxed font-medium italic">
                    "{project.portfolioBlurb}"
                  </p>
@@ -776,7 +813,7 @@ export function ProjectOutput({
                      setIsCopied(true);
                      setTimeout(() => setIsCopied(false), 2000);
                    }}
-                   className="mt-4 text-[10px] uppercase tracking-widest flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg font-black hover:border-cyan-300 hover:text-cyan-700 transition-all shadow-sm active:translate-y-0.5"
+                   className="mt-4 text-xs uppercase tracking-widest flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg font-black hover:border-cyan-300 hover:text-cyan-700 transition-all shadow-sm active:translate-y-0.5"
                  >
                    {isCopied ? (
                      <>
@@ -825,11 +862,11 @@ export function ProjectOutput({
                   <div className="grid grid-cols-2 gap-3">
                     <button onClick={onIncreaseDifficulty} className="flex flex-col items-center gap-2 p-4 bg-white border border-slate-200 rounded-xl hover:border-[#1F3C88] hover:bg-slate-50 transition-all group">
                       <ArrowUp className="w-5 h-5 text-[#22D3EE] group-hover:-translate-y-1 transition-transform" />
-                      <span className="text-[11px] font-bold text-slate-600 uppercase">Scale Up</span>
+                      <span className="text-sm font-bold text-slate-600 uppercase">Scale Up</span>
                     </button>
                     <button onClick={onSimplify} className="flex flex-col items-center gap-2 p-4 bg-white border border-slate-200 rounded-xl hover:border-[#1F3C88] hover:bg-slate-50 transition-all group">
                       <ArrowDown className="w-5 h-5 text-slate-400 group-hover:translate-y-1 transition-transform" />
-                      <span className="text-[11px] font-bold text-slate-600 uppercase">Scale Down</span>
+                      <span className="text-sm font-bold text-slate-600 uppercase">Scale Down</span>
                     </button>
                   </div>
 

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { 
   ChevronLeft, 
   ChevronRight, 
-  Sparkles, 
   Users, 
   Clock, 
   CheckSquare, 
@@ -12,6 +11,8 @@ import {
   Lightbulb,
   Zap,
   Calendar,
+  CalendarDays,
+  CalendarRange,
   Code,
   Presentation,
   Video,
@@ -20,7 +21,17 @@ import {
   Trophy,
   GraduationCap,
   Rocket,
-  Network
+  Network,
+  Plug,
+  FileCode,
+  Cloud,
+  Wallet,
+  User,
+  Palette,
+  Bot,
+  Timer,
+  Layers,
+  Handshake
 } from 'lucide-react';
 import type { HackathonContext, TeamMember } from '../../../types/hackathon.types';
 
@@ -34,7 +45,47 @@ interface QuestionOption {
   value: string;
   label: string;
   description?: string;
-  emoji: string;
+}
+
+const HACKATHON_OPTION_ICONS: { [key: string]: any } = {
+  // Team size
+  '1': User,
+  '2': Users,
+  '3': Users,
+  '5': Users,
+  // Skills
+  'frontend': Palette,
+  'backend': Code,
+  'fullstack': Layers,
+  'design': Palette,
+  'ml': Bot,
+  'devops': Rocket,
+  // Timeline
+  '24': Zap,
+  '36': Calendar,
+  '48': CalendarDays,
+  '72': CalendarRange,
+  'custom': Timer,
+  // Submission
+  'demo': Presentation,
+  'deck': FileCode,
+  'video': Video,
+  'repo': Github,
+  'deployment': Globe,
+  // Resources
+  'apis': Plug,
+  'existing-code': FileCode,
+  'cloud': Cloud,
+  'budget': Wallet,
+  // Priority
+  'win': Trophy,
+  'learn': GraduationCap,
+  'mvp': Zap,
+  'network': Handshake,
+};
+
+function getHackathonOptionIcon(value: string) {
+  return HACKATHON_OPTION_ICONS[value] || Target;
 }
 
 export function HackathonQuestions({ initialContext, onComplete, onBack }: HackathonQuestionsProps) {
@@ -68,10 +119,10 @@ export function HackathonQuestions({ initialContext, onComplete, onBack }: Hacka
       icon: Users,
       type: 'single' as const,
       options: [
-        { value: '1', label: 'Solo', description: 'Just me', emoji: '👤' },
-        { value: '2', label: '2-Person Team', description: 'Pair programming', emoji: '👥' },
-        { value: '3', label: '3-4 Person Team', description: 'Small team', emoji: '👨‍👩‍👦' },
-        { value: '5', label: '5+ Person Team', description: 'Large team', emoji: '👨‍👩‍👧‍👦' },
+        { value: '1', label: 'Solo', description: 'Just me' },
+        { value: '2', label: '2-Person Team', description: 'Pair programming' },
+        { value: '3', label: '3-4 Person Team', description: 'Small team' },
+        { value: '5', label: '5+ Person Team', description: 'Large team' },
       ],
     },
     {
@@ -81,12 +132,12 @@ export function HackathonQuestions({ initialContext, onComplete, onBack }: Hacka
       icon: Code,
       type: 'multi' as const,
       options: [
-        { value: 'frontend', label: 'Frontend', description: '', emoji: '🎨' },
-        { value: 'backend', label: 'Backend', description: '', emoji: '⚙️' },
-        { value: 'fullstack', label: 'Full Stack', description: '', emoji: '🔥' },
-        { value: 'design', label: 'UI/UX Design', description: '', emoji: '🎭' },
-        { value: 'ml', label: 'ML/AI', description: '', emoji: '🤖' },
-        { value: 'devops', label: 'DevOps', description: '', emoji: '🚀' },
+        { value: 'frontend', label: 'Frontend', description: '' },
+        { value: 'backend', label: 'Backend', description: '' },
+        { value: 'fullstack', label: 'Full Stack', description: '' },
+        { value: 'design', label: 'UI/UX Design', description: '' },
+        { value: 'ml', label: 'ML/AI', description: '' },
+        { value: 'devops', label: 'DevOps', description: '' },
       ],
     },
     {
@@ -96,11 +147,11 @@ export function HackathonQuestions({ initialContext, onComplete, onBack }: Hacka
       icon: Clock,
       type: 'single' as const,
       options: [
-        { value: '24', label: '24 Hours', description: 'Sprint mode', emoji: '⚡' },
-        { value: '36', label: '36 Hours', description: 'Standard', emoji: '📅' },
-        { value: '48', label: '48 Hours', description: 'Most common', emoji: '📆' },
-        { value: '72', label: '72 Hours', description: 'Extended', emoji: '🗓️' },
-        { value: 'custom', label: 'Custom Duration', description: 'Other', emoji: '⏱️' },
+        { value: '24', label: '24 Hours', description: 'Sprint mode' },
+        { value: '36', label: '36 Hours', description: 'Standard' },
+        { value: '48', label: '48 Hours', description: 'Most common' },
+        { value: '72', label: '72 Hours', description: 'Extended' },
+        { value: 'custom', label: 'Custom Duration', description: 'Other' },
       ],
     },
     {
@@ -110,11 +161,11 @@ export function HackathonQuestions({ initialContext, onComplete, onBack }: Hacka
       icon: CheckSquare,
       type: 'multi' as const,
       options: [
-        { value: 'demo', label: 'Live Demo', description: '', emoji: '🎬' },
-        { value: 'deck', label: 'Pitch Deck', description: '', emoji: '📊' },
-        { value: 'video', label: 'Demo Video', description: '', emoji: '🎥' },
-        { value: 'repo', label: 'GitHub Repo', description: '', emoji: '📦' },
-        { value: 'deployment', label: 'Deployed App', description: '', emoji: '🌐' },
+        { value: 'demo', label: 'Live Demo', description: '' },
+        { value: 'deck', label: 'Pitch Deck', description: '' },
+        { value: 'video', label: 'Demo Video', description: '' },
+        { value: 'repo', label: 'GitHub Repo', description: '' },
+        { value: 'deployment', label: 'Deployed App', description: '' },
       ],
     },
     {
@@ -124,10 +175,10 @@ export function HackathonQuestions({ initialContext, onComplete, onBack }: Hacka
       icon: Package,
       type: 'multi' as const,
       options: [
-        { value: 'apis', label: 'External APIs', description: '', emoji: '🔌' },
-        { value: 'existing-code', label: 'Pre-existing Code', description: '', emoji: '📝' },
-        { value: 'cloud', label: 'Cloud Platforms', description: '', emoji: '☁️' },
-        { value: 'budget', label: 'Budget Available', description: '', emoji: '💰' },
+        { value: 'apis', label: 'External APIs', description: '' },
+        { value: 'existing-code', label: 'Pre-existing Code', description: '' },
+        { value: 'cloud', label: 'Cloud Platforms', description: '' },
+        { value: 'budget', label: 'Budget Available', description: '' },
       ],
     },
     {
@@ -137,10 +188,10 @@ export function HackathonQuestions({ initialContext, onComplete, onBack }: Hacka
       icon: Target,
       type: 'single' as const,
       options: [
-        { value: 'win', label: 'Win the Hackathon', description: 'Go for first place', emoji: '🏆' },
-        { value: 'learn', label: 'Learn New Skills', description: 'Educational focus', emoji: '📚' },
-        { value: 'mvp', label: 'Build MVP Fast', description: 'Speed over polish', emoji: '⚡' },
-        { value: 'network', label: 'Network & Connect', description: 'Meet people', emoji: '🤝' },
+        { value: 'win', label: 'Win the Hackathon', description: 'Go for first place' },
+        { value: 'learn', label: 'Learn New Skills', description: 'Educational focus' },
+        { value: 'mvp', label: 'Build MVP Fast', description: 'Speed over polish' },
+        { value: 'network', label: 'Network & Connect', description: 'Meet people' },
       ],
     },
   ];
@@ -538,6 +589,7 @@ export function HackathonQuestions({ initialContext, onComplete, onBack }: Hacka
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {currentQuestion.options.map((option: QuestionOption) => {
                 const isSelected = getSelectedValue(currentQuestion.id, option.value);
+                const OptionIcon = getHackathonOptionIcon(option.value);
 
                 return (
                   <button
@@ -549,13 +601,13 @@ export function HackathonQuestions({ initialContext, onComplete, onBack }: Hacka
                         : 'border-gray-200 hover:border-[#FF6B35]/40 hover:bg-gray-50'
                     }`}
                   >
-                    {/* Emoji Icon */}
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-2xl transition-all duration-200 ${
+                    {/* Lucide Icon */}
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
                       isSelected 
-                        ? 'bg-[#FF6B35] scale-110' 
-                        : 'bg-gray-100 group-hover:bg-[#FF6B35]/10 group-hover:scale-105'
+                        ? 'bg-[#FF6B35] text-white' 
+                        : 'bg-gray-100 text-gray-500 group-hover:bg-[#FF6B35]/10 group-hover:text-[#FF6B35]'
                     }`}>
-                      {option.emoji}
+                      <OptionIcon className="w-5 h-5" />
                     </div>
 
                     {/* Label */}

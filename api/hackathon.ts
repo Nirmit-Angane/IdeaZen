@@ -27,105 +27,70 @@ export default async function handler(req: any, res: any) {
   }
 
   const systemPrompt = `
-You are a hackathon veteran who has won multiple 24–48 hour competitions.
-You give tight, realistic execution plans — not inspirational fluff.
-Every minute of a hackathon counts, so your advice is direct and specific.
+You are an elite hackathon mentor and technical architect.
+Your goal is to provide a high-octane 24-48 hour execution roadmap that WINS.
 
-BANNED TOOL MENTIONS — never suggest these in any field:
-- Figma (any version — Figma, FigJam, Figma templates)
-- Adobe XD
-- Sketch
-
-For rapid UI in hackathons, suggest instead:
-- shadcn/ui, Tailwind UI, or DaisyUI for pre-built components
-- v0.dev is acceptable
-- Specific component libraries like MUI, Chakra UI, Radix
-- "Build with a CSS framework + pre-built templates"
-
-Banned words for any achievability or score explanation:
-relentlessly, pivotal, crucial, seamlessly, leverage, harness, dive. Write like a teammate, not a coach.
-
-Rules:
-- Output ONLY valid JSON. No markdown, no code fences, no text outside the JSON.
-- No markdown inside JSON strings.
-- Be brutally realistic about what can be built in the given time.
-- Name specific tools, libraries, and shortcuts that save time in hackathons.
-- Every task must have a clear owner if team size is more than 1.
+CRITICAL RULES:
+1. NEVER mention "Figma", "Adobe XD", "Sketch", or generic "designing" phases. Assume UI is code-first (Tailwind, Shancn).
+2. Avoid AI filler: "relentlessly", "pivotal", "tailored to your needs". Be direct and technical.
+3. Every Roadmap Phase MUST have exactly 5-7 technical, actionable tasks.
+4. Use hour ranges (e.g., "Hr 0-3", "Hr 4-12") for time blocks.
+5. Provide a specific, honest "Win Probability" or "Achievability" note.
 `.trim();
 
   const userPrompt = `
 Project: "${projectTitle}"
 Team size: ${teamSize || "Solo"}
 Timeline: ${timeline || "24h"}
-Team skills: ${teamSkills?.join(", ") || "Full-stack"}
-Judging focus: ${judgingCriteria || "Technical complexity + innovation"}
-Tech constraints: ${techConstraints || "None"}
+Skills: ${teamSkills?.join(", ") || "Full-stack"}
 
-Build a complete hackathon execution plan. Be honest about what can realistically ship in ${timeline || "24h"}.
-
-Return a single JSON object:
-
+Generate a winning hackathon execution plan in JSON:
 {
   "title": "${projectTitle}",
-  "timeline": "${timeline || "24h"}",
-
-  "feasibility": "High | Medium | Low",
-  "feasibilityNote": "<One direct sentence: why this is or isn't realistic in ${timeline || "24h"}>",
-
   "strategicAnalysis": {
-    "achievability": "<2–3 sentences: honest assessment of what can ship vs what must be cut>",
-    "biggestRisk": "<The single most likely reason this fails — be specific>",
-    "winningAngle": "<The one thing that, if executed well, makes judges remember this project>",
-    "skillGaps": ["<Gap 1>", "<Gap 2>"],
-    "mitigations": ["<How to handle gap 1>", "<How to handle gap 2>"]
+    "achievability": "<One powerful, honest sentence about the odds of finishing this specific MVP in ${timeline}>",
+    "biggestRisk": "<The #1 technical or integration bottleneck>",
+    "winningAngle": "<The specific feature or technical 'flex' that will impress judges>",
+    "mitigations": ["Specific action 1", "Specific action 2"],
+    "skillGaps": ["Gap 1"]
   },
-
   "roadmap": [
     {
       "phase": "1",
-      "title": "<Phase name>",
-      "timeBlock": "<e.g. Hour 0–3>",
-      "goal": "<What must be working by the end of this block>",
+      "title": "Foundation & Logic",
+      "timeBlock": "Hr 0-6",
+      "goal": "Core API/State working",
       "tasks": [
-        {
-          "task": "<Specific task>",
-          "assignedTo": "<Person role or 'Everyone' — e.g. Frontend Dev, Backend Dev, Solo>",
-          "duration": "<e.g. 45 min>",
-          "priority": "Must | Should | Nice"
-        }
+        { "task": "Specific technical task 1", "assignedTo": "Dev", "duration": "45m" },
+        { "task": "Specific technical task 2", "assignedTo": "Dev", "duration": "1h" },
+        { "task": "Specific technical task 3", "assignedTo": "Dev", "duration": "30m" },
+        { "task": "Specific technical task 4", "assignedTo": "Dev", "duration": "1h" },
+        { "task": "Specific technical task 5", "assignedTo": "Dev", "duration": "45m" }
       ]
     }
   ],
-
-  "mvpScope": {
-    "mustHave": ["<Feature that must work for a credible demo>"],
-    "niceToHave": ["<Feature to add if time permits>"],
-    "cutIfNeeded": ["<Feature to drop without hesitation if behind schedule>"]
+  "demoScript": {
+    "hook": "1-sentence attention grabber",
+    "problem": "The 'pain point' explanation",
+    "theWOW": "The main technical demo sequence",
+    "closing": "Final impact statement"
   },
-
-  "techRecommendations": {
-    "shortcuts": ["<Specific library or tool that saves hours — e.g. 'Use Clerk for auth, skip building it'>" ],
-    "avoid": ["<Something tempting that will eat your time — e.g. 'Don't build a custom UI component library'>" ]
-  },
-
-  "risks": [
-    {
-      "risk": "<Specific risk for this project and timeline>",
-      "likelihood": "High | Medium | Low",
-      "mitigation": "<Exact action to take if this happens>"
-    }
-  ],
-
   "submissionChecklist": [
-    {
-      "item": "<Specific checklist item>",
-      "timeAllocation": "<e.g. 30 min>",
-      "critical": true
-    }
+    { "item": "README with setup instructions", "timeAllocation": "15m", "critical": true, "completed": false },
+    { "item": "Demo video/GIF recording", "timeAllocation": "30m", "critical": true, "completed": false }
   ],
-
-  "demoScript": "<4–5 sentences: exact flow to demo this in 3 minutes to judges. What to show first, where the wow moment is, what to say if something breaks.>"
+  "mvpScope": {
+    "mustHave": ["Feature 1", "Feature 2"],
+    "niceToHave": ["Feature 3"],
+    "cutIfNeeded": ["Feature 4"]
+  },
+  "risks": [
+    { "risk": "API Limit", "mitigation": "Mock data fallback" }
+  ],
+  "feasibility": "High"
 }
+
+STRICT: Exactly 5-7 tasks per phase. No Figma. No filler.
 `.trim();
 
   try {

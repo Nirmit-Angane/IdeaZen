@@ -1,4 +1,4 @@
-import { Zap, BookOpen } from 'lucide-react';
+import { Zap, BookOpen, Check } from 'lucide-react';
 
 interface ModeSelectionProps {
   onSelectMode: (mode: 'regular' | 'hackathon') => void;
@@ -40,19 +40,19 @@ export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
 
               <ul className="space-y-3 mb-6">
                 <li className="flex items-start">
-                  <span className="text-[#22C55E] mr-2">✓</span>
+                  <Check className="w-4 h-4 text-[#22C55E] mr-2 mt-0.5 shrink-0" />
                   <span className="text-[#475569]">Personalized project ideas</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-[#22C55E] mr-2">✓</span>
+                  <Check className="w-4 h-4 text-[#22C55E] mr-2 mt-0.5 shrink-0" />
                   <span className="text-[#475569]">Detailed learning roadmaps</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-[#22C55E] mr-2">✓</span>
+                  <Check className="w-4 h-4 text-[#22C55E] mr-2 mt-0.5 shrink-0" />
                   <span className="text-[#475569]">Tech stack recommendations</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-[#22C55E] mr-2">✓</span>
+                  <Check className="w-4 h-4 text-[#22C55E] mr-2 mt-0.5 shrink-0" />
                   <span className="text-[#475569]">Self-paced development</span>
                 </li>
               </ul>
@@ -85,19 +85,19 @@ export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
 
               <ul className="space-y-3 mb-6">
                 <li className="flex items-start">
-                  <span className="text-[#FF6B35] mr-2">⚡</span>
+                  <Zap className="w-3.5 h-3.5 text-[#FF6B35] mr-2 mt-1 shrink-0" />
                   <span className="text-[#475569]">Problem statement analysis</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-[#FF6B35] mr-2">⚡</span>
+                  <Zap className="w-3.5 h-3.5 text-[#FF6B35] mr-2 mt-1 shrink-0" />
                   <span className="text-[#475569]">Winning strategy generation</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-[#FF6B35] mr-2">⚡</span>
+                  <Zap className="w-3.5 h-3.5 text-[#FF6B35] mr-2 mt-1 shrink-0" />
                   <span className="text-[#475569]">Hour-by-hour roadmap</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-[#FF6B35] mr-2">⚡</span>
+                  <Zap className="w-3.5 h-3.5 text-[#FF6B35] mr-2 mt-1 shrink-0" />
                   <span className="text-[#475569]">Live progress tracking</span>
                 </li>
               </ul>

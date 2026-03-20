@@ -11,7 +11,24 @@ import {
     TrendingUp,
     Check,
     Lightbulb,
-    Info
+    Info,
+    Brain,
+    Palette,
+    Terminal,
+    HelpCircle,
+    Sprout,
+    Flame,
+    Award,
+    Layout,
+    Server,
+    Monitor,
+    FileBarChart,
+    Video,
+    Github,
+    Globe,
+    Trophy,
+    GraduationCap,
+    Rocket
 } from 'lucide-react';
 import type { HackathonInputs } from '../../../types/hackathon.types';
 import { getOptionIcon } from '../../QuestionFlow/QuestionFlowIcons';
@@ -30,9 +47,9 @@ interface Question {
     color: string;
     isSkillQuestion: boolean;
     isMultiSelect: boolean;
-    options: { value: string; label: string; emoji: string; }[];
+    options: { value: string; label: string; icon?: any; emoji?: string; }[];
     memberIndex?: number;
-    proficiencyOptions?: { value: string; label: string; emoji: string; }[];
+    proficiencyOptions?: { value: string; label: string; icon?: any; emoji?: string; }[];
 }
 
 export function HackathonQuestionFlow({ projectTitle, onComplete, onBack }: HackathonQuestionFlowProps) {
@@ -54,10 +71,10 @@ export function HackathonQuestionFlow({ projectTitle, onComplete, onBack }: Hack
             isSkillQuestion: false,
             isMultiSelect: false,
             options: [
-                { value: 'solo', label: 'Solo', emoji: '👤' },
-                { value: '2-person', label: '2 People', emoji: '👥' },
-                { value: '3-4', label: '3-4 People', emoji: '👥👥' },
-                { value: '5+', label: '5+ People', emoji: '👥👥👥' }
+                { value: 'solo', label: 'Solo', icon: Users },
+                { value: '2-person', label: '2 People', icon: Users },
+                { value: '3-4', label: '3-4 People', icon: Users },
+                { value: '5+', label: '5+ People', icon: Users }
             ]
         },
         {
@@ -69,10 +86,10 @@ export function HackathonQuestionFlow({ projectTitle, onComplete, onBack }: Hack
             isSkillQuestion: false,
             isMultiSelect: false,
             options: [
-                { value: '24h', label: '24 Hours', emoji: '⚡' },
-                { value: '36h', label: '36 Hours', emoji: '📅' },
-                { value: '48h', label: '48 Hours', emoji: '📆' },
-                { value: '72h', label: '72 Hours', emoji: '🗓️' }
+                { value: '24h', label: '24 Hours', icon: Clock },
+                { value: '36h', label: '36 Hours', icon: Clock },
+                { value: '48h', label: '48 Hours', icon: Clock },
+                { value: '72h', label: '72 Hours', icon: Clock }
             ]
         },
         {
@@ -84,11 +101,11 @@ export function HackathonQuestionFlow({ projectTitle, onComplete, onBack }: Hack
             isSkillQuestion: false,
             isMultiSelect: true,
             options: [
-                { value: 'demo', label: 'Working Demo', emoji: '💻' },
-                { value: 'pitch-deck', label: 'Pitch Deck', emoji: '📊' },
-                { value: 'video', label: 'Demo Video', emoji: '🎥' },
-                { value: 'github', label: 'GitHub Repo', emoji: '📁' },
-                { value: 'deployment', label: 'Live Deployment', emoji: '🚀' }
+                { value: 'demo', label: 'Working Demo', icon: Monitor },
+                { value: 'pitch-deck', label: 'Pitch Deck', icon: FileBarChart },
+                { value: 'video', label: 'Demo Video', icon: Video },
+                { value: 'github', label: 'GitHub Repo', icon: Github },
+                { value: 'deployment', label: 'Live Deployment', icon: Globe }
             ]
         },
         {
@@ -100,10 +117,10 @@ export function HackathonQuestionFlow({ projectTitle, onComplete, onBack }: Hack
             isSkillQuestion: false,
             isMultiSelect: false,
             options: [
-                { value: 'win', label: 'Win the Competition', emoji: '🏆' },
-                { value: 'learn', label: 'Learn New Skills', emoji: '📚' },
-                { value: 'mvp', label: 'Build a Real MVP', emoji: '🚀' },
-                { value: 'networking', label: 'Network & Have Fun', emoji: '🤝' }
+                { value: 'win', label: 'Win the Competition', icon: Trophy },
+                { value: 'learn', label: 'Learn New Skills', icon: GraduationCap },
+                { value: 'mvp', label: 'Build a Real MVP', icon: Rocket },
+                { value: 'networking', label: 'Network & Have Fun', icon: Users }
             ]
         }
     ];
@@ -132,17 +149,17 @@ export function HackathonQuestionFlow({ projectTitle, onComplete, onBack }: Hack
             isSkillQuestion: true,
             isMultiSelect: false,
             options: [
-                { value: 'frontend', label: 'Frontend', emoji: '🎨' },
-                { value: 'backend', label: 'Backend', emoji: '⚙️' },
-                { value: 'ml', label: 'AI/ML', emoji: '🤖' },
-                { value: 'design', label: 'Design', emoji: '✨' },
-                { value: 'devops', label: 'DevOps', emoji: '🔧' },
-                { value: 'other', label: 'Other', emoji: '💡' }
+                { value: 'frontend', label: 'Frontend', icon: Layout },
+                { value: 'backend', label: 'Backend', icon: Server },
+                { value: 'ml', label: 'AI/ML', icon: Brain },
+                { value: 'design', label: 'Design', icon: Palette },
+                { value: 'devops', label: 'DevOps', icon: Terminal },
+                { value: 'other', label: 'Other', icon: HelpCircle }
             ],
             proficiencyOptions: [
-                { value: 'beginner', label: 'Beginner', emoji: '🌱' },
-                { value: 'intermediate', label: 'Intermediate', emoji: '🔥' },
-                { value: 'advanced', label: 'Advanced', emoji: '⭐' }
+                { value: 'beginner', label: 'Beginner', icon: Sprout },
+                { value: 'intermediate', label: 'Intermediate', icon: Flame },
+                { value: 'advanced', label: 'Advanced', icon: Award }
             ]
         }));
     };
@@ -333,7 +350,7 @@ export function HackathonQuestionFlow({ projectTitle, onComplete, onBack }: Hack
                                         ? ((inputs[currentQuestion.id as keyof HackathonInputs] as string[]) || []).includes(option.value)
                                         : inputs[currentQuestion.id as keyof HackathonInputs] === option.value;
 
-                                const OptionIcon = getOptionIcon(option.value);
+                                const OptionIcon = option.icon || getOptionIcon(option.value);
 
                                 return (
                                     <button
@@ -381,12 +398,13 @@ export function HackathonQuestionFlow({ projectTitle, onComplete, onBack }: Hack
                                             <button
                                                 key={prof.value}
                                                 onClick={() => handleProficiencySelect(prof.value)}
-                                                className={`px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${isSelected
+                                                className={`px-3 py-2 rounded-lg border text-sm transition-all duration-200 flex items-center justify-center gap-2 ${isSelected
                                                     ? 'border-[#1F3C88] bg-white text-[#1F3C88] font-medium shadow-sm'
                                                     : 'border-slate-200 text-slate-500 bg-white hover:border-slate-300'
                                                     }`}
                                             >
-                                                {prof.emoji} {prof.label}
+                                                <prof.icon className={`w-3.5 h-3.5 ${isSelected ? 'text-[#1F3C88]' : 'text-slate-400'}`} />
+                                                <span>{prof.label}</span>
                                             </button>
                                         );
                                     })}
