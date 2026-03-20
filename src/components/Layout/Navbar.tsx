@@ -1,134 +1,199 @@
-import { Lightbulb, Menu, X, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import {
+  Lightbulb,
+  Menu,
+  X,
+  Sparkles,
+} from "lucide-react";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-interface NavbarProps {
-    onGenerateClick?: () => void; // Mapped from onLogoClick to match App.tsx
-}
+export function Navbar() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Determine if we are on specific pages
+  const isHome = location.pathname === "/";
+  const isMyIdeas = location.pathname === "/my-ideas";
 
-const NAV_LINKS = [
-    { href: '#how-it-works', label: 'How It Works' },
-    { href: '#features', label: 'Features' },
-    { href: '#examples', label: 'Examples' },
-    { href: '#faq', label: 'FAQ' }
-];
+  const scrollToSection = (id: string) => {
+    // If we're not on the home page, navigate home first
+    if (!isHome) {
+      navigate("/");
+      // Wait for navigation to complete, then scroll
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    } else {
+      // Already on home page, just scroll
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+    setIsMobileMenuOpen(false);
+  };
 
-const AIStatusBadge = ({
-    size = 'sm'
-}: {
-    size?: 'sm' | 'md';
-}) => {
-    const isSmall = size === 'md';
-
-    return (
-        <div className={`flex items-center ${isSmall ? 'justify-center' : ''} gap-2 px-${isSmall ? '4' : '3'} py-${isSmall ? '3' : '1.5'} bg-gradient-to-r from-[#EAFBF1] to-[#DCFCE7] border border-[#86EFAC] rounded-${isSmall ? 'xl' : 'full'} ${isSmall ? 'mt-2' : 'shadow-sm'}`}>
+  return (
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20 lg:h-24">
+          {/* Logo Section - Left */}
+          <Link
+            to="/"
+            className="flex items-center gap-3 group hover:opacity-90 transition-opacity duration-200"
+          >
             <div className="relative">
-                <div className="w-2 h-2 bg-[#22C55E] rounded-full animate-pulse"></div>
-                <div className="absolute inset-0 w-2 h-2 bg-[#22C55E] rounded-full animate-ping"></div>
+              {/* Icon container */}
+              <div className="relative w-11 h-11 sm:w-12 sm:h-12 bg-[#1F3C88] rounded-2xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
             </div>
-            <span className={`text-${isSmall ? 'sm' : 'xs'} text-[#16A34A] font-semibold`}>AI Ready</span>
+
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-[#1F3C88]">
+                IdeaZen
+              </h1>
+              <p className="hidden sm:block text-xs text-[#64748B] font-medium -mt-0.5">
+                AI Project Idea Generator
+              </p>
+            </div>
+          </Link>
+
+          {/* Center Navigation - Desktop Only */}
+          <div className="hidden lg:flex items-center gap-8">
+            <button
+              onClick={() => scrollToSection("how-it-works")}
+              className="text-sm font-medium text-[#64748B] hover:text-[#1F3C88] transition-colors duration-200"
+            >
+              How It Works
+            </button>
+            <button
+              onClick={() => scrollToSection("examples")}
+              className="text-sm font-medium text-[#64748B] hover:text-[#1F3C88] transition-colors duration-200"
+            >
+              Examples
+            </button>
+            <Link
+              to="/my-ideas"
+              className={`text-sm font-medium transition-colors duration-200 ${
+                isMyIdeas
+                  ? "text-[#1F3C88]"
+                  : "text-[#64748B] hover:text-[#1F3C88]"
+              }`}
+            >
+              My Ideas
+            </Link>
+            <button
+              onClick={() => scrollToSection("faq")}
+              className="text-sm font-medium text-[#64748B] hover:text-[#1F3C88] transition-colors duration-200"
+            >
+              FAQ
+            </button>
+          </div>
+
+          {/* Right Actions - Desktop */}
+          <div className="hidden md:flex items-center gap-3">
+            {/* Generate Idea Button - Primary CTA */}
+            <Link
+              to="/skill"
+              className="group relative px-6 py-3 bg-[#1F3C88] hover:bg-[#1A3273] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold flex items-center gap-2"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                Generate Idea
+              </span>
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() =>
+              setIsMobileMenuOpen(!isMobileMenuOpen)
+            }
+            className="md:hidden p-2.5 text-[#1F3C88] hover:bg-[#F8FAFC] rounded-xl transition-all duration-200 border border-transparent hover:border-gray-200"
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
         </div>
-    );
-};
 
-export function Navbar({ onGenerateClick: onLogoClick }: NavbarProps) {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden pb-6 px-2 border-t border-gray-100 mt-2 pt-6 animate-slideDown">
+            <div className="flex flex-col gap-2">
+              {/* How It Works */}
+              <button
+                onClick={() => scrollToSection("how-it-works")}
+                className="w-full text-left px-5 py-4 text-[#64748B] hover:text-[#1F3C88] hover:bg-[#F8FAFC] rounded-xl transition-all duration-200 font-medium text-base"
+              >
+                How It Works
+              </button>
 
-    return (
-        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-2xl border-b border-[#E2E8F0]/50 shadow-lg">
-            <div className="container mx-auto px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
+              {/* Examples */}
+              <button
+                onClick={() => scrollToSection("examples")}
+                className="w-full text-left px-5 py-4 text-[#64748B] hover:text-[#1F3C88] hover:bg-[#F8FAFC] rounded-xl transition-all duration-200 font-medium text-base"
+              >
+                Examples
+              </button>
 
-                    {/* Logo */}
-                    <button
-                        onClick={onLogoClick}
-                        className="flex items-center gap-3 group cursor-pointer"
-                    >
-                        <div className="relative">
-                            <div className="w-12 h-12 bg-gradient-to-br from-[#1F3C88] via-[#2d5ac9] to-[#22D3EE] rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-                                <Lightbulb className="w-6 h-6 text-white" />
-                                <div className="absolute inset-0 bg-gradient-to-br from-[#1F3C88] to-[#22D3EE] rounded-2xl blur-lg opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div className="leading-tight mb-0.5">
-                                <span className="text-xl bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] bg-clip-text text-transparent font-semibold">
-                                    IdeaZen
-                                </span>
-                            </div>
-                            <div className="text-[10px] text-[#7C6CF6] flex items-center gap-1 font-medium">
-                                <Sparkles className="w-3 h-3" />
-                                <span>AI-Powered</span>
-                            </div>
-                        </div>
-                    </button>
+              {/* My Ideas - No icon */}
+              <Link
+                to="/my-ideas"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full text-left px-5 py-4 text-[#64748B] hover:text-[#1F3C88] hover:bg-[#F8FAFC] rounded-xl transition-all duration-200 font-medium text-base block"
+              >
+                My Ideas
+              </Link>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-1 bg-[#F8FAFC] rounded-full p-1.5 border border-[#E2E8F0]">
-                        {NAV_LINKS.map(link => (
-                            <a
-                                key={link.href}
-                                href={link.href}
-                                className="px-5 py-2 text-sm text-[#64748B] hover:text-[#1F3C88] hover:bg-white rounded-full transition-all duration-200 font-medium"
-                            >
-                                {link.label}
-                            </a>
-                        ))}
-                    </div>
+              {/* FAQ */}
+              <button
+                onClick={() => scrollToSection("faq")}
+                className="w-full text-left px-5 py-4 text-[#64748B] hover:text-[#1F3C88] hover:bg-[#F8FAFC] rounded-xl transition-all duration-200 font-medium text-base"
+              >
+                FAQ
+              </button>
 
-                    {/* Desktop Actions */}
-                    <div className="hidden md:flex items-center gap-4">
-                        <button
-                            onClick={onLogoClick}
-                            className="group relative px-6 py-2.5 bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] hover:from-[#1A3273] hover:to-[#1F9BB3] text-white text-sm font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
-                        >
-                            <span className="relative z-10 flex items-center gap-2 text-white">
-                                <Sparkles className="w-4 h-4" />
-                                Generate Idea
-                            </span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
-                        </button>
-                    </div>
+              {/* Divider */}
+              <div className="h-px bg-gray-200 my-3"></div>
 
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="md:hidden p-2.5 text-[#1F3C88] hover:bg-[#F8FAFC] rounded-xl transition-colors border border-transparent hover:border-[#E2E8F0]"
-                    >
-                        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                    </button>
-                </div>
-
-                {/* Mobile Menu */}
-                {isMobileMenuOpen && (
-                    <div className="md:hidden py-6 border-t border-[#E2E8F0] animate-fadeIn">
-                        <div className="flex flex-col gap-3">
-                            {NAV_LINKS.map(link => (
-                                <a
-                                    key={link.href}
-                                    href={link.href}
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="text-[#64748B] hover:text-[#1F3C88] transition-colors duration-200 py-3 px-4 hover:bg-[#F8FAFC] rounded-xl font-medium"
-                                >
-                                    {link.label}
-                                </a>
-                            ))}
-
-                            <AIStatusBadge size="md" />
-
-                            <button
-                                onClick={() => {
-                                    setIsMobileMenuOpen(false);
-                                    onLogoClick?.();
-                                }}
-                                className="w-full mt-2 px-6 py-4 bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 font-medium"
-                            >
-                                <Sparkles className="w-5 h-5" />
-                                Generate Project Idea
-                            </button>
-                        </div>
-                    </div>
-                )}
+              {/* Generate Idea - Primary CTA */}
+              <Link
+                to="/skill"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full px-5 py-4 bg-[#1F3C88] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 font-semibold text-base"
+              >
+                <Sparkles className="w-5 h-5" />
+                Generate New Idea
+              </Link>
             </div>
-        </nav>
-    );
+          </div>
+        )}
+      </div>
+
+      {/* Slide down animation */}
+      <style>{`
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-slideDown {
+          animation: slideDown 0.2s ease-out;
+        }
+      `}</style>
+    </nav>
+  );
 }

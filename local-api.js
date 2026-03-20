@@ -4,7 +4,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import handler from './api/generate';
+import generateHandler from './api/generate';
+import hackathonHandler from './api/hackathon';
 
 // Configure dotenv to read from .env.local
 const __filename = fileURLToPath(import.meta.url);
@@ -22,7 +23,17 @@ app.use(express.json());
 app.all('/api/generate', async (req, res) => {
     try {
         console.log(`[Local API] ${req.method} /api/generate`);
-        await handler(req, res);
+        await generateHandler(req, res);
+    } catch (error) {
+        console.error('[Local API] Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.all('/api/hackathon', async (req, res) => {
+    try {
+        console.log(`[Local API] ${req.method} /api/hackathon`);
+        await hackathonHandler(req, res);
     } catch (error) {
         console.error('[Local API] Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });

@@ -1,336 +1,382 @@
-import { useState } from 'react';
-import { LandingPage } from './components/LandingPage';
-import { ModeSelection } from './components/ModeSelection';
-import { ProblemStatementUpload } from './components/ProblemStatementUpload';
-import { HackathonQuestions } from './components/HackathonQuestions';
-import { SkillLevelSelection } from './components/SkillLevelSelection';
-import { QuestionFlow } from './components/QuestionFlow';
-import { ProjectOutput } from './components/ProjectOutput';
-import { MyIdeas } from './components/MyIdeas';
-import { GeneratingScreen } from './components/GeneratingScreen';
-import { IdeaPreview } from './components/IdeaPreview';
-import { Footer } from './components/Footer';
-import { Navbar } from './components/Navbar';
-import { HackathonModeEntry } from './components/HackathonModeEntry';
-import { HackathonQuestionFlow } from './components/HackathonQuestionFlow';
-import { HackathonRoadmapOutput } from './components/HackathonRoadmapOutput';
-import { generateProjectIdea } from './lib/ai';
+import { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate, useParams, Navigate } from 'react-router-dom';
+import { LandingPage } from './screens/LandingPage/LandingPage';
+import { SkillLevelSelection } from './screens/SkillLevelSelection/SkillLevelSelection';
+import { QuestionFlow } from './screens/QuestionFlow/QuestionFlow';
+import { ProjectOutput } from './screens/ProjectOutput/ProjectOutput';
+import { MyIdeas } from './screens/MyIdeas/MyIdeas';
+import { GeneratingScreen } from './screens/GeneratingScreen/GeneratingScreen';
+import { IdeaPreview } from './screens/IdeaPreview/IdeaPreview';
+import { Footer } from './components/Layout/Footer';
+import { Navbar } from './components/Layout/Navbar';
+import { HackathonModeEntry } from './screens/Hackathon/HackathonModeEntry/HackathonModeEntry';
+import { HackathonQuestionFlow } from './screens/Hackathon/HackathonQuestionFlow/HackathonQuestionFlow';
+import { HackathonRoadmapOutput } from './screens/Hackathon/HackathonRoadmapOutput/HackathonRoadmapOutput';
+import { fetchSuggestions, fetchBlueprint } from './services/generate.service';
+import { fetchHackathonRoadmap } from './services/hackathon.service';
+import type { 
+  SkillLevel, 
+  UserInputs, 
+  GeneratedProject, 
+  HackathonContext, 
+  HackathonRoadmap,
+  HackathonInputs
+} from './types';
 
-export type SkillLevel = 'beginner' | 'intermediate' | 'advanced' | null;
+export type { HackathonContext, HackathonRoadmap, SkillLevel, UserInputs, GeneratedProject, HackathonInputs };
 
-export interface UserInputs {
-  skillLevel: SkillLevel;
-  domain?: string;
-  learningGoal?: string;
-  timeAvailability?: string;
-  deployment?: string;
-  difficultyStretch?: string;
-  technologies?: string[];
-  architecture?: string;
-  scalability?: string;
-  constraints?: string;
-  teamSize?: string;
+export type AppMode = 'regular' | 'hackathon';
+
+// ---- Shared in-memory generation state ----
+export const _sharedState = {
+  userInputs: { skillLevel: null } as UserInputs,
+  generatedIdeas: [] as GeneratedProject[],
+  hackathonContext: null as Partial<HackathonContext> | null,
+  hackathonProjectTitle: '',
+  hackathonRoadmap: null as HackathonRoadmap | null,
+  selectedTitle: '',
+};
+
+// Save project to localStorage, return its id
+export function saveProjectById(project: GeneratedProject, existingId?: string): string {
+  const id = existingId || `idea-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  try {
+    localStorage.setItem(`ideazen_output_${id}`, JSON.stringify(project));
+  } catch (e) {
+    console.warn('localStorage unavailable', e);
+  }
+  return id;
 }
 
-export interface GeneratedProject {
-  title: string;
-  difficulty: string;
-  description: string;
-  reasoning: string;
-  features: string[];
-  techStack: {
-    primary: string[];
-    alternative: string[];
-  };
-  roadmap: {
-    phase: string;
-    title: string;
-    description: string;
-    duration: string;
-  }[];
-  skillOutcomes: string[];
-  feasibility: 'High' | 'Medium' | 'Low';
-  confidence: string;
+export function loadProjectById(id: string): GeneratedProject | null {
+  try {
+    const raw = localStorage.getItem(`ideazen_output_${id}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
 }
 
-type Screen = 'landing' | 'skill-selection' | 'questions' | 'generating' | 'idea-preview' | 'output' | 'my-ideas' | 'generating-blueprint';
+// ---- Route components ----
 
-export default function App() {
-  const [appMode, setAppMode] = useState<AppMode>('regular');
-  const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
-  const [userInputs, setUserInputs] = useState<UserInputs>({ skillLevel: null });
-  const [hackathonContext, setHackathonContext] = useState<HackathonContext | null>(null);
-  const [generatedProject, setGeneratedProject] = useState<GeneratedProject | null>(null);
-  const [hackathonStrategy, setHackathonStrategy] = useState<HackathonStrategy | null>(null);
-  const [generatedIdeas, setGeneratedIdeas] = useState<GeneratedProject[]>([]);
+function OutputPageRoute() {
+  const { ideaId } = useParams<{ ideaId: string }>();
+  const navigate = useNavigate();
+  const [project, setProject] = useState<GeneratedProject | null>(null);
+  const [notFound, setNotFound] = useState(false);
 
-  // Hackathon Mode state
-  const [hackathonInputs, setHackathonInputs] = useState<Partial<HackathonInputs>>({});
-  const [hackathonRoadmap, setHackathonRoadmap] = useState<HackathonRoadmap | null>(null);
-
-  const handleStartGeneration = () => {
-    setCurrentScreen('mode-selection');
-  };
-
-  const handleModeSelect = (mode: AppMode) => {
-    setAppMode(mode);
-    if (mode === 'regular') {
-      setCurrentScreen('skill-selection');
+  useEffect(() => {
+    if (!ideaId) { setNotFound(true); return; }
+    const loaded = loadProjectById(ideaId);
+    if (loaded) {
+      setProject(loaded);
     } else {
-      setCurrentScreen('problem-upload');
+      setNotFound(true);
     }
-  };
-
-  const handleProblemStatementComplete = (context: Partial<HackathonContext>) => {
-    setHackathonContext(context as HackathonContext);
-    setCurrentScreen('hackathon-questions');
-  };
-
-  const handleHackathonQuestionsComplete = (context: HackathonContext) => {
-    setHackathonContext(context);
-    setCurrentScreen('generating-strategy');
-    
-    // TODO: Generate hackathon strategy with AI
-    setTimeout(() => {
-      // Placeholder - will be implemented in future tasks
-      console.log('Hackathon strategy generation:', context);
-      alert('Hackathon strategy generation coming soon!');
-      setCurrentScreen('hackathon-questions');
-    }, 2000);
-  };
-
-  // Hackathon Mode handlers
-  const handleStartHackathonMode = () => {
-    setCurrentScreen('hackathon-entry');
-  };
-
-  const handleHackathonTitleSubmit = (projectTitle: string) => {
-    setHackathonInputs({ projectTitle });
-    setCurrentScreen('hackathon-questions');
-  };
-
-  const handleHackathonQuestionsComplete = async (inputs: HackathonInputs) => {
-    setHackathonInputs(inputs);
-    setCurrentScreen('hackathon-generating');
-
-    try {
-      const roadmap = await generateHackathonRoadmap(inputs);
-      setHackathonRoadmap(roadmap);
-      setCurrentScreen('hackathon-output');
-    } catch (error) {
-      console.error("Failed to generate hackathon roadmap:", error);
-      alert("Failed to generate roadmap. Please try again.");
-      setCurrentScreen('hackathon-questions');
-    }
-  };
-
-  const handleHackathonAdjustTimeline = async () => {
-    if (hackathonRoadmap && hackathonInputs) {
-      setCurrentScreen('hackathon-generating');
-      try {
-        const newTimeline = hackathonInputs.timeline === '24h' ? '48h' : '24h';
-        const updatedInputs = { ...hackathonInputs as HackathonInputs, timeline: newTimeline };
-        const roadmap = await generateHackathonRoadmap(updatedInputs);
-        setHackathonRoadmap(roadmap);
-        setCurrentScreen('hackathon-output');
-      } catch (error) {
-        setCurrentScreen('hackathon-output');
-      }
-    }
-  };
-
-  const handleHackathonSimplifyScope = async () => {
-    if (hackathonRoadmap && hackathonInputs) {
-      setCurrentScreen('hackathon-generating');
-      try {
-        const roadmap = await generateHackathonRoadmap(hackathonInputs as HackathonInputs);
-        setHackathonRoadmap(roadmap);
-        setCurrentScreen('hackathon-output');
-      } catch (error) {
-        setCurrentScreen('hackathon-output');
-      }
-    }
-  };
-
-  const handleHackathonAddTeamMember = () => {
-    setCurrentScreen('hackathon-questions');
-  };
-
-  const handleHackathonGenerateNew = async () => {
-    setCurrentScreen('hackathon-generating');
-    try {
-      const roadmap = await generateHackathonRoadmap(hackathonInputs as HackathonInputs);
-      setHackathonRoadmap(roadmap);
-      setCurrentScreen('hackathon-output');
-    } catch (error) {
-      setCurrentScreen('hackathon-output');
-    }
-  };
-
-  const handleSkillLevelSelect = (level: SkillLevel) => {
-    setUserInputs({ ...userInputs, skillLevel: level });
-    setCurrentScreen('questions');
-  };
-
-  const handleQuestionsComplete = async (inputs: UserInputs) => {
-    setUserInputs(inputs);
-    setCurrentScreen('generating');
-
-    try {
-      // Real AI AI generation - Generate 2 ideas as requested
-      const ideas = await generateProjectIdea(inputs, 'suggestions');
-      setGeneratedIdeas(ideas);
-      setCurrentScreen('idea-preview');
-    } catch (error) {
-      console.error("Failed to generate ideas:", error);
-      alert("Failed to generate project ideas. Please try again.");
-      setCurrentScreen('questions');
-    }
-  };
-
-  const handleSelectIdea = async (idea: GeneratedProject) => {
-    setGeneratedProject(idea);
-    setCurrentScreen('generating-blueprint');
-
-    try {
-      // Real AI blueprint generation
-      const fullProject = await generateProjectIdea(userInputs, 'blueprint', idea.title);
-      setGeneratedProject(fullProject);
-      setCurrentScreen('output');
-    } catch (error) {
-      console.error("Failed to generate blueprint:", error);
-      alert("Failed to generate project blueprint. Please try again.");
-      setCurrentScreen('idea-preview');
-    }
-  };
-
-  const handleRefineIdea = () => {
-    setCurrentScreen('questions');
-  };
+  }, [ideaId]);
 
   const handleIncreaseDifficulty = async () => {
-    if (generatedProject) {
-      setCurrentScreen('generating-blueprint');
-      try {
-        const refined = await generateProjectIdea({ ...userInputs, difficultyStretch: 'more-complex' }, 'blueprint', generatedProject.title);
-        setGeneratedProject(refined);
-        setCurrentScreen('output');
-      } catch (error) {
-        setCurrentScreen('output');
-      }
-    }
+    if (!project) return;
+    _sharedState.selectedTitle = project.title;
+    _sharedState.userInputs = { ..._sharedState.userInputs, difficultyStretch: 'more-complex' };
+    navigate('/generating-blueprint');
+  };
+  const handleSimplify = async () => {
+    if (!project) return;
+    _sharedState.selectedTitle = project.title;
+    _sharedState.userInputs = { ..._sharedState.userInputs, difficultyStretch: 'simpler' };
+    navigate('/generating-blueprint');
   };
 
-  const handleSimplifyProject = async () => {
-    if (generatedProject) {
-      setCurrentScreen('generating-blueprint');
-      try {
-        const refined = await generateProjectIdea({ ...userInputs, difficultyStretch: 'simpler' }, 'blueprint', generatedProject.title);
-        setGeneratedProject(refined);
-        setCurrentScreen('output');
-      } catch (error) {
-        setCurrentScreen('output');
-      }
-    }
-  };
+  if (notFound) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#F8FAFC] to-white flex items-center justify-center">
+        <div className="text-center p-8">
+          <h2 className="text-2xl font-bold text-[#1F3C88] mb-3">Idea not found</h2>
+          <p className="text-[#64748B] mb-6">This link may have expired or been opened in a different browser.</p>
+          <button
+            onClick={() => navigate('/')}
+            className="px-6 py-3 bg-gradient-to-r from-[#1F3C88] to-[#7C6CF6] text-white rounded-xl font-medium hover:shadow-lg transition-all"
+          >
+            Go Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  const handleGenerateAnother = async () => {
-    setCurrentScreen('generating');
-    try {
-      const ideas = await generateProjectIdea(userInputs, 'suggestions');
-      setGeneratedIdeas(ideas);
-      setCurrentScreen('idea-preview');
-    } catch (error) {
-      setCurrentScreen('output');
-    }
-  };
+  if (!project) return <GeneratingScreen mode="blueprint" />;
 
-  const handleStartOver = () => {
-    setCurrentScreen('landing');
-    setAppMode('regular');
-    setUserInputs({ skillLevel: null });
-    setHackathonContext(null);
-    setGeneratedProject(null);
-    setHackathonStrategy(null);
-    setGeneratedIdeas([]);
-    setHackathonInputs({});
-    setHackathonRoadmap(null);
-  };
+  return (
+    <ProjectOutput
+      project={project}
+      userInputs={_sharedState.userInputs}
+      onRefine={() => navigate('/skill')}
+      onIncreaseDifficulty={handleIncreaseDifficulty}
+      onSimplify={handleSimplify}
+      onGenerateAnother={() => navigate('/generating')}
+      onStartOver={() => navigate('/')}
+    />
+  );
+}
 
-  const handleViewMyIdeas = () => {
-    setCurrentScreen('my-ideas');
-  };
+function GeneratingPageRoute() {
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [key, setKey] = useState(0); // force re-run on retry
 
-  const handleViewProject = (project: GeneratedProject) => {
-    setGeneratedProject(project);
-    setCurrentScreen('output');
-  };
+  useEffect(() => {
+    let cancelled = false;
+    setError(null);
+    fetchSuggestions(_sharedState.userInputs)
+      .then((ideas) => {
+        if (cancelled) return;
+        _sharedState.generatedIdeas = ideas as unknown as GeneratedProject[];
+        navigate('/idea-preview', { replace: true });
+      })
+      .catch((err: Error) => {
+        if (cancelled) return;
+        setError(err.message || 'The AI could not generate ideas right now.');
+      });
+    return () => { cancelled = true; };
+  }, [key]);
+
+  return (
+    <GeneratingScreen
+      mode="ideas"
+      error={error}
+      onRetry={() => setKey(k => k + 1)}
+      onTryDifferentFlow={() => navigate('/skill')}
+    />
+  );
+}
+
+function GeneratingBlueprintPageRoute() {
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setError(null);
+    const title = _sharedState.selectedTitle;
+    fetchBlueprint(_sharedState.userInputs, title)
+      .then((result: GeneratedProject) => {
+        if (cancelled) return;
+        const id = saveProjectById(result);
+        navigate(`/output/${id}`, { replace: true });
+      })
+      .catch((err: Error) => {
+        if (cancelled) return;
+        setError(err.message || 'The AI could not generate the blueprint right now.');
+      });
+    return () => { cancelled = true; };
+  }, [key]);
+
+  return (
+    <GeneratingScreen
+      mode="blueprint"
+      error={error}
+      onRetry={() => setKey(k => k + 1)}
+      onTryDifferentFlow={() => navigate('/idea-preview')}
+    />
+  );
+}
+
+function HackathonGeneratingPageRoute() {
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setError(null);
+    // Build HackathonInputs from hackathonContext or use directly if it is already HackathonInputs
+    const rawCtx = _sharedState.hackathonContext as any;
+    
+    // Check if it's the new flatter structure or old complex one
+    const inputs: HackathonInputs = (rawCtx && rawCtx.submissionRequirements) 
+      ? rawCtx as HackathonInputs
+      : {
+          projectTitle: _sharedState.hackathonProjectTitle,
+          timeline: String(rawCtx?.timeline?.duration || 48),
+          teamSize: String(rawCtx?.team?.size || 1),
+          teamMembers: (rawCtx?.team?.members || []).map((m: any) => ({ skill: m.role, level: m.proficiency })),
+          submissionRequirements: Object.entries(rawCtx?.submission || {})
+            .filter(([, v]) => v === true)
+            .map(([k]) => k.replace('Required', '')),
+        };
+    
+    fetchHackathonRoadmap(inputs)
+      .then((roadmap: HackathonRoadmap) => {
+        if (cancelled) return;
+        _sharedState.hackathonRoadmap = roadmap;
+        navigate('/hackathon/output', { replace: true });
+      })
+      .catch((err: Error) => {
+        if (cancelled) return;
+        setError(err.message || 'Could not generate the hackathon roadmap right now.');
+      });
+    return () => { cancelled = true; };
+  }, [key]);
+
+  return (
+    <GeneratingScreen
+      mode="blueprint"
+      error={error}
+      onRetry={() => setKey(k => k + 1)}
+      onTryDifferentFlow={() => navigate('/hackathon')}
+    />
+  );
+}
+
+function HackathonOutputPageRoute() {
+  const navigate = useNavigate();
+  const roadmap = _sharedState.hackathonRoadmap;
+
+  if (!roadmap) return <Navigate to="/hackathon" replace />;
+
+  return (
+    <HackathonRoadmapOutput
+      roadmap={roadmap}
+      onAdjustTimeline={() => navigate('/hackathon/generating', { replace: true })}
+      onSimplifyScope={() => navigate('/hackathon/generating', { replace: true })}
+      onAddTeamMember={() => navigate('/hackathon')}
+      onGenerateNew={() => navigate('/hackathon/generating', { replace: true })}
+      onStartOver={() => navigate('/')}
+    />
+  );
+}
+
+function IdeaPreviewPageRoute() {
+  const navigate = useNavigate();
+  const ideas = _sharedState.generatedIdeas;
+
+  if (!ideas || ideas.length === 0) return <Navigate to="/" replace />;
+
+  return (
+    <IdeaPreview
+      ideas={ideas}
+      onSelectIdea={(idea: GeneratedProject) => {
+        _sharedState.selectedTitle = idea.title;
+        navigate('/generating-blueprint');
+      }}
+    />
+  );
+}
+
+function QuestionPageRoute() {
+  const navigate = useNavigate();
+  const inputs = _sharedState.userInputs;
+
+  if (!inputs.skillLevel) return <Navigate to="/skill" replace />;
+
+  return (
+    <QuestionFlow
+      skillLevel={inputs.skillLevel}
+      initialInputs={inputs}
+      onComplete={(completed: UserInputs) => {
+        _sharedState.userInputs = completed;
+        navigate('/generating');
+      }}
+      onBack={() => navigate('/skill')}
+    />
+  );
+}
+
+function HackathonQuestionsPageRoute() {
+  const navigate = useNavigate();
+  const ctx = _sharedState.hackathonContext;
+
+  return (
+    <HackathonQuestionFlow
+      projectTitle={_sharedState.hackathonProjectTitle || 'My Hackathon Project'}
+      onComplete={(inputs: HackathonInputs) => {
+        _sharedState.hackathonContext = inputs as any; // Cast to bypass Partial<HackathonContext> mismatch
+        navigate('/hackathon/generating');
+      }}
+      onBack={() => navigate('/hackathon')}
+    />
+  );
+}
+
+// ---- Root App ----
+export default function App() {
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A]">
-      <Navbar
-        onLogoClick={handleStartOver}
-        onMyIdeasClick={handleViewMyIdeas}
-        onGenerateClick={handleStartGeneration}
-        currentPage={currentScreen === 'landing' ? 'home' : currentScreen === 'my-ideas' ? 'my-ideas' : 'generate'}
-      />
+      <Navbar />
 
-      {currentScreen === 'landing' && (
-        <LandingPage
-          onGetStarted={handleStartGeneration}
-          onStartHackathonMode={handleStartHackathonMode}
+      <Routes>
+        {/* Landing */}
+        <Route
+          path="/"
+          element={
+            <LandingPage
+              onGetStarted={() => navigate('/skill')}
+              onStartHackathonMode={() => navigate('/hackathon')}
+            />
+          }
         />
-      )}
 
-      {currentScreen === 'mode-selection' && (
-        <ModeSelection onSelectMode={handleModeSelect} />
-      )}
-
-      {currentScreen === 'skill-selection' && (
-        <SkillLevelSelection onSelectLevel={handleSkillLevelSelect} />
-      )}
-
-      {currentScreen === 'questions' && userInputs.skillLevel && (
-        <QuestionFlow
-          skillLevel={userInputs.skillLevel}
-          initialInputs={userInputs}
-          onComplete={handleQuestionsComplete}
-          onBack={() => setCurrentScreen('skill-selection')}
+        {/* Regular flow */}
+        <Route
+          path="/skill"
+          element={
+            <SkillLevelSelection
+              onSelectLevel={(level: SkillLevel) => {
+                _sharedState.userInputs = { ..._sharedState.userInputs, skillLevel: level };
+                navigate('/questions');
+              }}
+            />
+          }
         />
-      )}
+        <Route path="/questions" element={<QuestionPageRoute />} />
+        <Route path="/generating" element={<GeneratingPageRoute />} />
+        <Route path="/generating-blueprint" element={<GeneratingBlueprintPageRoute />} />
+        <Route path="/idea-preview" element={<IdeaPreviewPageRoute />} />
+        <Route path="/output/:ideaId" element={<OutputPageRoute />} />
 
-      {currentScreen === 'generating' && (
-        <GeneratingScreen mode="ideas" />
-      )}
-
-      {currentScreen === 'idea-preview' && generatedIdeas.length > 0 && (
-        <IdeaPreview
-          ideas={generatedIdeas}
-          onSelectIdea={handleSelectIdea}
+        {/* My Ideas */}
+        <Route
+          path="/my-ideas"
+          element={
+            <MyIdeas
+              onViewProject={(project: GeneratedProject) => {
+                const id = saveProjectById(project);
+                navigate(`/output/${id}`);
+              }}
+            />
+          }
         />
-      )}
 
-      {currentScreen === 'generating-blueprint' && (
-        <GeneratingScreen mode="blueprint" />
-      )}
-
-      {currentScreen === 'output' && generatedProject && (
-        <ProjectOutput
-          project={generatedProject}
-          userInputs={userInputs}
-          onRefine={handleRefineIdea}
-          onIncreaseDifficulty={handleIncreaseDifficulty}
-          onSimplify={handleSimplifyProject}
-          onGenerateAnother={handleGenerateAnother}
-          onStartOver={handleStartOver}
+        {/* Hackathon flow */}
+        <Route
+          path="/hackathon"
+          element={
+            <HackathonModeEntry
+              onContinue={(title: string) => {
+                _sharedState.hackathonProjectTitle = title;
+                navigate('/hackathon/questions');
+              }}
+              onBack={() => navigate('/')}
+            />
+          }
         />
-      )}
+        <Route path="/hackathon/questions" element={<HackathonQuestionsPageRoute />} />
+        <Route path="/hackathon/generating" element={<HackathonGeneratingPageRoute />} />
+        <Route path="/hackathon/output" element={<HackathonOutputPageRoute />} />
 
-      {currentScreen === 'my-ideas' && (
-        <MyIdeas onViewProject={handleViewProject} />
-      )}
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
-      {currentScreen !== 'landing' && <Footer />}
+      {/* Footer on all non-landing pages */}
+      <Routes>
+        <Route path="/" element={null} />
+        <Route path="*" element={<Footer />} />
+      </Routes>
     </div>
   );
 }

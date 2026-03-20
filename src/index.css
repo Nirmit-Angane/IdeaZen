@@ -3446,22 +3446,12 @@ html {
   font-size: var(--font-size);
 }
 
-@keyframes gridMove {
-  0% {
-    transform: translate(0);
-  }
-
-  100% {
-    transform: translate(55px, 55px);
-  }
-}
 
 .grid-pattern {
   pointer-events: none;
   background-color: #0000;
-  background-image: linear-gradient(0deg, #0000 24%, #1f3c8814 25% 26%, #0000 27% 74%, #1f3c8814 75% 76%, #0000 77%, #0000), linear-gradient(90deg, #0000 24%, #7c6cf614 25% 26%, #0000 27% 74%, #7c6cf614 75% 76%, #0000 77%, #0000);
+  background-image: linear-gradient(0deg, #0000 24%, #1f3c8814 25% 26%, #0000 27% 74%, #1f3c8814 75% 76%, #0000 77%, #0000), linear-gradient(90deg, #0000 24%, #22d3ee14 25% 26%, #0000 27% 74%, #22d3ee14 75% 76%, #0000 77%, #0000);
   background-size: 55px 55px;
-  animation: 20s linear infinite gridMove;
 }
 
 @keyframes shimmer {
