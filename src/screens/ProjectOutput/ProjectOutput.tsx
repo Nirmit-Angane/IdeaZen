@@ -260,19 +260,24 @@ export function ProjectOutput({
                 </div>
               )}
 
-              {/* Stats - Authoritative horizontal layout */}
-              <div className="flex flex-wrap gap-4 pt-6 border-t border-slate-100">
+              {/* Stats - Visual Match Bars */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-slate-100">
                 {[
-                  { icon: Award, label: project.difficulty, highlight: false },
-                  { icon: Clock, label: `${project.roadmap?.length || 0} ${(project.roadmap?.length || 0) === 1 ? 'PHASE' : 'PHASES'}`, highlight: false },
-                  { icon: Zap, label: `${project.timeFit ?? project.feasibility ?? '—'} FIT`, highlight: true },
-                  { icon: Target, label: project.feasibility, highlight: false }
+                  { label: 'Time Fit', value: project.timeFit === 'Comfortable' ? 100 : project.timeFit === 'Tight' ? 85 : 60, color: 'bg-cyan-500' },
+                  { label: 'Skill Match', value: project.difficulty === 'Beginner' ? 95 : project.difficulty === 'Intermediate' ? 75 : 50, color: 'bg-emerald-500' },
+                  { label: 'Feasibility', value: project.feasibility === 'High' ? 90 : project.feasibility === 'Medium' ? 70 : 40, color: 'bg-blue-500' }
                 ].map((stat, i) => (
-                  <div key={i} className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
-                    <stat.icon className={`w-4 h-4 ${stat.highlight ? 'text-cyan-500' : 'text-slate-500'}`} />
-                    <span className={`text-[11px] font-bold uppercase tracking-wider ${stat.highlight ? 'text-slate-800' : 'text-slate-600'}`}>
-                      {stat.label}
-                    </span>
+                  <div key={i} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{stat.label}</span>
+                      <span className="text-[10px] font-bold text-slate-900">{stat.value}%</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full ${stat.color} rounded-full transition-all duration-1000`} 
+                        style={{ width: `${stat.value}%` }}
+                      ></div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -286,7 +291,7 @@ export function ProjectOutput({
           {/* Main Content - Left column */}
           <div className="lg:col-span-2 space-y-8 order-2 lg:order-1">
             
-            {/* Reasoning Box - Flat highlight */}
+            {/* Strategic Reasoning - WHY RIGHT */}
             <div className="bg-white rounded-2xl p-8 border border-[#22D3EE]/20 shadow-sm relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#22D3EE]/5 rounded-bl-full pointer-events-none"></div>
               <div className="flex flex-col sm:flex-row items-start gap-6">
@@ -294,24 +299,24 @@ export function ProjectOutput({
                   <Brain className="w-8 h-8 text-[#0891B2]" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-[#1F3C88] mb-4">Strategic Reasoning</h3>
+                  <h3 className="text-lg font-bold text-[#1F3C88] mb-4">Why this is the right project for you</h3>
                   {typeof project.reasoning === 'string' ? (
                     <p className="text-slate-600 leading-relaxed italic">
-                       "{project.reasoning}"
+                       "{String(project.reasoning).replace(/\*\*(.*?)\*\*/g, '$1')}"
                     </p>
                   ) : (
                     <div className="grid gap-4">
                       {[
-                        { icon: '🎯', title: 'Skill Match', content: project.reasoning.skillFit },
-                        { icon: '🛠️', title: 'Stack Alignment', content: project.reasoning.stackFit },
-                        { icon: '📈', title: 'Growth Factor', content: project.reasoning.growthOpportunity }
+                        { icon: '🎯', title: 'Skill Match', content: String(project.reasoning.skillFit).replace(/\*\*(.*?)\*\*/g, '$1') },
+                        { icon: '🛠️', title: 'Stack Alignment', content: String(project.reasoning.stackFit).replace(/\*\*(.*?)\*\*/g, '$1') },
+                        { icon: '📈', title: 'Growth Factor', content: String(project.reasoning.growthOpportunity).replace(/\*\*(.*?)\*\*/g, '$1') }
                       ].map((item, i) => (
                         <div key={i} className="flex items-start gap-4">
                            <span className="text-xl flex-shrink-0 mt-0.5">{item.icon}</span>
                            <div className="text-sm text-slate-600 leading-relaxed">
                              <strong className="text-slate-800 font-bold mr-1">{item.title}:</strong> {item.content}
                            </div>
-                        </div>
+                         </div>
                       ))}
                     </div>
                   )}
@@ -319,61 +324,42 @@ export function ProjectOutput({
               </div>
             </div>
 
-            {/* Features Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-              <button
-                onClick={() => toggleSection('features')}
-                className="w-full px-6 py-4 flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
-                    <Layers className="w-4 h-4 text-slate-500" />
+            {/* MVP Scope Section */}
+            {project.mvp && (
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden border-t-4 border-t-amber-400">
+                <div className="px-6 py-6 border-b border-slate-100 flex items-center gap-3">
+                   <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-amber-500" />
                   </div>
-                  <h2 className="text-lg font-medium text-[#1F3C88]">Key Features</h2>
-                  <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{project.features.length}</span>
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-900">MVP Scope</h2>
+                    <p className="text-xs text-slate-500 font-medium tracking-tight">Focus only on these to ship fast.</p>
+                  </div>
                 </div>
-                {expandedSections.features ? (
-                  <ChevronUp className="w-5 h-5 text-slate-400" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-400" />
-                )}
-              </button>
-              
-              {expandedSections.features && (
-                <div className="px-6 py-4 border-t border-slate-100">
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    {project.features.map((feature, index) => {
-                      if (typeof feature === 'string') {
-                        return (
-                          <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
-                            <div className="mt-1">
-                              <Check className="w-4 h-4 text-[#22C55E]" />
-                            </div>
-                            <span className="text-slate-600 text-sm leading-relaxed">{feature}</span>
-                          </div>
-                        );
-                      }
-                      
-                      return (
-                        <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
-                          <div className="mt-1">
-                            <Check className="w-4 h-4 text-[#22C55E]" />
-                          </div>
-                          <div>
-                            <span className="text-slate-800 text-sm font-semibold">{feature.name}</span>
-                            <span className="text-slate-500 text-xs ml-2 bg-slate-100 px-1.5 py-0.5 rounded">{feature.tier}</span>
-                            <p className="text-slate-600 text-sm mt-1 leading-relaxed">{feature.description}</p>
-                            {feature.technicalNote && (
-                              <p className="text-slate-400 text-xs mt-1 italic leading-relaxed">Note: {feature.technicalNote}</p>
-                            )}
-                          </div>
+                <div className="p-6 space-y-6">
+                  <p className="text-sm text-slate-600 leading-relaxed font-medium bg-slate-50 p-4 rounded-xl border border-slate-100 italic">
+                    "{project.mvp.description}"
+                  </p>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400">Core Conditions</h4>
+                      {project.mvp.conditions.map((condition, idx) => (
+                        <div key={idx} className="flex items-center gap-3 text-sm text-slate-700 font-bold">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                          {condition}
                         </div>
-                      );
-                    })}
+                      ))}
+                    </div>
+                    <div className="p-4 bg-slate-900 rounded-xl shadow-inner border border-slate-800">
+                      <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Demo Script Angle</h4>
+                      <p className="text-xs text-slate-300 leading-relaxed italic">
+                        "{project.mvp.demoScript}"
+                      </p>
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Tech Stack Section */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -401,23 +387,22 @@ export function ProjectOutput({
                       <Sparkles className="w-4 h-4 text-[#22D3EE]" />
                       Recommended Technologies
                     </div>
-                    <div className="flex flex-col gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                        {project.techStack.primary.map((tech, index) => {
-                         if (typeof tech === 'string') {
-                           return (
-                             <div key={index} className="flex flex-col gap-1">
-                               <span className="inline-flex w-fit px-3 py-1 rounded-full border border-slate-200 text-sm font-medium text-slate-800">
-                                 {tech}
-                               </span>
-                             </div>
-                           );
-                         }
+                         const techName = typeof tech === 'string' ? tech : tech.name;
+                         const techReason = typeof tech === 'string' ? 'Industry standard for this project type.' : tech.reason;
+                         
                          return (
-                           <div key={index} className="flex flex-col gap-1">
-                             <span className="inline-flex w-fit px-3 py-1 rounded-full border border-slate-200 text-sm font-medium text-slate-800 bg-white">
-                               {tech.name}
-                             </span>
-                             <p className="text-xs text-slate-500 pl-1 leading-relaxed">{tech.reason}</p>
+                           <div key={index} className="flex flex-col p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-cyan-300 transition-all group shadow-sm">
+                             <div className="flex items-center justify-between mb-2">
+                               <span className="px-3 py-1 bg-white rounded-lg border border-slate-200 text-xs font-black text-slate-900 uppercase tracking-tight group-hover:border-cyan-200 transition-colors">
+                                 {techName}
+                               </span>
+                               <div className="w-1.5 h-1.5 rounded-full bg-cyan-400"></div>
+                             </div>
+                             <p className="text-[12px] text-slate-500 leading-relaxed font-medium">
+                               {techReason}
+                             </p>
                            </div>
                          );
                        })}
@@ -451,60 +436,6 @@ export function ProjectOutput({
                          );
                        })}
                     </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Roadmap Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-              <button
-                onClick={() => toggleSection('roadmap')}
-                className="w-full px-6 py-4 flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
-                    <Target className="w-4 h-4 text-slate-500" />
-                  </div>
-                  <h2 className="text-lg font-medium text-[#1F3C88]">Development Roadmap</h2>
-                  <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{project.roadmap.length}</span>
-                </div>
-                {expandedSections.roadmap ? (
-                  <ChevronUp className="w-5 h-5 text-slate-400" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-400" />
-                )}
-              </button>
-              
-              {expandedSections.roadmap && (
-                <div className="px-6 py-4 border-t border-slate-100">
-                  <div className="space-y-4">
-                    {project.roadmap.map((phase, index) => (
-                      <div key={index} className="relative">
-                        {/* Connecting Line */}
-                        {index < project.roadmap.length - 1 && (
-                          <div className="absolute left-5 top-12 bottom-0 w-px bg-slate-200"></div>
-                        )}
-                        
-                        <div className="flex gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
-                          {/* Phase Number - Navy background */}
-                          <div className="w-10 h-10 bg-[#1F3C88] rounded-xl flex items-center justify-center text-white font-black text-sm flex-shrink-0 z-10 shadow-[0_4px_10px_rgba(31,60,136,0.2)]">
-                            0{index + 1}
-                          </div>
-                          
-                          {/* Phase Content */}
-                          <div className="flex-1 min-w-0 pt-1">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                              <h4 className="font-medium text-slate-900">{phase.title}</h4>
-                              <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap w-fit">
-                                {phase.duration}
-                              </span>
-                            </div>
-                            <p className="text-slate-500 text-sm leading-relaxed">{phase.description}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
                   </div>
                 </div>
               )}
@@ -572,6 +503,116 @@ export function ProjectOutput({
               </div>
             )}
 
+            {/* Features Section - KEY FEATURES */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <button
+                onClick={() => toggleSection('features')}
+                className="w-full px-6 py-4 flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
+                    <Layers className="w-4 h-4 text-slate-500" />
+                  </div>
+                  <h2 className="text-lg font-medium text-[#1F3C88]">Key Features</h2>
+                  <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{project.features.length}</span>
+                </div>
+                {expandedSections.features ? (
+                  <ChevronUp className="w-5 h-5 text-slate-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-slate-400" />
+                )}
+              </button>
+              
+              {expandedSections.features && (
+                <div className="px-6 py-4 border-t border-slate-100">
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {project.features.map((feature, index) => {
+                      if (typeof feature === 'string') {
+                        return (
+                          <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
+                            <div className="mt-1">
+                              <Check className="w-4 h-4 text-[#22C55E]" />
+                            </div>
+                            <span className="text-slate-600 text-sm leading-relaxed">{feature}</span>
+                          </div>
+                        );
+                      }
+                      
+                      return (
+                        <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
+                          <div className="mt-1">
+                            <Check className="w-4 h-4 text-[#22C55E]" />
+                          </div>
+                          <div>
+                            <span className="text-slate-800 text-sm font-semibold">{feature.name}</span>
+                            <span className="text-slate-500 text-xs ml-2 bg-slate-100 px-1.5 py-0.5 rounded">{feature.tier}</span>
+                            <p className="text-slate-600 text-sm mt-1 leading-relaxed">{feature.description}</p>
+                            {feature.technicalNote && (
+                              <p className="text-slate-400 text-xs mt-1 italic leading-relaxed">Note: {feature.technicalNote}</p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Roadmap Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <button
+                onClick={() => toggleSection('roadmap')}
+                className="w-full px-6 py-4 flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
+                    <Target className="w-4 h-4 text-slate-500" />
+                  </div>
+                  <h2 className="text-lg font-medium text-[#1F3C88]">Development Roadmap</h2>
+                  <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{project.roadmap.length}</span>
+                </div>
+                {expandedSections.roadmap ? (
+                  <ChevronUp className="w-5 h-5 text-slate-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-slate-400" />
+                )}
+              </button>
+              
+              {expandedSections.roadmap && (
+                <div className="px-6 py-4 border-t border-slate-100">
+                  <div className="space-y-4">
+                    {project.roadmap.map((phase, index) => (
+                      <div key={index} className="relative">
+                        {/* Connecting Line */}
+                        {index < project.roadmap.length - 1 && (
+                          <div className="absolute left-5 top-12 bottom-0 w-px bg-slate-200"></div>
+                        )}
+                        
+                        <div className="flex gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
+                          {/* Phase Number - Navy background */}
+                          <div className="w-10 h-10 bg-[#1F3C88] rounded-xl flex items-center justify-center text-white font-black text-sm flex-shrink-0 z-10 shadow-[0_4px_10px_rgba(31,60,136,0.2)]">
+                            0{index + 1}
+                          </div>
+                          
+                          {/* Phase Content */}
+                          <div className="flex-1 min-w-0 pt-1">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                              <h4 className="font-medium text-slate-900">{phase.title}</h4>
+                              <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full whitespace-nowrap w-fit">
+                                {phase.duration}
+                              </span>
+                            </div>
+                            <p className="text-slate-500 text-sm leading-relaxed">{phase.description}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Learning Outcomes Section */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
               <button
@@ -582,8 +623,8 @@ export function ProjectOutput({
                   <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
                     <TrendingUp className="w-4 h-4 text-slate-500" />
                   </div>
-                  <h2 className="text-lg font-medium text-[#1F3C88]">What You'll Learn</h2>
-                  <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                  <h2 className="text-lg font-medium text-[#1F3C88] uppercase tracking-wide text-xs">WHAT YOU'LL LEARN</h2>
+                  <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full font-bold">
                     {Array.isArray(project.skillOutcomes) ? project.skillOutcomes.length : ((project.skillOutcomes.solidify?.length || 0) + (project.skillOutcomes.gainNew?.length || 0))}
                   </span>
                 </div>
@@ -607,16 +648,16 @@ export function ProjectOutput({
                     ) : (
                       <>
                         <div className="space-y-2">
-                          <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Capabilities to Solidify</h4>
+                          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Capabilities to Solidify</h4>
                           {project.skillOutcomes.solidify.map((skill, index) => (
                              <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100">
                                 <CheckCircle2 className="w-4 h-4 text-[#22C55E] flex-shrink-0 mt-0.5" />
-                                <span className="text-slate-700 text-sm leading-relaxed">{skill}</span>
+                                <span className="text-slate-700 text-sm font-medium leading-relaxed">{skill}</span>
                              </div>
                           ))}
                         </div>
                         <div className="space-y-3">
-                          <h4 className="text-[10px] font-black text-[#1F3C88] bg-[#1F3C88]/5 px-2.5 py-1 inline-block rounded uppercase tracking-widest mb-2 border border-[#1F3C88]/10">Capabilities to Gain</h4>
+                          <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Capabilities to Gain</h4>
                           {project.skillOutcomes.gainNew.map((skill, index) => (
                              <div key={index} className="flex items-start gap-3 p-4 rounded-xl bg-white hover:bg-slate-50 transition-all border border-slate-100 shadow-sm group">
                                 <TrendingUp className="w-4 h-4 text-[#22D3EE] flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
@@ -639,7 +680,7 @@ export function ProjectOutput({
                   <ShieldAlert className="w-8 h-8 text-amber-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-amber-900 mb-4">Watch out for</h3>
+                  <h3 className="text-lg font-bold text-amber-900 mb-4 tracking-tight uppercase text-xs">Watch out for</h3>
                   <div className="grid gap-4">
                     {project.pitfalls?.map((pitfallObj: any, i: number) => {
                       const pitfallText = typeof pitfallObj === 'string' ? pitfallObj : pitfallObj.pitfall;
@@ -651,8 +692,8 @@ export function ProjectOutput({
                           <ShieldAlert className="w-4 h-4 text-amber-500" />
                         </div>
                         <div>
-                          <span className="text-sm text-amber-900 leading-relaxed font-semibold">{pitfallText}</span>
-                          {mitigationText && <p className="text-xs text-amber-800 mt-1 leading-relaxed"><span className="font-bold">Fix:</span> {mitigationText}</p>}
+                          <span className="text-sm text-amber-900 leading-relaxed font-bold">{pitfallText}</span>
+                          {mitigationText && <p className="text-[11px] text-amber-800 mt-1 leading-relaxed opacity-80"><span className="font-black uppercase tracking-widest text-[9px] mr-1">Fix:</span> {mitigationText}</p>}
                         </div>
                       </div>
                     )})}
@@ -683,7 +724,7 @@ export function ProjectOutput({
                   <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center">
                     <BookOpen className="w-4 h-4 text-slate-500" />
                   </div>
-                  <h2 className="text-lg font-medium text-[#1F3C88]">Learning Resources</h2>
+                  <h2 className="text-lg font-medium text-[#1F3C88] uppercase tracking-wide text-xs">LEARNING RESOURCES</h2>
                 </div>
                 {expandedSections.resources ? (
                   <ChevronUp className="w-5 h-5 text-slate-400" />
@@ -702,36 +743,19 @@ export function ProjectOutput({
                       else if (r.format === 'Course') Icon = BookOpen;
 
                       return (
-                        <a key={i} href={r.url || "#"} target="_blank" rel="noopener noreferrer" className="flex gap-3 p-3 rounded-lg border border-slate-200 hover:border-cyan-300 transition-colors bg-white hover:bg-slate-50">
+                        <a key={i} href={r.url || "#"} target="_blank" rel="noopener noreferrer" className="flex gap-4 p-4 rounded-xl border border-slate-200 hover:border-cyan-300 transition-all bg-white hover:bg-slate-50 group">
+                           <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center border border-slate-100 group-hover:bg-cyan-50 group-hover:border-cyan-100 transition-colors">
+                            <Icon className="w-5 h-5 text-slate-400 group-hover:text-cyan-600" />
+                          </div>
                           <div className="flex-1 min-w-0">
-                            <span className="font-medium text-sm text-slate-800 flex items-center justify-between">
+                            <span className="font-bold text-sm text-slate-900 flex items-center justify-between">
                               {r.title}
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5">{r.format}</span>
+                              <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5">{r.format}</span>
                             </span>
-                            <span className="text-xs text-slate-500 block mt-0.5">{r.source} · {r.timeEstimate}</span>
-                            <span className="text-xs text-slate-600 mt-1 block leading-relaxed">{r.why}</span>
+                            <span className="text-[11px] text-slate-500 block mt-0.5 font-medium">{r.source} · {r.timeEstimate}</span>
+                            <span className="text-xs text-slate-600 mt-2 block leading-relaxed font-medium opacity-80">{r.why}</span>
                           </div>
                         </a>
-                      );
-                    })}
-                    {(!project.resources || project.resources.length === 0) && [
-                      { icon: FileText, title: 'Official Documentation', desc: project.techStack.primary[0] + ' docs', color: 'text-blue-600' },
-                      { icon: Youtube, title: 'Video Tutorials', desc: 'Step-by-step guides and walkthroughs', color: 'text-red-600' },
-                      { icon: Github, title: 'Example Projects', desc: 'Open source code to learn from', color: 'text-slate-700' },
-                      { icon: BookOpen, title: 'Interactive Courses', desc: 'Hands-on learning platforms', color: 'text-indigo-600' }
-                    ].map((resource, i) => {
-                      const Icon = resource.icon;
-                      return (
-                        <div key={i} className="group flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 transition-all cursor-pointer border border-transparent hover:border-slate-200">
-                          <div className="w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:border-[#22D3EE] group-hover:shadow-[0_0_15px_rgba(34,211,238,0.1)] transition-all">
-                            <Icon className={`w-5 h-5 ${resource.color.replace('blue', '[#1F3C88]').replace('red', '[#EF4444]')}`} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-[#1F3C88] text-sm mb-0.5">{resource.title}</div>
-                            <div className="text-xs text-slate-500">{resource.desc}</div>
-                          </div>
-                          <ExternalLink className="w-4 h-4 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
                       );
                     })}
                   </div>
@@ -739,11 +763,11 @@ export function ProjectOutput({
               )}
             </div>
 
-            {/* Portfolio Blurb - Impact highlight */}
+            {/* Portfolio Blurb - impact highlight */}
             {project.portfolioBlurb && (
-              <div className="border-l-4 border-cyan-400 bg-slate-50 rounded-r-xl p-5 mt-4 group">
-                 <p className="text-xs font-medium text-cyan-700 mb-2 uppercase tracking-wide">Ready to paste into your resume</p>
-                 <p className="text-sm text-slate-700 leading-relaxed italic">
+              <div className="border-l-4 border-cyan-400 bg-slate-50 rounded-r-xl p-6 mt-4 group">
+                 <p className="text-[10px] font-black text-cyan-700 mb-3 uppercase tracking-widest">READY TO PASTE INTO YOUR RESUME</p>
+                 <p className="text-sm text-slate-800 leading-relaxed font-medium italic">
                    "{project.portfolioBlurb}"
                  </p>
                  <button
@@ -752,7 +776,7 @@ export function ProjectOutput({
                      setIsCopied(true);
                      setTimeout(() => setIsCopied(false), 2000);
                    }}
-                   className="mt-3 text-xs flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-md font-medium hover:border-cyan-300 hover:text-cyan-700 transition-all border-b-2 active:border-b"
+                   className="mt-4 text-[10px] uppercase tracking-widest flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg font-black hover:border-cyan-300 hover:text-cyan-700 transition-all shadow-sm active:translate-y-0.5"
                  >
                    {isCopied ? (
                      <>

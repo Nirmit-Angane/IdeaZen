@@ -182,22 +182,22 @@ export function GeneratingScreen({ mode = 'ideas', error, onRetry, onTryDifferen
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
           
           {/* Header with subtle tint */}
-          <div className="relative bg-[#1F3C88] p-8 overflow-hidden">
+          <div className="relative bg-white border-b border-slate-200 p-8 overflow-hidden">
             {/* Animated background shapes */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-2xl animate-pulse delay-700"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-50 rounded-full blur-2xl animate-pulse delay-700"></div>
             
             <div className="relative z-10 text-center">
               {/* AI Brain Icon with glow */}
-              <div className="relative inline-block mb-4">
-                <div className="absolute inset-0 bg-white/30 rounded-2xl blur-xl animate-pulse"></div>
-                <div className="relative w-16 h-16 mx-auto bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-xl">
-                  <Brain className="w-8 h-8 text-white animate-pulse" />
+              <div className="relative inline-block mb-6">
+                <div className="absolute inset-0 bg-cyan-100/50 rounded-2xl blur-xl"></div>
+                <div className="relative w-16 h-16 mx-auto bg-white border-2 border-cyan-100 rounded-2xl flex items-center justify-center shadow-sm">
+                  <Brain className="w-8 h-8 text-cyan-600" />
                 </div>
               </div>
               
-              <h1 className="text-2xl text-white mb-2 font-semibold">{headerText.title}</h1>
-              <p className="text-white/80 text-sm">{headerText.subtitle}</p>
+              <h1 className="text-2xl text-slate-900 mb-2 font-semibold">{headerText.title}</h1>
+              <p className="text-slate-500 text-sm">{headerText.subtitle}</p>
             </div>
           </div>
 

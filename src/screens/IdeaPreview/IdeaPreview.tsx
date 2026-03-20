@@ -90,7 +90,7 @@ export function IdeaPreview({ ideas, onSelectIdea }: IdeaPreviewProps) {
               <div
                 key={index}
                 onClick={() => onSelectIdea(idea)}
-                className="group relative bg-white rounded-2xl border border-slate-200 hover:border-[#1F3C88] transition-all duration-200 cursor-pointer overflow-hidden shadow-sm"
+                className="group relative bg-white rounded-2xl border-t-[3px] border-t-[#22D3EE] border border-slate-200 hover:border-[#1F3C88] transition-all duration-200 cursor-pointer overflow-hidden shadow-sm"
               >
                 {/* Best Match Badge - Only first one, flat */}
                 {index === 0 && (
@@ -113,20 +113,22 @@ export function IdeaPreview({ ideas, onSelectIdea }: IdeaPreviewProps) {
                     <span className={`px-2.5 py-1 ${difficultyColors.bg} border ${difficultyColors.border} ${difficultyColors.text} rounded-lg text-[11px] font-bold uppercase tracking-wider`}>
                       {idea.difficulty}
                     </span>
-                    <span className={`px-2.5 py-1 ${feasibilityColors.bg} border ${feasibilityColors.border} ${feasibilityColors.text} rounded-lg text-[11px] font-bold uppercase tracking-wider`}>
-                      {idea.feasibility} Feasibility
+                    <span className="text-sm text-slate-500 font-medium whitespace-nowrap">
+                      · {idea.matchBreakdown?.overall || 90}% match · {idea.roadmap?.length || 4} phases
                     </span>
                   </div>
 
-                  {/* One-line Description - Progressive Disclosure */}
-                  <p className="text-slate-500 text-[15px] leading-relaxed mb-8 line-clamp-2">
-                    {idea.description}
-                  </p>
+                  {/* Description - Prioritize Real World Comparison */}
+                  <div className="mb-8 flex-1">
+                    <p className="text-sm text-slate-600 leading-relaxed line-clamp-3">
+                      <span className="font-bold text-[#1F3C88]">Core Concept:</span> {idea.realWorldComparison || idea.description}
+                    </p>
+                  </div>
 
                   <div className="mt-auto">
-                    {/* CTA Button - Solid Navy, no gradients */}
-                    <div className="w-full px-5 py-3 bg-[#1F3C88] text-white rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-sm font-semibold group-hover:bg-[#162a60]">
-                      <span>View Full Plan</span>
+                    {/* CTA Button - Clean Outlined Navy */}
+                    <div className="w-full px-5 py-3 bg-white text-[#1F3C88] border-2 border-[#1F3C88] rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-sm font-bold group-hover:bg-[#1F3C88] group-hover:text-white">
+                      <span>Explore Blueprint</span>
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>

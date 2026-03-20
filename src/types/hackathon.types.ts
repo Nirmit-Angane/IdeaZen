@@ -48,17 +48,24 @@ export interface HackathonRoadmap {
     title: string;
     timeline: string;
     feasibility: 'High' | 'Medium' | 'Low';
+    feasibilityNote?: string;
     strategicAnalysis: {
         achievability: string;
+        biggestRisk?: string;
+        winningAngle?: string;
         skillGaps: string[];
         mitigations: string[];
     };
     roadmap: {
         phase: string;
+        title?: string;
+        timeBlock?: string;
+        goal?: string;
         tasks: {
             task: string;
             assignedTo: string;
             duration: string;
+            priority?: 'Must' | 'Should' | 'Nice';
         }[];
     }[];
     mvpScope: {
@@ -66,15 +73,22 @@ export interface HackathonRoadmap {
         niceToHave: string[];
         cutIfNeeded: string[];
     };
+    techRecommendations?: {
+        shortcuts: string[];
+        avoid: string[];
+    };
     risks: {
         risk: string;
+        likelihood?: 'High' | 'Medium' | 'Low';
         mitigation: string;
     }[];
     submissionChecklist: {
         item: string;
         timeAllocation: string;
+        critical?: boolean;
         completed: boolean;
     }[];
+    demoScript?: string;
 }
 
 export interface HackathonInputs {

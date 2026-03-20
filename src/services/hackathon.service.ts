@@ -57,7 +57,7 @@ export async function fetchHackathonRoadmap(
         strategicAnalysis: {
             achievability: feasibility === 'High'
                 ? `With ${teamCount} team member${teamCount > 1 ? 's' : ''} and ${timelineHours} hours, this project is highly achievable. Your team has strong coverage across key areas.`
-                : `This is achievable but requires focused execution. With ${timelineHours} hours and your current team composition, prioritize MVP features ruthlessly.`,
+                : `This is achievable but requires focused execution. With ${timelineHours} hours and your current team composition, prioritize MVP features.`,
             skillGaps,
             mitigations: skillGaps.map(gap =>
                 gap === 'Frontend Development' ? 'Use UI libraries like Bootstrap or Tailwind for rapid prototyping' :

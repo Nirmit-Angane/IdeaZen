@@ -43,7 +43,7 @@ For rapid UI in hackathons, suggest instead:
 - "Build with a CSS framework + pre-built templates"
 
 Banned words for any achievability or score explanation:
-ruthlessly, relentlessly, pivotal, crucial, seamlessly, leverage, harness, dive. Write like a teammate, not a coach.
+relentlessly, pivotal, crucial, seamlessly, leverage, harness, dive. Write like a teammate, not a coach.
 
 Rules:
 - Output ONLY valid JSON. No markdown, no code fences, no text outside the JSON.

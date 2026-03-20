@@ -107,10 +107,8 @@ export function FAQ() {
                 >
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
                     {/* Icon */}
-                    <div className={`flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${faq.color} rounded-xl flex items-center justify-center shadow-md transition-transform duration-300 ${
-                      isOpen ? 'scale-110' : 'group-hover:scale-105'
-                    }`}>
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    <div className="w-10 h-10 rounded-xl bg-cyan-50 border border-cyan-100 flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-100 transition-colors">
+                      <Icon className="w-5 h-5 text-cyan-600" />
                     </div>
                     
                     {/* Question Text */}
