@@ -1,8 +1,8 @@
-import { 
-  Sparkles, 
-  ArrowRight, 
-  Zap, 
-  Target, 
+import {
+  Sparkles,
+  ArrowRight,
+  Zap,
+  Target,
   Brain,
   Lightbulb,
   CheckCircle,
@@ -19,9 +19,10 @@ import { useState, useEffect } from 'react';
 
 interface LandingPageProps {
   onGetStarted: () => void;
+  onStartHackathonMode: () => void;
 }
 
-export function LandingPage({ onGetStarted }: LandingPageProps) {
+export function LandingPage({ onGetStarted, onStartHackathonMode }: LandingPageProps) {
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F8FAFC] to-white">
-      
+
       <style>
         {`
           @keyframes fadeInUp {
@@ -189,14 +190,14 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
           .delay-600 { animation-delay: 0.6s; }
         `}
       </style>
-      
+
       {/* Hero Section */}
       <div className="relative overflow-hidden min-h-[600px]">
         {/* Animated Background Layers */}
         <div className="absolute inset-0 overflow-hidden">
           {/* AI Particles Canvas */}
           <AIParticles />
-          
+
           {/* Gradient Blobs */}
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[#7C6CF6]/20 to-[#22D3EE]/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-br from-[#22D3EE]/20 to-[#1F3C88]/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
@@ -204,7 +205,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
 
         <div className="container mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-32 relative z-10">
           <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center max-w-6xl mx-auto">
-            
+
             {/* Left: Main Content */}
             <div className="text-center lg:text-left">
               <h1 className="text-[#1F3C88] mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl animate-fadeInDown leading-tight">
@@ -214,7 +215,7 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                   Start Building.
                 </span>
               </h1>
-              
+
               <p className="text-lg sm:text-xl lg:text-2xl text-[#334155] leading-relaxed mb-8 animate-fadeInUp delay-200">
                 AI-powered project ideas that match your skill, interests, and time
               </p>
@@ -235,6 +236,18 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
                   <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#22D3EE] to-[#7C6CF6] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </button>
+
+              {/* Hackathon Mode CTA */}
+              <button
+                onClick={onStartHackathonMode}
+                className="group relative px-8 py-4 bg-white border-2 border-[#FACC15] text-[#1F3C88] rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-lg mb-4 w-full lg:w-auto animate-scaleIn delay-500 hover:bg-[#FACC15]/5"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-3">
+                  <Zap className="w-5 h-5 text-[#FACC15]" />
+                  <span>Hackathon Mode</span>
+                  <span className="text-sm text-[#64748B]">→ Get execution roadmap</span>
+                </span>
               </button>
 
               {/* Trust micro-text */}
@@ -270,226 +283,226 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
         {/* Content with relative positioning to appear above grid */}
         <div className="relative z-10">
 
-      {/* How It Works & Why It's Smart - Merged Section */}
-      <div id="how-it-works" className="container mx-auto px-4 py-16">
-        <div className="max-w-6xl mx-auto">
-          
-          <div className="text-center mb-12">
-            <h2 className="text-[#1F3C88] text-3xl sm:text-4xl lg:text-5xl mb-3">How It Works</h2>
-            <p className="text-lg text-[#334155] max-w-2xl mx-auto">Three simple steps powered by smart AI features</p>
+          {/* How It Works & Why It's Smart - Merged Section */}
+          <div id="how-it-works" className="container mx-auto px-4 py-16">
+            <div className="max-w-6xl mx-auto">
+
+              <div className="text-center mb-12">
+                <h2 className="text-[#1F3C88] text-3xl sm:text-4xl lg:text-5xl mb-3">How It Works</h2>
+                <p className="text-lg text-[#334155] max-w-2xl mx-auto">Three simple steps powered by smart AI features</p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    step: '1',
+                    icon: Target,
+                    title: 'Tell Us Your Level',
+                    description: 'Beginner, intermediate, or advanced? AI adapts to you.',
+                    color: 'from-[#22D3EE] to-[#1F3C88]',
+                    feature: 'Skill-Adaptive',
+                    featureDesc: 'Questions change based on your experience'
+                  },
+                  {
+                    step: '2',
+                    icon: Sparkles,
+                    title: 'Answer Smart Questions',
+                    description: 'AI asks personalized questions based on your skill level.',
+                    color: 'from-[#1F3C88] to-[#22D3EE]',
+                    feature: 'AI Reasoning',
+                    featureDesc: 'See why each project fits your goals'
+                  },
+                  {
+                    step: '3',
+                    icon: Lightbulb,
+                    title: 'Get Your Idea',
+                    description: 'AI-matched project with roadmap, tech stack, and resources.',
+                    color: 'from-[#7C6CF6] to-[#1F3C88]',
+                    feature: 'Feasibility Check',
+                    featureDesc: 'Only projects you can complete'
+                  }
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={item.step} className="relative">
+                      <div className="bg-white rounded-2xl p-6 border-2 border-[#E2E8F0] hover:border-[#22D3EE] hover:shadow-xl hover:scale-105 transition-all duration-300 h-full">
+                        {/* Step Number */}
+                        <div className={`absolute -top-3 -left-3 w-10 h-10 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center text-white shadow-lg animate-float`} style={{ animationDelay: `${parseInt(item.step) * 0.3}s` }}>
+                          {item.step}
+                        </div>
+
+                        {/* Icon */}
+                        <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center mb-4 shadow-lg animate-float`} style={{ animationDelay: `${parseInt(item.step) * 0.2}s` }}>
+                          <Icon className="w-7 h-7 text-white" />
+                        </div>
+
+                        <h3 className="text-[#1F3C88] text-xl mb-2">{item.title}</h3>
+                        <p className="text-[#334155] text-sm leading-relaxed mb-4">{item.description}</p>
+
+                        {/* Feature Badge */}
+                        <div className={`mt-auto pt-4 border-t border-gray-100`}>
+                          <div className="flex items-start gap-2">
+                            <Zap className="w-4 h-4 text-[#7C6CF6] flex-shrink-0 mt-0.5" />
+                            <div>
+                              <div className="text-xs text-[#7C6CF6] font-medium">{item.feature}</div>
+                              <div className="text-xs text-[#64748B] mt-0.5">{item.featureDesc}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                step: '1',
-                icon: Target,
-                title: 'Tell Us Your Level',
-                description: 'Beginner, intermediate, or advanced? AI adapts to you.',
-                color: 'from-[#22D3EE] to-[#1F3C88]',
-                feature: 'Skill-Adaptive',
-                featureDesc: 'Questions change based on your experience'
-              },
-              {
-                step: '2',
-                icon: Sparkles,
-                title: 'Answer Smart Questions',
-                description: 'AI asks personalized questions based on your skill level.',
-                color: 'from-[#1F3C88] to-[#22D3EE]',
-                feature: 'AI Reasoning',
-                featureDesc: 'See why each project fits your goals'
-              },
-              {
-                step: '3',
-                icon: Lightbulb,
-                title: 'Get Your Idea',
-                description: 'AI-matched project with roadmap, tech stack, and resources.',
-                color: 'from-[#7C6CF6] to-[#1F3C88]',
-                feature: 'Feasibility Check',
-                featureDesc: 'Only projects you can complete'
-              }
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.step} className="relative">
-                  <div className="bg-white rounded-2xl p-6 border-2 border-[#E2E8F0] hover:border-[#22D3EE] hover:shadow-xl hover:scale-105 transition-all duration-300 h-full">
-                    {/* Step Number */}
-                    <div className={`absolute -top-3 -left-3 w-10 h-10 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center text-white shadow-lg animate-float`} style={{ animationDelay: `${parseInt(item.step) * 0.3}s` }}>
-                      {item.step}
+          {/* Example AI Output - CRITICAL SECTION */}
+          <div id="examples" className="py-20 relative">
+            <div className="container mx-auto px-4">
+              <div className="max-w-5xl mx-auto">
+
+                <div className="text-center mb-12">
+                  <h2 className="text-[#1F3C88] text-3xl sm:text-4xl lg:text-5xl mb-4">What You Actually Get</h2>
+                  <p className="text-lg sm:text-xl text-[#334155]">See a real AI-generated project idea</p>
+                </div>
+
+                {/* Example Label */}
+                <div className="text-center mb-6">
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#7C6CF6]/10 text-[#7C6CF6] rounded-full text-sm font-medium border border-[#7C6CF6]/30">
+                    <Sparkles className="w-4 h-4" />
+                    Example AI-Generated Idea
+                  </span>
+                </div>
+
+                {/* Mock Project Card */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-[#22D3EE]/30 overflow-hidden">
+
+                  {/* Header */}
+                  <div className="bg-gradient-to-br from-[#1F3C88] via-[#2d5ac9] to-[#22D3EE] p-6 sm:p-8 text-white">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                        <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                      </div>
+                      <span className="text-xs sm:text-sm text-white font-medium flex items-center gap-1.5">
+                        <Sparkles className="w-4 h-4" />
+                        AI Generated for Beginners
+                      </span>
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl mb-3 text-white">Task Manager with Local Storage</h3>
+                    <p className="text-white text-base sm:text-lg">A beginner-friendly web app to practice JavaScript fundamentals while building something useful</p>
+
+                    <div className="flex flex-wrap gap-2 mt-6">
+                      <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30 text-white">
+                        Beginner
+                      </span>
+                      <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30 text-white">
+                        Web Development
+                      </span>
+                      <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30 text-white">
+                        2-3 Weeks
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-8 bg-white/60 backdrop-blur-sm">
+                    <div className="grid md:grid-cols-2 gap-8">
+
+                      {/* Key Features */}
+                      <div>
+                        <h4 className="text-[#1F3C88] text-lg mb-4 flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-[#22D3EE]" />
+                          Key Features
+                        </h4>
+                        <ul className="space-y-2 text-[#334155]">
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#22D3EE]">•</span>
+                            <span>Add, edit, and delete tasks</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#22D3EE]">•</span>
+                            <span>Mark tasks as complete</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#22D3EE]">•</span>
+                            <span>Filter by status</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#22D3EE]">•</span>
+                            <span>Persist data with localStorage</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Tech Stack */}
+                      <div>
+                        <h4 className="text-[#1F3C88] text-lg mb-4 flex items-center gap-2">
+                          <Code2 className="w-5 h-5 text-[#7C6CF6]" />
+                          Tech Stack
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {['HTML5', 'CSS3', 'JavaScript', 'localStorage'].map((tech) => (
+                            <span key={tech} className="px-4 py-2 bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white rounded-lg text-sm">
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
                     </div>
 
-                    {/* Icon */}
-                    <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center mb-4 shadow-lg animate-float`} style={{ animationDelay: `${parseInt(item.step) * 0.2}s` }}>
-                      <Icon className="w-7 h-7 text-white" />
-                    </div>
-
-                    <h3 className="text-[#1F3C88] text-xl mb-2">{item.title}</h3>
-                    <p className="text-[#334155] text-sm leading-relaxed mb-4">{item.description}</p>
-                    
-                    {/* Feature Badge */}
-                    <div className={`mt-auto pt-4 border-t border-gray-100`}>
-                      <div className="flex items-start gap-2">
-                        <Zap className="w-4 h-4 text-[#7C6CF6] flex-shrink-0 mt-0.5" />
+                    {/* AI Reasoning */}
+                    <div className="mt-8 p-6 bg-gradient-to-br from-[#F3F1FF]/80 to-[#ECFEFF]/80 backdrop-blur-sm rounded-2xl border border-[#7C6CF6]/30">
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 bg-gradient-to-br from-[#7C6CF6] to-[#22D3EE] rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Brain className="w-5 h-5 text-white" />
+                        </div>
                         <div>
-                          <div className="text-xs text-[#7C6CF6] font-medium">{item.feature}</div>
-                          <div className="text-xs text-[#64748B] mt-0.5">{item.featureDesc}</div>
+                          <h4 className="text-[#1F3C88] mb-2">Why AI Chose This</h4>
+                          <p className="text-[#334155] text-sm leading-relaxed">
+                            Perfect for beginners because it teaches core JavaScript concepts (DOM manipulation, events, data persistence)
+                            while creating a practical tool you'll actually use. Low complexity, high learning impact.
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
 
-      {/* Example AI Output - CRITICAL SECTION */}
-      <div id="examples" className="py-20 relative">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
-            
-            <div className="text-center mb-12">
-              <h2 className="text-[#1F3C88] text-3xl sm:text-4xl lg:text-5xl mb-4">What You Actually Get</h2>
-              <p className="text-lg sm:text-xl text-[#334155]">See a real AI-generated project idea</p>
-            </div>
-
-            {/* Example Label */}
-            <div className="text-center mb-6">
-              <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#7C6CF6]/10 text-[#7C6CF6] rounded-full text-sm font-medium border border-[#7C6CF6]/30">
-                <Sparkles className="w-4 h-4" />
-                Example AI-Generated Idea
-              </span>
-            </div>
-
-            {/* Mock Project Card */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-[#22D3EE]/30 overflow-hidden">
-              
-              {/* Header */}
-              <div className="bg-gradient-to-br from-[#1F3C88] via-[#2d5ac9] to-[#22D3EE] p-6 sm:p-8 text-white">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                    <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                  </div>
-                  <span className="text-xs sm:text-sm text-white font-medium flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4" />
-                    AI Generated for Beginners
-                  </span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl mb-3 text-white">Task Manager with Local Storage</h3>
-                <p className="text-white text-base sm:text-lg">A beginner-friendly web app to practice JavaScript fundamentals while building something useful</p>
-                
-                <div className="flex flex-wrap gap-2 mt-6">
-                  <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30 text-white">
-                    Beginner
-                  </span>
-                  <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30 text-white">
-                    Web Development
-                  </span>
-                  <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm border border-white/30 text-white">
-                    2-3 Weeks
-                  </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-8 bg-white/60 backdrop-blur-sm">
-                <div className="grid md:grid-cols-2 gap-8">
-                  
-                  {/* Key Features */}
-                  <div>
-                    <h4 className="text-[#1F3C88] text-lg mb-4 flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-[#22D3EE]" />
-                      Key Features
-                    </h4>
-                    <ul className="space-y-2 text-[#334155]">
-                      <li className="flex items-start gap-2">
-                        <span className="text-[#22D3EE]">•</span>
-                        <span>Add, edit, and delete tasks</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-[#22D3EE]">•</span>
-                        <span>Mark tasks as complete</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-[#22D3EE]">•</span>
-                        <span>Filter by status</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-[#22D3EE]">•</span>
-                        <span>Persist data with localStorage</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* Tech Stack */}
-                  <div>
-                    <h4 className="text-[#1F3C88] text-lg mb-4 flex items-center gap-2">
-                      <Code2 className="w-5 h-5 text-[#7C6CF6]" />
-                      Tech Stack
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {['HTML5', 'CSS3', 'JavaScript', 'localStorage'].map((tech) => (
-                        <span key={tech} className="px-4 py-2 bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white rounded-lg text-sm">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* AI Reasoning */}
-                <div className="mt-8 p-6 bg-gradient-to-br from-[#F3F1FF]/80 to-[#ECFEFF]/80 backdrop-blur-sm rounded-2xl border border-[#7C6CF6]/30">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#7C6CF6] to-[#22D3EE] rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Brain className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="text-[#1F3C88] mb-2">Why AI Chose This</h4>
-                      <p className="text-[#334155] text-sm leading-relaxed">
-                        Perfect for beginners because it teaches core JavaScript concepts (DOM manipulation, events, data persistence) 
-                        while creating a practical tool you'll actually use. Low complexity, high learning impact.
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
-
           </div>
-        </div>
-      </div>
-      
-      {/* FAQ Section */}
-      <FAQ />
 
-      {/* Final CTA */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-[#1F3C88] text-3xl sm:text-4xl lg:text-5xl mb-6">
-            Ready to Build Something?
-          </h2>
-          <p className="text-lg sm:text-xl text-[#334155] mb-10 max-w-2xl mx-auto">
-            Stop wondering what to build. Let AI find your perfect project match in minutes.
-          </p>
-          
-          <button
-            onClick={onGetStarted}
-            className="group relative px-10 py-5 bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 text-xl hover:scale-105"
-          >
-            <span className="relative z-10 flex items-center gap-3 text-white">
-              ✨ Generate My Project Idea
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#22D3EE] to-[#7C6CF6] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </button>
+          {/* FAQ Section */}
+          <FAQ />
 
-          <p className="text-sm text-[#64748B] mt-6">
-            💡 You can refine your idea anytime with AI
-          </p>
-        </div>
-      </div>
+          {/* Final CTA */}
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-[#1F3C88] text-3xl sm:text-4xl lg:text-5xl mb-6">
+                Ready to Build Something?
+              </h2>
+              <p className="text-lg sm:text-xl text-[#334155] mb-10 max-w-2xl mx-auto">
+                Stop wondering what to build. Let AI find your perfect project match in minutes.
+              </p>
+
+              <button
+                onClick={onGetStarted}
+                className="group relative px-10 py-5 bg-gradient-to-r from-[#1F3C88] to-[#22D3EE] text-white rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 text-xl hover:scale-105"
+              >
+                <span className="relative z-10 flex items-center gap-3 text-white">
+                  ✨ Generate My Project Idea
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#22D3EE] to-[#7C6CF6] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </button>
+
+              <p className="text-sm text-[#64748B] mt-6">
+                💡 You can refine your idea anytime with AI
+              </p>
+            </div>
+          </div>
 
         </div>
       </div>
