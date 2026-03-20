@@ -71,35 +71,35 @@ export function HackathonRoadmapOutput({
     <div className="min-h-screen bg-[#FDFCFB] pb-20">
       
       {/* Top Banner - Strategy Focused */}
-      <div className="bg-gradient-to-r from-[#FF6B35] to-[#FF4500] text-white py-12 px-4">
+      <div className="bg-amber-400 text-slate-900 py-4 border-b border-amber-500/20 px-4">
         <div className="container mx-auto max-w-5xl">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-xs font-medium backdrop-blur-sm mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/40 rounded-full text-xs font-bold text-amber-900 backdrop-blur-sm mb-2">
                 <Trophy className="w-3.5 h-3.5" />
                 <span>Winning Strategy Generated</span>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">{roadmap.title}</h1>
-              <p className="text-white/80 flex items-center gap-2">
+              <h1 className="text-xl md:text-2xl font-bold mb-1">{roadmap.title}</h1>
+              <p className="text-amber-900/80 flex items-center gap-2 text-sm font-medium">
                 <Calendar className="w-4 h-4" />
                 <span>{roadmap.timeline} Hackathon Plan</span>
                 <span className="mx-2 opacity-30">|</span>
-                <Sparkles className="w-4 h-4 text-yellow-300" />
-                <span className="font-semibold">Feasibility: {roadmap.feasibility}</span>
+                <Sparkles className="w-4 h-4 text-amber-600" />
+                <span className="font-bold">Feasibility: {roadmap.feasibility}</span>
               </p>
             </div>
             
             <div className="flex items-center gap-3">
               <button 
                 onClick={onAdjustTimeline}
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors flex items-center gap-2 border border-white/20"
+                className="px-4 py-2 bg-black/5 hover:bg-black/10 rounded-xl transition-colors flex items-center gap-2 border border-black/5 text-sm font-medium"
               >
                 <RefreshCcw className="w-4 h-4" />
                 <span>Adjust Plan</span>
               </button>
               <button 
                 onClick={downloadPDF}
-                className="px-4 py-2 bg-white text-[#FF6B35] hover:bg-orange-50 rounded-xl transition-colors flex items-center gap-2 font-medium shadow-lg"
+                className="px-4 py-2 bg-white text-slate-900 hover:bg-slate-50 rounded-xl transition-colors flex items-center gap-2 text-sm font-bold shadow-sm"
               >
                 <Download className="w-4 h-4" />
                 <span>Export PDF</span>
@@ -210,33 +210,33 @@ export function HackathonRoadmapOutput({
           <div className="space-y-8">
             
             {/* MVP Scope */}
-            <div className="bg-[#1F2937] text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Layout className="w-20 h-20" />
+            <div className="bg-white text-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5">
+                <Layout className="w-20 h-20 text-slate-900" />
               </div>
               <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-                <Rocket className="w-5 h-5 text-orange-400" />
+                <Rocket className="w-5 h-5 text-amber-500" />
                 MVP Core Scope
               </h3>
               <div className="space-y-6 relative z-10">
                 <div>
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-orange-400 mb-2">Must Have</h4>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-amber-600 mb-2">Must Have</h4>
                   <ul className="space-y-2">
                     {roadmap.mvpScope.mustHave.map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-xs text-gray-300">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
+                      <li key={idx} className="flex items-start gap-2 text-xs text-slate-700 font-medium">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#22D3EE] mb-2">Cut if Needed</h4>
-                  <ul className="space-y-2 opacity-60">
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Cut if Needed</h4>
+                  <ul className="space-y-2">
                     {roadmap.mvpScope.cutIfNeeded.map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-xs text-gray-300">
-                        <div className="w-3.5 h-[1px] bg-gray-500 mt-2 shrink-0"></div>
-                        <span>{item}</span>
+                      <li key={idx} className="flex items-start gap-2 text-xs text-slate-500 flex-1">
+                        <div className="w-3.5 h-[1px] bg-slate-300 mt-2 shrink-0"></div>
+                        <span className="line-through opacity-70">{item}</span>
                       </li>
                     ))}
                   </ul>

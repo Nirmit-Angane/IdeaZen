@@ -137,6 +137,7 @@ Selected project: "${selectedProjectTitle}"
 
 Generate a COMPLETE, deeply detailed implementation blueprint for this exact project.
 Everything must be specific to this project and this user — zero generic advice.
+Generate exactly 4 roadmap phases. No more, no fewer. Each must have: phase, title, weekRange, duration, description, deliverable, and tasks array with 3 items.
 
 Return a single JSON object matching this exact structure:
 

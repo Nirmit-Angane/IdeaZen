@@ -10,7 +10,6 @@ import {
   ArrowUp
 } from 'lucide-react';
 import { TextLoader } from '../../components/animations/TextLoader';
-import { ServerNodeLoader } from '../../components/animations/ServerNodeLoader';
 import { FAQ } from '../FAQ/FAQ';
 import { useState, useEffect } from 'react';
 
@@ -190,9 +189,48 @@ export function LandingPage({ onGetStarted, onStartHackathonMode }: LandingPageP
               </div>
             </div>
 
-            {/* Right: Server Node Loader */}
-            <div className="hidden lg:flex justify-center items-center animate-slideInRight delay-200">
-              <ServerNodeLoader />
+            {/* Right: Hero Illustration */}
+            <div className="hidden lg:flex justify-center items-center animate-slideInRight delay-200 w-full max-w-lg mx-auto">
+              <div className="relative w-full aspect-square">
+                {/* Decorative background elements */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] bg-gradient-to-tr from-cyan-100/40 to-[#1F3C88]/10 rounded-full blur-[80px] -z-10"></div>
+                
+                <div className="relative h-full flex flex-col justify-center gap-12">
+                  <div className="flex items-center justify-between w-full relative px-4">
+                    
+                    {/* Connecting line */}
+                    <div className="absolute top-1/2 left-12 right-12 h-1 bg-gradient-to-r from-amber-200 via-cyan-300 to-[#1F3C88] -z-10 rounded-full opacity-60"></div>
+
+                    {/* Input */}
+                    <div className="flex flex-col items-center gap-4 animate-fadeInUp delay-300 transform transition-transform hover:-translate-y-2">
+                      <div className="w-24 h-24 bg-white rounded-3xl shadow-xl flex items-center justify-center border-2 border-slate-100 rotate-[-8deg] hover:rotate-0 transition-transform">
+                        <Lightbulb className="w-12 h-12 text-amber-500" />
+                      </div>
+                      <span className="text-sm font-bold text-slate-600 bg-white px-4 py-1.5 rounded-full shadow-sm border border-slate-100">Raw Idea</span>
+                    </div>
+
+                    {/* AI Processing */}
+                    <div className="flex flex-col items-center justify-center relative animate-fadeInUp delay-400 transform transition-transform hover:scale-110">
+                      <div className="absolute inset-0 bg-cyan-200 rounded-full blur-2xl scale-125 animate-pulse opacity-50"></div>
+                      <div className="w-32 h-32 bg-gradient-to-tr from-[#1F3C88] to-[#22D3EE] rounded-[40px] shadow-2xl flex items-center justify-center relative z-10 rotate-[45deg] overflow-hidden">
+                        <div className="absolute inset-0 bg-white/10 blur-xl"></div>
+                        <Brain className="w-16 h-16 text-white rotate-[-45deg]" />
+                      </div>
+                      <div className="absolute -right-2 -top-2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center z-20">
+                        <Sparkles className="w-5 h-5 text-[#22D3EE] animate-pulse" />
+                      </div>
+                    </div>
+
+                    {/* Output */}
+                    <div className="flex flex-col items-center gap-4 animate-fadeInUp delay-500 transform transition-transform hover:-translate-y-2">
+                      <div className="w-24 h-24 bg-white rounded-3xl shadow-xl flex items-center justify-center border-2 border-slate-100 rotate-[8deg] hover:rotate-0 transition-transform">
+                        <Code2 className="w-12 h-12 text-[#1F3C88]" />
+                      </div>
+                      <span className="text-sm font-bold text-slate-600 bg-white px-4 py-1.5 rounded-full shadow-sm border border-slate-100">Blueprint</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
           </div>
@@ -245,10 +283,7 @@ export function LandingPage({ onGetStarted, onStartHackathonMode }: LandingPageP
                       <h3 className="text-[#1F3C88] text-2xl font-bold mb-3">{item.title}</h3>
                       <p className="text-slate-600 text-lg mb-6 leading-relaxed">{item.description}</p>
                       
-                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-50 text-cyan-600 rounded-lg text-sm font-medium">
-                        <Zap className="w-4 h-4" />
-                        {item.feature}
-                      </div>
+
                     </div>
                   );
                 })}

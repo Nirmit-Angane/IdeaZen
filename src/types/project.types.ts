@@ -112,6 +112,7 @@ export interface GeneratedProject {
     why: string;
   }[];
   feasibility: 'High' | 'Medium' | 'Low';
+  timeFit?: 'Comfortable' | 'Tight' | 'Challenging';
   confidence: string;
 }
 

@@ -28,7 +28,8 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronUp,
-  Rocket
+  Rocket,
+  ShieldAlert
 } from 'lucide-react';
 import { GeneratedProject, UserInputs } from '../../types/project.types';
 import { useState, useRef } from 'react';
@@ -229,50 +230,47 @@ export function ProjectOutput({
         
         {/* Hero Header - Flat Authoritative Design */}
         <div className="mb-10">
-          <div className="bg-[#1F3C88] rounded-2xl p-10 text-white relative overflow-hidden border-b-4 border-[#22D3EE]/30 shadow-lg">
-            {/* Subtle Static Pattern */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none grid-pattern"></div>
-            
+          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative overflow-hidden border-l-4 border-l-cyan-400">
             <div className="relative z-10">
               {/* AI Badge - Cyan high-contrast */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 rounded-full text-[11px] font-black uppercase tracking-widest mb-6 border border-white/20">
-                <Sparkles className="w-3.5 h-3.5 text-[#22D3EE]" />
-                <span className="text-white">AI Engine Blueprint</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-50 rounded-full text-[11px] font-black uppercase tracking-widest mb-6 border border-cyan-100">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
+                <span className="text-cyan-800">AI Engine Blueprint</span>
               </div>
 
               {/* Project Title */}
-              <h1 className="text-4xl sm:text-6xl font-black mb-6 text-white tracking-tight leading-tight">
+              <h1 className="text-3xl font-semibold text-slate-900 mb-4 tracking-tight leading-tight">
                 {project.title}
               </h1>
 
               {/* Description */}
-              <p className="text-xl text-blue-100/80 mb-10 max-w-3xl leading-relaxed font-medium">
+              <p className="text-slate-600 text-sm leading-relaxed mb-6 max-w-3xl">
                 {project.description}
               </p>
 
               {/* Tagline Box - Premium Flat Highlight */}
               {(project.tagline || project.realWorldComparison) && (
-                <div className="inline-flex items-center gap-4 px-6 py-4 bg-white/5 rounded-2xl border border-white/10 text-white mb-12 max-w-2xl backdrop-blur-sm">
-                  <div className="flex-shrink-0 w-10 h-10 bg-[#22D3EE] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.4)]">
-                    <Lightbulb className="w-5 h-5 text-[#1F3C88]" />
+                <div className="inline-flex items-center gap-4 px-6 py-4 bg-cyan-50 rounded-2xl border border-cyan-100 text-slate-800 mb-8 max-w-2xl">
+                  <div className="flex-shrink-0 w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                    <Lightbulb className="w-5 h-5 text-cyan-600" />
                   </div>
-                  <p className="text-[15px] font-semibold leading-relaxed">
+                  <p className="text-[14px] font-medium leading-relaxed">
                     {project.tagline || `Analogy: ${project.realWorldComparison}`}
                   </p>
                 </div>
               )}
 
               {/* Stats - Authoritative horizontal layout */}
-              <div className="flex flex-wrap gap-8 pt-8 border-t border-white/10">
+              <div className="flex flex-wrap gap-4 pt-6 border-t border-slate-100">
                 {[
                   { icon: Award, label: project.difficulty, highlight: false },
-                  { icon: Clock, label: `${project.roadmap.length} Phases`, highlight: false },
-                  { icon: Zap, label: `${project.confidence} Fit`, highlight: true },
+                  { icon: Clock, label: `${project.roadmap?.length || 0} ${(project.roadmap?.length || 0) === 1 ? 'PHASE' : 'PHASES'}`, highlight: false },
+                  { icon: Zap, label: `${project.timeFit ?? project.feasibility ?? '—'} FIT`, highlight: true },
                   { icon: Target, label: project.feasibility, highlight: false }
                 ].map((stat, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <stat.icon className={`w-5 h-5 ${stat.highlight ? 'text-[#22D3EE]' : 'text-blue-200/60'}`} />
-                    <span className={`text-[13px] font-bold uppercase tracking-wider ${stat.highlight ? 'text-white' : 'text-blue-100'}`}>
+                  <div key={i} className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
+                    <stat.icon className={`w-4 h-4 ${stat.highlight ? 'text-cyan-500' : 'text-slate-500'}`} />
+                    <span className={`text-[11px] font-bold uppercase tracking-wider ${stat.highlight ? 'text-slate-800' : 'text-slate-600'}`}>
                       {stat.label}
                     </span>
                   </div>
@@ -403,25 +401,23 @@ export function ProjectOutput({
                       <Sparkles className="w-4 h-4 text-[#22D3EE]" />
                       Recommended Technologies
                     </div>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-col gap-3">
                        {project.techStack.primary.map((tech, index) => {
                          if (typeof tech === 'string') {
                            return (
-                             <span key={index} className="px-4 py-2 bg-[#1F3C88] text-white rounded-xl text-sm font-bold shadow-sm border border-[#1F3C88]">
-                               {tech}
-                             </span>
+                             <div key={index} className="flex flex-col gap-1">
+                               <span className="inline-flex w-fit px-3 py-1 rounded-full border border-slate-200 text-sm font-medium text-slate-800">
+                                 {tech}
+                               </span>
+                             </div>
                            );
                          }
                          return (
-                           <div key={index} className="px-4 py-2.5 bg-[#1F3C88] text-white rounded-xl group relative cursor-help border border-[#1F3C88] shadow-sm">
-                             <div className="font-bold text-sm tracking-tight">{tech.name}</div>
-                             <div className="text-[10px] text-[#22D3EE] font-black uppercase tracking-widest mt-0.5">{tech.role}</div>
-                             
-                             {/* Refined Tooltip */}
-                             <div className="absolute opacity-0 group-hover:opacity-100 transition-all duration-200 z-20 bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 bg-white text-slate-600 text-xs p-3 rounded-xl shadow-2xl pointer-events-none border border-slate-100 ring-4 ring-[#1F3C88]/5">
-                               <p className="font-medium leading-relaxed">{tech.reason}</p>
-                               <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-white"></div>
-                             </div>
+                           <div key={index} className="flex flex-col gap-1">
+                             <span className="inline-flex w-fit px-3 py-1 rounded-full border border-slate-200 text-sm font-medium text-slate-800 bg-white">
+                               {tech.name}
+                             </span>
+                             <p className="text-xs text-slate-500 pl-1 leading-relaxed">{tech.reason}</p>
                            </div>
                          );
                        })}
@@ -636,25 +632,40 @@ export function ProjectOutput({
             </div>
 
             {/* Pitfalls - Warning box */}
-            <div className="bg-white rounded-2xl p-8 border-2 border-red-100 shadow-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-red-50/50 rounded-bl-full pointer-events-none"></div>
+            <div className="bg-amber-50 rounded-2xl p-8 border border-amber-200 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-100/50 rounded-bl-full pointer-events-none"></div>
               <div className="flex items-start gap-6">
-                <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <AlertCircle className="w-8 h-8 text-red-600" />
+                <div className="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <ShieldAlert className="w-8 h-8 text-amber-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-red-900 mb-4">Engineering Guardrails</h3>
+                  <h3 className="text-lg font-bold text-amber-900 mb-4">Watch out for</h3>
                   <div className="grid gap-4">
-                    {[
+                    {project.pitfalls?.map((pitfallObj: any, i: number) => {
+                      const pitfallText = typeof pitfallObj === 'string' ? pitfallObj : pitfallObj.pitfall;
+                      const mitigationText = pitfallObj.mitigation;
+                      
+                      return (
+                      <div key={i} className="flex items-start gap-3">
+                        <div className="mt-1 flex-shrink-0">
+                          <ShieldAlert className="w-4 h-4 text-amber-500" />
+                        </div>
+                        <div>
+                          <span className="text-sm text-amber-900 leading-relaxed font-semibold">{pitfallText}</span>
+                          {mitigationText && <p className="text-xs text-amber-800 mt-1 leading-relaxed"><span className="font-bold">Fix:</span> {mitigationText}</p>}
+                        </div>
+                      </div>
+                    )})}
+                    {(!project.pitfalls || project.pitfalls.length === 0) && [
                       "Avoid complex backend setup initially — use local persistence (JSON/LocalStorage).",
                       "De-prioritize advanced Auth/JWT until core engine is functional.",
                       "Focus on component functionality before perfecting CSS/Transitions."
                     ].map((pitfall, i) => (
                       <div key={i} className="flex items-start gap-3">
                         <div className="mt-1 flex-shrink-0">
-                          <X className="w-4 h-4 text-red-500" />
+                          <ShieldAlert className="w-4 h-4 text-amber-500" />
                         </div>
-                        <span className="text-sm text-red-800 leading-relaxed font-medium">{pitfall}</span>
+                        <span className="text-sm text-amber-900 leading-relaxed font-medium">{pitfall}</span>
                       </div>
                     ))}
                   </div>
@@ -684,7 +695,26 @@ export function ProjectOutput({
               {expandedSections.resources && (
                 <div className="px-6 py-4 border-t border-slate-100">
                   <div className="grid gap-3">
-                    {[
+                    {project.resources?.map((r: any, i: number) => {
+                      let Icon = FileText;
+                      if (r.format === 'Video') Icon = Youtube;
+                      else if (r.format === 'GitHub') Icon = Github;
+                      else if (r.format === 'Course') Icon = BookOpen;
+
+                      return (
+                        <a key={i} href={r.url || "#"} target="_blank" rel="noopener noreferrer" className="flex gap-3 p-3 rounded-lg border border-slate-200 hover:border-cyan-300 transition-colors bg-white hover:bg-slate-50">
+                          <div className="flex-1 min-w-0">
+                            <span className="font-medium text-sm text-slate-800 flex items-center justify-between">
+                              {r.title}
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5">{r.format}</span>
+                            </span>
+                            <span className="text-xs text-slate-500 block mt-0.5">{r.source} · {r.timeEstimate}</span>
+                            <span className="text-xs text-slate-600 mt-1 block leading-relaxed">{r.why}</span>
+                          </div>
+                        </a>
+                      );
+                    })}
+                    {(!project.resources || project.resources.length === 0) && [
                       { icon: FileText, title: 'Official Documentation', desc: project.techStack.primary[0] + ' docs', color: 'text-blue-600' },
                       { icon: Youtube, title: 'Video Tutorials', desc: 'Step-by-step guides and walkthroughs', color: 'text-red-600' },
                       { icon: Github, title: 'Example Projects', desc: 'Open source code to learn from', color: 'text-slate-700' },
@@ -711,42 +741,31 @@ export function ProjectOutput({
 
             {/* Portfolio Blurb - Impact highlight */}
             {project.portfolioBlurb && (
-              <div className="bg-slate-900 rounded-2xl p-8 text-white border border-slate-800 shadow-sm group">
-                <div className="flex items-start justify-between gap-6">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-5">
-                      <div className="w-8 h-8 bg-white/10 rounded flex items-center justify-center">
-                        <Award className="w-4 h-4 text-[#22D3EE]" />
-                      </div>
-                      <h3 className="text-lg font-bold text-white tracking-tight">LinkedIn & Portfolio Hook</h3>
-                    </div>
-                    <div className="relative group/copy">
-                      <p className="text-slate-300 text-[15px] leading-relaxed italic border-l-4 border-[#22D3EE] pl-6 py-1">
-                        "{project.portfolioBlurb}"
-                      </p>
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(project.portfolioBlurb!);
-                          setIsCopied(true);
-                          setTimeout(() => setIsCopied(false), 2000);
-                        }}
-                        className="mt-6 flex items-center gap-2.5 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:bg-[#22D3EE] transition-all hover:-translate-y-0.5"
-                      >
-                        {isCopied ? (
-                          <>
-                            <Check className="w-4 h-4" />
-                            <span>Copied to Clipboard!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Share2 className="w-4 h-4" />
-                            <span>Copy Impact Statement</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </div>
+              <div className="border-l-4 border-cyan-400 bg-slate-50 rounded-r-xl p-5 mt-4 group">
+                 <p className="text-xs font-medium text-cyan-700 mb-2 uppercase tracking-wide">Ready to paste into your resume</p>
+                 <p className="text-sm text-slate-700 leading-relaxed italic">
+                   "{project.portfolioBlurb}"
+                 </p>
+                 <button
+                   onClick={() => {
+                     navigator.clipboard.writeText(project.portfolioBlurb!);
+                     setIsCopied(true);
+                     setTimeout(() => setIsCopied(false), 2000);
+                   }}
+                   className="mt-3 text-xs flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-600 rounded-md font-medium hover:border-cyan-300 hover:text-cyan-700 transition-all border-b-2 active:border-b"
+                 >
+                   {isCopied ? (
+                     <>
+                       <Check className="w-3.5 h-3.5 text-emerald-500" />
+                       <span>Copied!</span>
+                     </>
+                   ) : (
+                     <>
+                       <Share2 className="w-3.5 h-3.5" />
+                       <span>Copy Impact Statement</span>
+                     </>
+                   )}
+                 </button>
               </div>
             )}
 
