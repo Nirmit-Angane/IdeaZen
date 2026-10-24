@@ -3,3 +3,5 @@ node_modules
 dist
 .vercel
 .env*.local
+.next
+next-env.d.ts

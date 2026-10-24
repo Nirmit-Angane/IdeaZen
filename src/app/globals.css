@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/* "Spec Sheet" design tokens. Components use these names only; no raw hex outside this file. */
+:root {
+  --paper: #f3f4f1;
+  --sheet: #fbfbf9;
+  --ink: #14201a;
+  --ink-2: #48554e;
+  --rule: #d5d9d2;
+  --mark: #f5d547;
+  --on-mark: #14201a;
+  --pine: #1e4d3b;
+  --redpen: #b83e28;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --paper: #101512;
+  --sheet: #171d19;
+  --ink: #e8ede9;
+  --ink-2: #9aa79f;
+  --rule: #2a332d;
+  --pine: #7fc4a4;
+  --redpen: #f07b65;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #101512;
+    --sheet: #171d19;
+    --ink: #e8ede9;
+    --ink-2: #9aa79f;
+    --rule: #2a332d;
+    --pine: #7fc4a4;
+    --redpen: #f07b65;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-rule: var(--rule);
+  --color-mark: var(--mark);
+  --color-on-mark: var(--on-mark);
+  --color-pine: var(--pine);
+  --color-redpen: var(--redpen);
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius-input: 2px;
+  --radius-panel: 6px;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { letter-spacing: -0.02em; line-height: 1.12; font-weight: 700; }
+  a { text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--pine); outline-offset: 2px; }
+  ::selection { background: var(--mark); color: var(--on-mark); }
+}
+
+/* The one loud element: a flat highlighter underlay. */
+.mark {
+  background: linear-gradient(transparent 52%, var(--mark) 52%, var(--mark) 92%, transparent 92%);
+  color: var(--on-mark);
+  padding: 0 0.12em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Drafting-paper grid that fades out downward. */
+.grid-paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(to bottom, #000 25%, transparent 95%);
+  mask-image: linear-gradient(to bottom, #000 25%, transparent 95%);
+}
+
+/* On dark paper a half-height underlay would leave dark text on a dark ground, so fill the whole line. */
+:root[data-theme="dark"] .mark { background: var(--mark); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mark { background: var(--mark); }
+}
+
+.prose-spec p + p { margin-top: 1em; }
+.prose-spec { max-width: 68ch; }
+
+/* Highlighter swipe when a choice is made. */
+@keyframes swipe { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.swipe::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--mark);
+  transform-origin: left;
+  animation: swipe 0.35s ease-out;
+  z-index: -1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  a { color: inherit; text-decoration: none; }
+  section { break-inside: avoid-page; }
+}

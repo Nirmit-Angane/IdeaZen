@@ -1,0 +1,22 @@
+# IdeaZen
+
+> Free tool that turns your skill level, tech stack and available time into a project plan: features, tech stack, a phased roadmap with concrete tasks and a first-commit guide. Also includes an hour-by-hour hackathon planner. No account needed.
+
+## Tools
+- [Generate a project plan](https://ideazen.vercel.app/generate): answer a few questions, get three ideas and a full build plan
+- [Hackathon planner](https://ideazen.vercel.app/hackathon): hour-by-hour plan for 24 to 72 hour events
+
+## Library
+- [Project ideas with build plans](https://ideazen.vercel.app/ideas): hand-written specs for beginner, intermediate and advanced developers
+- [React project ideas](https://ideazen.vercel.app/project-ideas/react)
+- [Python project ideas](https://ideazen.vercel.app/project-ideas/python)
+- [TypeScript project ideas](https://ideazen.vercel.app/project-ideas/typescript)
+
+## Guides
+- [How to choose a portfolio project](https://ideazen.vercel.app/guides/choose-a-portfolio-project)
+- [A 48-hour hackathon plan](https://ideazen.vercel.app/guides/48-hour-hackathon-plan)
+- [How long should a portfolio project take?](https://ideazen.vercel.app/guides/how-long-should-a-portfolio-project-take)
+
+## About
+- [FAQ](https://ideazen.vercel.app/faq)
+- [Privacy](https://ideazen.vercel.app/privacy)
