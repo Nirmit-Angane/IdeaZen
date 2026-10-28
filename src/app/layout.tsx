@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Schibsted_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { SiteFooter, SiteHeader } from '@/components/site-chrome';
-import { CornerShapes } from '@/components/shapes';
+import { CornerShapes } from '@/components/corner-shapes';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { JsonLd } from '@/components/json-ld';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, abs } from '@/lib/site';
@@ -28,7 +28,8 @@ export const viewport: Viewport = {
   ],
 };
 
-const themeScript = `document.documentElement.classList.add('js');try{var t=localStorage.getItem('ideazen:theme');if(t)document.documentElement.dataset.theme=t}catch(e){}`;
+// `js` enables the scroll-reveal CSS. If the reveal script has not started after 4s (hydration failure), switch it off so nothing stays hidden.
+const themeScript = `var r=document.documentElement;r.classList.add('js');setTimeout(function(){if(!r.dataset.rv)r.classList.remove('js')},4000);try{var t=localStorage.getItem('ideazen:theme');if(t)document.documentElement.dataset.theme=t}catch(e){}`;
 
 const siteSchema = {
   '@context': 'https://schema.org',
