@@ -3,6 +3,7 @@ import { Schibsted_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { SiteFooter, SiteHeader } from '@/components/site-chrome';
 import { CornerShapes } from '@/components/shapes';
+import { ScrollReveal } from '@/components/scroll-reveal';
 import { JsonLd } from '@/components/json-ld';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, abs } from '@/lib/site';
 
@@ -27,7 +28,7 @@ export const viewport: Viewport = {
   ],
 };
 
-const themeScript = `try{var t=localStorage.getItem('ideazen:theme');if(t)document.documentElement.dataset.theme=t}catch(e){}`;
+const themeScript = `document.documentElement.classList.add('js');try{var t=localStorage.getItem('ideazen:theme');if(t)document.documentElement.dataset.theme=t}catch(e){}`;
 
 const siteSchema = {
   '@context': 'https://schema.org',
@@ -58,6 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <SiteFooter />
+        <ScrollReveal />
       </body>
     </html>
   );

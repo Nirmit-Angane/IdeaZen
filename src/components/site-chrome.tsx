@@ -8,6 +8,7 @@ import { SITE_NAME } from '@/lib/site';
 const NAV = [
   { href: '/generate', label: 'Generate' },
   { href: '/hackathon', label: 'Hackathon' },
+  { href: '/design', label: 'Design' },
   { href: '/ideas', label: 'Ideas' },
   { href: '/guides', label: 'Guides' },
   { href: '/saved', label: 'Saved' },
@@ -49,6 +50,7 @@ export function SiteFooter() {
           <Link href="/generate">Generate a project</Link>
           <Link href="/hackathon">Hackathon planner</Link>
           <Link href="/ideas">Project idea library</Link>
+          <Link href="/design">Design kits</Link>
           <Link href="/guides">Guides</Link>
         </nav>
         <nav aria-label="About" className="flex flex-col gap-2">

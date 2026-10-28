@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Check, Copy, Download, Link2, Printer, Trash2 } from 'lucide-react';
+import { AiExport } from './ai-export';
 import { Button, ButtonLink, Container, Mark, Notice, Panel, Tag, field } from './ui';
 import { fetchBlueprint } from '@/lib/client-api';
 import { download, projectToMarkdown, slugify } from '@/lib/markdown';
@@ -15,6 +16,7 @@ const SECTIONS = [
   ['stack', 'Tech stack'],
   ['roadmap', 'Roadmap'],
   ['first-commit', 'First commit'],
+  ['ai', 'Build with AI'],
   ['mvp', 'MVP'],
   ['pitfalls', 'Pitfalls'],
   ['resources', 'Resources'],
@@ -253,6 +255,10 @@ export function SpecView({ project: p, recordId, inputs, onSaveCopy }: Props) {
             {p.firstCommitGuide.firstGoal && <p className="mt-4"><strong>First goal:</strong> {p.firstCommitGuide.firstGoal}</p>}
           </Section>
         )}
+
+        <Section id="ai" title="Build it with AI">
+          <AiExport project={p} />
+        </Section>
 
         {p.mvp && (
           <Section id="mvp" title="What counts as done">
