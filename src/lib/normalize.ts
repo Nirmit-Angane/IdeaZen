@@ -3,7 +3,8 @@
 import type { GeneratedProject, IdeaCard, TechStackItem, AltTechStackItem } from './types';
 import type { HackathonRoadmap } from './hackathon-types';
 
-const str = (v: unknown, d = ''): string => (typeof v === 'string' ? v : v == null ? d : String(v));
+// Every string is capped so a hijacked or runaway model response cannot smuggle long free-form text to the user.
+const str = (v: unknown, d = ''): string => (typeof v === 'string' ? v : v == null ? d : String(v)).slice(0, 1200);
 const arr = <T = any>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
 const strs = (v: unknown): string[] => arr(v).map((x) => str(typeof x === 'object' && x ? (x as any).name ?? (x as any).task ?? JSON.stringify(x) : x)).filter(Boolean);
 const num = (v: unknown, d = 0) => (typeof v === 'number' && isFinite(v) ? v : Number(v) || d);

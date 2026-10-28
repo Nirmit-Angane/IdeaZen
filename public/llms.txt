@@ -6,6 +6,9 @@
 - [Generate a project plan](https://ideazen.vercel.app/generate): answer a few questions, get three ideas and a full build plan
 - [Hackathon planner](https://ideazen.vercel.app/hackathon): hour-by-hour plan for 24 to 72 hour events
 
+## Design kits
+- [Design kits for AI-built apps](https://ideazen.vercel.app/design): original design systems with a copyable DESIGN.md for Claude Code, Cursor, Lovable or v0
+
 ## Library
 - [Project ideas with build plans](https://ideazen.vercel.app/ideas): hand-written specs for beginner, intermediate and advanced developers
 - [React project ideas](https://ideazen.vercel.app/project-ideas/react)

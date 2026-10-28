@@ -58,7 +58,7 @@ export function Ideas() {
     <Container className="py-14">
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div className="max-w-2xl">
-          <h1 className="text-3xl sm:text-4xl">Three projects for you</h1>
+          <h1 className="text-3xl sm:text-4xl">{ideas.length === 3 ? "Three" : ideas.length} {ideas.length === 1 ? "project" : "projects"} for you</h1>
           <p className="mt-3 text-ink-2">Pick one and we will write the full build plan: features, stack, roadmap and your first commit.</p>
         </div>
         <Button variant="ghost" onClick={() => setAttempt((a) => a + 1)}>Get three different ideas</Button>

@@ -76,3 +76,7 @@ Phase 0 in full. It is small, independent of every open decision except none, an
 ## Build status (2026-10-24)
 Done in code: Phase 1 (Next.js, API routes with zod/limits, URL-state wizard, localStorage store with legacy-key migration), Phase 2 core (tokens, primitives, SpecView, CommitLog roadmap, terminal block, meters), Phase 3 (landing, wizard, ideas, spec, hackathon, share, saved), Phase 4 partial (progress tracking, JSON backup/restore, Markdown + print export), Phase 5 base (sitemap, robots, llms.txt, JSON-LD, OG image, 13 library ideas, 3 guides, FAQ/about/privacy).
 Not done: GitHub export bundle, hackathon live mode and pitch kit, compare ideas, Lighthouse/axe CI, Playwright tests in repo, more library and guide content, Search Console setup (needs your Google account).
+
+## AI pack and design kits (2026-10-28)
+Done: "Build it with AI" panel on every plan (tool + design selector, copy prompt, .zip with AGENTS.md / CLAUDE.md / Cursor rule / docs/PROJECT, STACK, DESIGN); /design library with 4 original kits (Ledger, Marginalia, Night Shift, Launchpad), live previews, copy/download DESIGN.md; sitemap, llms.txt, nav and landing teaser.
+Next: "Describe your project" (AI picks a kit and stack from a short description), stack advisor, more kits (portfolio, blog/docs, mobile), and a with/without DESIGN.md comparison to prove the benefit.

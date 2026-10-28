@@ -42,11 +42,13 @@ export function hackathonToMarkdown(h: HackathonRoadmap): string {
   return out.join('\n') + '\n';
 }
 
-export function download(filename: string, content: string, type = 'text/markdown') {
+export function download(filename: string, content: BlobPart, type = 'text/markdown') {
   const url = URL.createObjectURL(new Blob([content], { type }));
   const a = Object.assign(document.createElement('a'), { href: url, download: filename });
+  document.body.appendChild(a); // Firefox ignores clicks on detached links
   a.click();
-  URL.revokeObjectURL(url);
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10_000); // revoking immediately can cancel the download in some browsers
 }
 
 export const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'idea';

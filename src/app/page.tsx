@@ -5,6 +5,7 @@ import { FaqList } from '@/components/faq-list';
 import { IdeaRow } from '@/components/idea-parts';
 import { HeroShapes, OffsetBlock, StepShape } from '@/components/shapes';
 import { IDEAS } from '@/content/ideas';
+import { KITS } from '@/content/kits';
 import { GUIDES } from '@/content/guides';
 import { LEVELS } from '@/lib/wizard';
 
@@ -110,6 +111,35 @@ export default function Home() {
               </li>
             ))}
           </ol>
+        </Container>
+      </section>
+
+      <section className="py-16">
+        <Container>
+          <div className="flex items-end justify-between gap-4 flex-wrap">
+            <div>
+              <h2 className="text-3xl">Stop your AI app looking like every other AI app</h2>
+              <p className="mt-2 text-ink-2 max-w-[60ch]">Pick a design kit, copy its DESIGN.md, and give it to Claude Code, Cursor, Lovable or v0. Exact colours, fonts and component rules, so the result has a point of view.</p>
+            </div>
+            <Link href="/design" className="font-semibold">See all kits</Link>
+          </div>
+          <ul className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {KITS.map((k) => (
+              <li key={k.slug} data-reveal>
+                <Link href={`/design/${k.slug}`} className="block no-underline border border-rule bg-sheet rounded-panel overflow-hidden hover:border-ink">
+                  <span className="flex h-16" aria-hidden>
+                    {[k.tokens.bg, k.tokens.surface, k.tokens.ink, k.tokens.accent, ...(k.tokens.accent2 ? [k.tokens.accent2] : [])].map((hex, i) => (
+                      <span key={hex + i} className="flex-1" style={{ background: hex }} />
+                    ))}
+                  </span>
+                  <span className="block p-4">
+                    <span className="block font-bold text-lg">{k.name}</span>
+                    <span className="block text-[0.9rem] text-ink-2">{k.tagline}</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 
