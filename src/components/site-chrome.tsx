@@ -1,34 +1,19 @@
 import Link from 'next/link';
 import { Container } from './ui';
-import { ThemeToggle } from './theme-toggle';
+import { DesktopNav, MobileNav } from './nav';
 import { ShapeStrip } from './shapes';
 import { Logo } from './logo';
 import { SITE_NAME } from '@/lib/site';
 
-const NAV = [
-  { href: '/generate', label: 'Generate' },
-  { href: '/hackathon', label: 'Hackathon' },
-  { href: '/design', label: 'Design' },
-  { href: '/ideas', label: 'Ideas' },
-  { href: '/guides', label: 'Guides' },
-  { href: '/saved', label: 'Saved' },
-];
-
 export function SiteHeader() {
   return (
     <header className="no-print border-b border-rule bg-paper/95 sticky top-0 z-20 backdrop-blur-sm">
-      <Container className="flex items-center justify-between gap-4 min-h-14 py-2 flex-wrap">
+      <Container className="relative flex items-center justify-between gap-4 min-h-14">
         <Link href="/" aria-label="IdeaZen home" className="no-underline">
           <Logo />
         </Link>
-        <nav aria-label="Main" className="flex items-center gap-1 sm:gap-2 flex-wrap">
-          {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className="px-2 sm:px-3 py-2 text-[0.95rem] text-ink-2 hover:text-ink no-underline">
-              {n.label}
-            </Link>
-          ))}
-          <ThemeToggle />
-        </nav>
+        <DesktopNav />
+        <MobileNav />
       </Container>
     </header>
   );

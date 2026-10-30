@@ -81,12 +81,19 @@ export function Wizard() {
 
   return (
     <Container className="py-14 max-w-2xl">
-      <div className="flex items-center justify-between text-sm text-ink-2">
+      <div className="flex items-center justify-between gap-6 text-sm text-ink-2">
         <button onClick={back} className="underline cursor-pointer min-h-11">Back</button>
-        <span className="font-mono" aria-live="polite">{step + 1} / {questions.length}</span>
+        <div className="flex items-center gap-3">
+          <span className="font-mono" aria-live="polite">Step {step + 1} of {questions.length}</span>
+          <span aria-hidden className="flex gap-1">
+            {questions.map((_, i) => (
+              <span key={i} className={`h-1.5 w-6 rounded-input transition-colors ${i < step ? 'bg-ink' : i === step ? 'bg-mark border border-ink' : 'bg-rule'}`} />
+            ))}
+          </span>
+        </div>
       </div>
       <h1 className="mt-4 text-3xl sm:text-4xl">{q.question}</h1>
-      <p className="mt-3 text-ink-2">{q.description}.</p>
+      <p className="mt-3 text-ink-2">{/[.?!]$/.test(q.description) ? q.description : `${q.description}.`}</p>
       <div role={q.isMultiSelect ? 'group' : 'radiogroup'} aria-label={q.question} className="mt-8 grid gap-3">
         {q.options.map((o, i) => (
           <OptionRow

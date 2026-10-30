@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ButtonLink, Container, Mark, Tag } from '@/components/ui';
 import { FaqList } from '@/components/faq-list';
 import { IdeaRow } from '@/components/idea-parts';
+import { KitThumb } from '@/components/kit-thumb';
 import { HeroShapes, OffsetBlock, StepShape } from '@/components/shapes';
 import { IDEAS } from '@/content/ideas';
 import { KITS } from '@/content/kits';
@@ -51,10 +52,10 @@ export default function Home() {
   return (
     <>
       <section className="relative isolate bg-paper grid-paper border-b border-rule overflow-x-clip">
-        <Container className="py-14 sm:py-20 grid lg:grid-cols-[1.05fr_1fr] gap-12 items-start">
+        <Container className="py-14 sm:py-20 grid lg:grid-cols-[1.2fr_1fr] gap-12 items-start">
           <div>
-            <h1 className="text-4xl sm:text-6xl">
-              Get a project plan <Mark>you can start today</Mark>
+            <h1 className="text-[2.6rem] sm:text-6xl lg:text-[3.2rem] xl:text-[3.5rem] leading-[1.05]">
+              Get a project plan you can <span className="mark whitespace-nowrap">start today</span>
             </h1>
             <p className="mt-6 text-lg text-ink-2 max-w-[48ch]">
               Tell IdeaZen your level, stack and time. It writes the features, the roadmap and your first commit, then helps you track the build.
@@ -123,24 +124,20 @@ export default function Home() {
             </div>
             <Link href="/design" className="font-semibold">See all kits</Link>
           </div>
-          <ul className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <ul className="mt-8 grid sm:grid-cols-2 gap-x-8 gap-y-10">
             {KITS.map((k) => (
               <li key={k.slug} data-reveal>
-                <Link href={`/design/${k.slug}`} className="block no-underline border border-rule bg-sheet rounded-panel overflow-hidden hover:border-ink">
-                  <span className="flex h-16" aria-hidden>
-                    {[k.tokens.bg, k.tokens.surface, k.tokens.ink, k.tokens.accent, ...(k.tokens.accent2 ? [k.tokens.accent2] : [])].map((hex, i) => (
-                      <span key={hex + i} className="flex-1" style={{ background: hex }} />
-                    ))}
-                  </span>
-                  <span className="block p-4">
-                    <span className="block font-bold text-lg">{k.name}</span>
-                    <span className="block text-[0.9rem] text-ink-2">{k.tagline}</span>
-                  </span>
+                <Link href={`/design/${k.slug}`} className="block no-underline transition-transform hover:-translate-y-1" aria-label={`${k.name}: open design kit`}>
+                  <KitThumb kit={k} />
                 </Link>
+                <div className="mt-3 flex flex-wrap items-baseline gap-x-3">
+                  <h3 className="text-xl"><Link href={`/design/${k.slug}`} className="no-underline">{k.name}</Link></h3>
+                  <span className="text-[0.85rem] text-ink-2">{k.category}</span>
+                </div>
+                <p className="text-[0.95rem] text-ink-2">{k.tagline}</p>
               </li>
             ))}
-          </ul>
-        </Container>
+          </ul>        </Container>
       </section>
 
       <section className="py-16">

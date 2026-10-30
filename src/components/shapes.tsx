@@ -1,7 +1,7 @@
 // Flat geometric decoration in the palette (highlighter yellow, pine, ink outlines).
 // All purely decorative: aria-hidden, no pointer events, hidden where space is tight.
 
-const deco = 'pointer-events-none select-none absolute';
+export const deco = 'pointer-events-none select-none absolute';
 
 /** Dot matrix, like the registration dots on a printed sheet. */
 export function Dots({ cols = 6, rows = 4, className = '' }: { cols?: number; rows?: number; className?: string }) {
@@ -26,37 +26,8 @@ export function HeroShapes() {
         <rect x="6" y="6" width="108" height="108" />
         <rect x="26" y="26" width="68" height="68" />
       </svg>
-      <svg aria-hidden viewBox="0 0 100 50" className={`${deco} -z-10 -bottom-12 right-10 w-20 sm:w-24 fill-ink`}>
-        <path d="M0 50a50 50 0 0 1 100 0z" />
-      </svg>
       <Dots className="-z-10 top-24 -left-12 hidden sm:block" cols={4} rows={5} />
-      <svg aria-hidden viewBox="0 0 40 40" className={`${deco} -z-10 top-1/2 -right-6 w-7 fill-none stroke-ink stroke-[3]`}>
-        <path d="M20 4v32M4 20h32" />
-      </svg>
     </>
-  );
-}
-
-/** Background cluster behind page headers, top right. Sits at z-index -10 inside <main>. */
-export function CornerShapes() {
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 hidden md:block overflow-hidden h-72">
-      <div className="mx-auto max-w-[1120px] relative h-full">
-        <svg viewBox="0 0 100 50" className={`${deco} top-0 right-24 w-32 fill-mark`}>
-          <path d="M0 0a50 50 0 0 0 100 0z" />
-        </svg>
-        <svg viewBox="0 0 80 80" className={`${deco} top-10 right-4 w-16 fill-none stroke-pine stroke-[3]`}>
-          <circle cx="40" cy="40" r="37" />
-        </svg>
-        <svg viewBox="0 0 60 60" className={`${deco} top-32 right-36 w-8 fill-ink`}>
-          <rect width="60" height="60" />
-        </svg>
-        <svg viewBox="0 0 60 52" className={`${deco} top-24 right-0 w-10 fill-none stroke-ink stroke-[3]`}>
-          <path d="M30 4 56 48H4z" />
-        </svg>
-        <Dots className="top-6 right-64" cols={5} rows={3} />
-      </div>
-    </div>
   );
 }
 
